@@ -14,7 +14,7 @@ import Yesod.Auth.OAuth2.Internal
 oauth2Url :: Text -> AuthRoute
 oauth2Url name = PluginR name ["forward"]
 
-authOAuth2 name oauth = AuthPlugin name dispatch login
+authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
     where
         url = PluginR name ["callback"]
         dispatch "GET" ["forward"] = do
@@ -26,7 +26,9 @@ authOAuth2 name oauth = AuthPlugin name dispatch login
         dispatch "GET" ["callback"] = do
             code <- lift $ runInputGet $ ireq textField "code"
             mtoken <- liftIO $ postAccessToken oauth (encodeUtf8 code) (Just "authorization_code")
-            undefined
+            case mtoken of
+                Nothing -> permissionDenied "Couldn't get token"
+                Just token -> getCreds token
         disptach _ _ = notFound
         login tm = do
             render <- getUrlRender
