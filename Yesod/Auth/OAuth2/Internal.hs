@@ -103,3 +103,8 @@ signRequest oa req = req { queryString = (renderSimpleQuery False newQuery) }
                     Just at -> insert ("oauth_token", at) oldQuery
                     _       -> insert ("client_id", oauthClientId oa) . insert ("client_secret", oauthClientSecret oa) $ oldQuery
     oldQuery = parseSimpleQuery (queryString req)
+
+authorizeRequest :: AccessToken -> Request m -> Request m
+authorizeRequest (AccessToken token) req = req { requestHeaders = auth : requestHeaders req }
+    where
+        auth = ("Authorization", BS.concat ["Bearer ", token])
