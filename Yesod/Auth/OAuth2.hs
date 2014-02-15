@@ -1,6 +1,7 @@
 {-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
 module Yesod.Auth.OAuth2
     ( authOAuth2
+    , oauth2Url
     , oauth2Google
     , oauth2Learn
     , module Network.OAuth.OAuth2
@@ -33,24 +34,28 @@ authOAuth2 name oauth mkCreds = AuthPlugin name dispatch login
 
     where
         url = PluginR name ["callback"]
-        dispatch "GET" ["forward"] = do
-            tm <- getRouteToParent
-            lift $ do
-                render <- getUrlRender
-                let oauth' = oauth { oauthCallback = Just $ encodeUtf8 $ render $ tm url }
-                redirect $ bsToText $ authorizationUrl oauth'
-        dispatch "GET" ["callback"] = do
+
+        withCallback = do
             tm <- getRouteToParent
             render <- lift $ getUrlRender
+            return $ oauth { oauthCallback = Just $ encodeUtf8 $ render $ tm url }
+
+        dispatch "GET" ["forward"] = do
+            authUrl <- fmap (bsToText . authorizationUrl) withCallback
+            lift $ redirect authUrl
+
+        dispatch "GET" ["callback"] = do
             code <- lift $ runInputGet $ ireq textField "code"
-            let oauth' = oauth { oauthCallback = Just $ encodeUtf8 $ render $ tm url }
+            oauth' <- withCallback
             result <- liftIO $ fetchAccessToken oauth' (encodeUtf8 code)
             case result of
                 Left _ -> permissionDenied "Unable to retreive OAuth2 token"
                 Right token -> do
                     creds <- liftIO $ mkCreds token
                     lift $ setCreds True creds
+
         dispatch _ _ = notFound
+
         login tm = do
             render <- getUrlRender
             let oaUrl = render $ tm $ oauth2Url name
