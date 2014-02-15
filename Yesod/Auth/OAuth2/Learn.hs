@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 -- |
 --
--- OAuth2 plugin for http://learn.thoughbot.com
+-- OAuth2 plugin for http://learn.thoughtbot.com
 --
 -- * Authenticates against learn
 -- * Uses learn user id as credentials identifier
