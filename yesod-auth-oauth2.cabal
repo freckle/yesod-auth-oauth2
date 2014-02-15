@@ -33,6 +33,8 @@ library
                    , hoauth2                 >= 0.3.6     && < 0.4
 
     exposed-modules: Yesod.Auth.OAuth2
+                     Yesod.Auth.OAuth2.Google
+                     Yesod.Auth.OAuth2.Learn
 
     ghc-options:     -Wall
 
