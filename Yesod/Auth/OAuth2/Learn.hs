@@ -13,6 +13,7 @@ module Yesod.Auth.OAuth2.Learn
     ) where
 
 import Control.Applicative ((<$>), (<*>))
+import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
@@ -65,7 +66,7 @@ fetchLearnProfile token = do
 
     case result of
         Right (LearnResponse user) -> return $ toCreds user
-        _ -> error "Invalid response for learn profile data"
+        Left err -> throwIO $ InvalidProfileResponse "learn" err
 
 toCreds :: LearnUser -> Creds m
 toCreds user = Creds "learn"

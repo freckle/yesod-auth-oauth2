@@ -1,4 +1,6 @@
-{-# LANGUAGE OverloadedStrings, QuasiQuotes #-}
+{-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 -- |
 --
 -- Generic OAuth2 plugin for Yesod
@@ -8,18 +10,30 @@
 module Yesod.Auth.OAuth2
     ( authOAuth2
     , oauth2Url
+    , YesodOAuth2Exception(..)
     , module Network.OAuth.OAuth2
     ) where
 
+import Control.Exception.Lifted
 import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
 import Data.Text (Text)
 import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
 import Data.Text.Encoding.Error (lenientDecode)
+import Data.Typeable
 import Network.OAuth.OAuth2
 import Yesod.Auth
 import Yesod.Core
 import Yesod.Form
+
+import qualified Data.ByteString.Lazy as BSL
+
+data YesodOAuth2Exception = InvalidProfileResponse
+    Text           -- ^ Provider name
+    BSL.ByteString -- ^ Aeson parse error
+    deriving (Show, Typeable)
+
+instance Exception YesodOAuth2Exception
 
 oauth2Url :: Text -> AuthRoute
 oauth2Url name = PluginR name ["forward"]
