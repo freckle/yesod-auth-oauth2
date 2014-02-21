@@ -27,12 +27,11 @@ oauth2Url name = PluginR name ["forward"]
 authOAuth2 :: YesodAuth m
            => Text   -- ^ Service name
            -> OAuth2 -- ^ Service details
-
-           -- | This function defines how to take an @'AccessToken'@ and
+           -> (AccessToken -> IO (Creds m))
+           -- ^ This function defines how to take an @'AccessToken'@ and
            --   retrieve additional information about the user, to be
            --   set in the session as @'Creds'@. Usually this means a
            --   second authorized request to @api/me.json@.
-           -> (AccessToken -> IO (Creds m))
            -> AuthPlugin m
 authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
 
