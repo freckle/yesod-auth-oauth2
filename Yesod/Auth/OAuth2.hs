@@ -69,7 +69,7 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
                 Left _ -> permissionDenied "Unable to retreive OAuth2 token"
                 Right token -> do
                     creds <- liftIO $ getCreds token
-                    lift $ setCreds True creds
+                    lift $ setCredsRedirect creds
 
         dispatch _ _ = notFound
 
