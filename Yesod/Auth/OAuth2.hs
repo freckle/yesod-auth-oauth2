@@ -22,6 +22,8 @@ import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
 import Data.Text.Encoding.Error (lenientDecode)
 import Data.Typeable
 import Network.OAuth.OAuth2
+import Network.HTTP.Client (newManager)
+import Network.HTTP.Client.TLS (tlsManagerSettings)
 import Yesod.Auth
 import Yesod.Core
 import Yesod.Form
@@ -62,14 +64,15 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
             lift $ redirect authUrl
 
         dispatch "GET" ["callback"] = do
+            manager <- liftIO $ newManager tlsManagerSettings
             code <- lift $ runInputGet $ ireq textField "code"
             oauth' <- withCallback
-            result <- liftIO $ fetchAccessToken oauth' (encodeUtf8 code)
+            result <- liftIO $ fetchAccessToken manager oauth' (encodeUtf8 code)
             case result of
                 Left _ -> permissionDenied "Unable to retreive OAuth2 token"
                 Right token -> do
                     creds <- liftIO $ getCreds token
-                    lift $ setCreds True creds
+                    lift $ setCredsRedirect creds
 
         dispatch _ _ = notFound
 
