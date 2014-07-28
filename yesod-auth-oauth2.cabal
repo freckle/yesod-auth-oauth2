@@ -32,6 +32,8 @@ library
                    , transformers            >= 0.2.2     && < 0.4
                    , hoauth2                 >= 0.4.1     && < 0.5
                    , lifted-base             >= 0.2       && < 0.4
+                   , http-client             >= 0.3       && < 0.4
+                   , http-client-tls         >= 0.2       && < 0.3
 
     exposed-modules: Yesod.Auth.OAuth2
                      Yesod.Auth.OAuth2.Google
