@@ -20,6 +20,7 @@ import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
+import Network.HTTP.Conduit(Manager)
 import qualified Data.Text as T
 
 data LearnUser = LearnUser
@@ -60,10 +61,10 @@ oauth2Learn clientId clientSecret = authOAuth2 "learn"
         })
     fetchLearnProfile
 
-fetchLearnProfile :: AccessToken -> IO (Creds m)
-fetchLearnProfile token = do
-    result <- authGetJSON token "http://learn.thoughtbot.com/api/v1/me.json"
-
+fetchLearnProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchLearnProfile manager token = do
+    result <- authGetJSON manager token "http://learn.thoughtbot.com/api/v1/me.json"
+    
     case result of
         Right (LearnResponse user) -> return $ toCreds user
         Left err -> throwIO $ InvalidProfileResponse "learn" err
