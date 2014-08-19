@@ -29,9 +29,8 @@ import Yesod.Form
 
 import qualified Data.ByteString.Lazy as BSL
 
-data YesodOAuth2Exception = InvalidProfileResponse
-    Text           -- ^ Provider name
-    BSL.ByteString -- ^ Aeson parse error
+-- | Provider name and Aeson parse error
+data YesodOAuth2Exception = InvalidProfileResponse Text BSL.ByteString
     deriving (Show, Typeable)
 
 instance Exception YesodOAuth2Exception
