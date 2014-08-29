@@ -22,8 +22,7 @@ import Yesod.Auth
 import Yesod.Auth.OAuth2
 import Yesod.Core
 import Yesod.Form
-import Network.HTTP.Client (newManager)
-import Network.HTTP.Client.TLS (tlsManagerSettings)
+import Network.HTTP.Conduit(Manager)
 import Data.UUID (toString)
 import Data.UUID.V4 (nextRandom)
 import qualified Data.ByteString as BS
@@ -82,9 +81,8 @@ oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
 
         dispatch method ps = (apDispatch basicPlugin) method ps
 
-fetchGithubProfile :: AccessToken -> IO (Creds m)
-fetchGithubProfile token = do
-    manager <- newManager tlsManagerSettings
+fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchGithubProfile manager token = do
     result <- authGetJSON manager token "https://api.github.com/user"
 
     case result of
