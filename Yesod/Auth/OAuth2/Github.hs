@@ -56,7 +56,7 @@ oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
                 , oauthClientSecret        = encodeUtf8 clientSecret
-                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scopes=" `T.append` (T.intercalate "," scopes)
+                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scopes=" `T.append` T.intercalate "," scopes
                 , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
                 , oauthCallback            = Nothing
                 }
@@ -70,16 +70,16 @@ oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
         dispatch "GET" ["forward"] = do
             state <- liftIO $ fmap (T.pack . toString) nextRandom
             setSession "githubState" state
-            (apDispatch (withState state)) "GET" ["forward"]
+            apDispatch (withState state) "GET" ["forward"]
 
         dispatch "GET" ["callback"] = do
             state <- lift $ runInputGet $ ireq textField "state"
             savedState <- lookupSession "githubState"
             case savedState of
-                Just saved | saved == state -> (apDispatch basicPlugin) "GET" ["callback"]
+                Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
                 _ -> invalidArgs ["state"]
 
-        dispatch method ps = (apDispatch basicPlugin) method ps
+        dispatch method ps = apDispatch basicPlugin method ps
 
 fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchGithubProfile manager token = do
