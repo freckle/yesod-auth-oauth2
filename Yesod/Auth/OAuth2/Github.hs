@@ -17,6 +17,7 @@ import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
+import Data.Monoid (mappend)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
@@ -31,7 +32,6 @@ import qualified Data.Text as T
 data GithubUser = GithubUser
     { githubUserId    :: Int
     , githubUserName  :: Text
-    , githubUserEmail :: Text
     , githubUserLogin :: Text
     , githubUserAvatarUrl :: Text
     }
@@ -40,9 +40,18 @@ instance FromJSON GithubUser where
     parseJSON (Object o) =
         GithubUser <$> o .: "id"
                    <*> o .: "name"
-                   <*> o .: "email"
                    <*> o .: "login"
                    <*> o .: "avatar_url"
+
+    parseJSON _ = mzero
+
+data GithubUserEmail = GithubUserEmail
+    { githubUserEmail :: Text
+    }
+
+instance FromJSON GithubUserEmail where
+    parseJSON (Object o) =
+        GithubUserEmail <$> o .: "email"
 
     parseJSON _ = mzero
 
@@ -75,25 +84,30 @@ oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
         dispatch "GET" ["callback"] = do
             state <- lift $ runInputGet $ ireq textField "state"
             savedState <- lookupSession "githubState"
+            apDispatch basicPlugin "GET" ["callback"]
             case savedState of
                 Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
-                _ -> invalidArgs ["state"]
+                Just saved -> invalidArgs ["state: " `mappend` state `mappend` ", and not: " `mappend` saved]
+                _ -> invalidArgs ["state: " `mappend` state]
 
         dispatch method ps = apDispatch basicPlugin method ps
 
 fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchGithubProfile manager token = do
-    result <- authGetJSON manager token "https://api.github.com/user"
+    userResult <- authGetJSON manager token "https://api.github.com/user"
+    mailResult <- authGetJSON manager token "https://api.github.com/user/emails"
 
-    case result of
-        Right user -> return $ toCreds user token
-        Left err -> throwIO $ InvalidProfileResponse "github" err
+    case (userResult, mailResult) of
+        (Right user, Right []) -> throwIO $ InvalidProfileResponse "github" "no mail address for user"
+        (Right user, Right mails) -> return $ toCreds user mails token
+        (Left err, _) -> throwIO $ InvalidProfileResponse "github" err
+        (_, Left err) -> throwIO $ InvalidProfileResponse "github" err
 
-toCreds :: GithubUser -> AccessToken -> Creds m
-toCreds user token = Creds "github"
+toCreds :: GithubUser -> [GithubUserEmail] -> AccessToken -> Creds m
+toCreds user userMail token = Creds "github"
     (T.pack $ show $ githubUserId user)
     [ ("name", githubUserName user)
-    , ("email", githubUserEmail user)
+    , ("email", githubUserEmail $ head userMail)
     , ("login", githubUserLogin user)
     , ("avatar_url", githubUserAvatarUrl user)
     , ("access_token", decodeUtf8 $ accessToken token)
