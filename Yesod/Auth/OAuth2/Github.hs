@@ -58,9 +58,15 @@ instance FromJSON GithubUserEmail where
 oauth2Github :: YesodAuth m
              => Text -- ^ Client ID
              -> Text -- ^ Client Secret
+             -> AuthPlugin m
+oauth2Github clientId clientSecret = oauth2GithubScoped clientId clientSecret ["user:email"]
+
+oauth2GithubScoped :: YesodAuth m
+             => Text -- ^ Client ID
+             -> Text -- ^ Client Secret
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
-oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
+oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
     where
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
