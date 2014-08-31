@@ -56,7 +56,7 @@ oauth2Github clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
                 , oauthClientSecret        = encodeUtf8 clientSecret
-                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scopes=" `T.append` T.intercalate "," scopes
+                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" `T.append` T.intercalate "," scopes
                 , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
                 , oauthCallback            = Nothing
                 }
