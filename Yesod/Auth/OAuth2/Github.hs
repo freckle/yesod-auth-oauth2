@@ -90,7 +90,7 @@ oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = disp
         dispatch "GET" ["callback"] = do
             state <- lift $ runInputGet $ ireq textField "state"
             savedState <- lookupSession "githubState"
-            apDispatch basicPlugin "GET" ["callback"]
+            _ <- apDispatch basicPlugin "GET" ["callback"]
             case savedState of
                 Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
                 Just saved -> invalidArgs ["state: " `mappend` state `mappend` ", and not: " `mappend` saved]
@@ -104,7 +104,7 @@ fetchGithubProfile manager token = do
     mailResult <- authGetJSON manager token "https://api.github.com/user/emails"
 
     case (userResult, mailResult) of
-        (Right user, Right []) -> throwIO $ InvalidProfileResponse "github" "no mail address for user"
+        (Right _, Right []) -> throwIO $ InvalidProfileResponse "github" "no mail address for user"
         (Right user, Right mails) -> return $ toCreds user mails token
         (Left err, _) -> throwIO $ InvalidProfileResponse "github" err
         (_, Left err) -> throwIO $ InvalidProfileResponse "github" err
