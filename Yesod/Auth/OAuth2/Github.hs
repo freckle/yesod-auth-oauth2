@@ -9,6 +9,7 @@
 --
 module Yesod.Auth.OAuth2.Github
     ( oauth2Github
+    , oauth2GithubScoped
     , module Yesod.Auth.OAuth2
     ) where
 
