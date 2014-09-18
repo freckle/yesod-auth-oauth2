@@ -32,7 +32,7 @@ import qualified Data.Text as T
 
 data GithubUser = GithubUser
     { githubUserId    :: Int
-    , githubUserName  :: Text
+    , githubUserName  :: Maybe Text
     , githubUserLogin :: Text
     , githubUserAvatarUrl :: Text
     }
@@ -40,7 +40,7 @@ data GithubUser = GithubUser
 instance FromJSON GithubUser where
     parseJSON (Object o) =
         GithubUser <$> o .: "id"
-                   <*> o .: "name"
+                   <*> o .:? "name"
                    <*> o .: "login"
                    <*> o .: "avatar_url"
 
@@ -113,9 +113,12 @@ fetchGithubProfile manager token = do
 toCreds :: GithubUser -> [GithubUserEmail] -> AccessToken -> Creds m
 toCreds user userMail token = Creds "github"
     (T.pack $ show $ githubUserId user)
-    [ ("name", githubUserName user)
-    , ("email", githubUserEmail $ head userMail)
-    , ("login", githubUserLogin user)
-    , ("avatar_url", githubUserAvatarUrl user)
-    , ("access_token", decodeUtf8 $ accessToken token)
-    ]
+    cExtra
+    where
+        cExtra = [ ("email", githubUserEmail $ head userMail)
+                 , ("login", githubUserLogin user)
+                 , ("avatar_url", githubUserAvatarUrl user)
+                 , ("access_token", decodeUtf8 $ accessToken token)
+                 ] ++ (maybeName $ githubUserName user)
+        maybeName Nothing     = []
+        maybeName (Just name) = [("name", name)]
