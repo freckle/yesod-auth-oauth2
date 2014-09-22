@@ -8,13 +8,12 @@ To use one of the supported providers:
 
 ```haskell
 import Yesod.Auth
-import Yesod.Auth.OAuth2.Learn
+import Yesod.Auth.OAuth2.Github
 
 instance YesodAuth App where
     -- ...
 
-    -- https://learn.thoughtbot.com
-    authPlugins _ = [oauth2Learn clientId clientSecret]
+    authPlugins _ = [oauth2Github clientId clientSecret]
 
 clientId :: Text
 clientId = "..."
@@ -47,9 +46,9 @@ myPlugin = authOAuth2 "mysite"
         })
     makeCredentials
 
-makeCredentials :: AccessToken -> IO (Creds m)
-makeCredentials token = do
-    result <- authGetJSON token "https://mysite.com/api/me.json"
+makeCredentials :: Manager -> AccessToken -> IO (Creds m)
+makeCredentials manager token = do
+    result <- authGetJSON manager token "https://mysite.com/api/me.json"
     return $ -- Parse the JSON into (Creds m)
 ```
 
