@@ -48,6 +48,7 @@ library
                      Yesod.Auth.OAuth2.Google
                      Yesod.Auth.OAuth2.Learn
                      Yesod.Auth.OAuth2.Github
+                     Yesod.Auth.OAuth2.Spotify
 
     ghc-options:     -Wall
 
