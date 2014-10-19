@@ -10,6 +10,7 @@
 module Yesod.Auth.OAuth2.Github
     ( oauth2Github
     , oauth2GithubScoped
+    , oauth2GithubQueried
     , module Yesod.Auth.OAuth2
     ) where
 
@@ -67,7 +68,25 @@ oauth2GithubScoped :: YesodAuth m
              -> Text -- ^ Client Secret
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
-oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
+
+oauth2GithubScoped clientId clientSecret scopes =
+    oauth2GithubQueried clientId clientSecret scopes fetchGithubProfile
+
+oauth2GithubQueried :: YesodAuth m
+                          => Text -- ^ Client ID
+                          -> Text -- ^ Client Secret
+                          -> [Text] -- ^ List of scopes to request
+                          -> (Manager -> AccessToken -> IO (Creds m))
+                          -- ^ These functions define how to take an @'AccessToken'@ and
+                          --   retrieve additional information about the user, to be
+                          --   set in the session as @'Creds'@. Usually this means a
+                          --   second authorized request to @api/me.json@.
+                          --   It can fail the login by throwing the @'IOException'@
+                          --   @'InvalidProfileResponse'@
+                          -> AuthPlugin m
+
+oauth2GithubQueried clientId clientSecret scopes credsQuery =
+    basicPlugin {apDispatch = dispatch}
     where
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
@@ -79,9 +98,9 @@ oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = disp
 
         withState state = authOAuth2 "github"
             (oauth {oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth `BS.append` "&state=" `BS.append` encodeUtf8 state})
-            fetchGithubProfile
+            credsQuery  -- this argument is only used to type-check
 
-        basicPlugin = authOAuth2 "github" oauth fetchGithubProfile
+        basicPlugin = authOAuth2 "github" oauth credsQuery
 
         dispatch "GET" ["forward"] = do
             state <- liftIO $ fmap (T.pack . toString) nextRandom
