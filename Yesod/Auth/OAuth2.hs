@@ -14,15 +14,18 @@ module Yesod.Auth.OAuth2
     , module Network.OAuth.OAuth2
     ) where
 
+import Control.Applicative ((<$>))
 import Control.Exception.Lifted
 import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
-import Data.Text (Text)
+import Data.Monoid ((<>))
+import Data.Text (Text, pack)
 import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
 import Data.Text.Encoding.Error (lenientDecode)
 import Data.Typeable
 import Network.OAuth.OAuth2
 import Network.HTTP.Conduit(Manager)
+import System.Random
 import Yesod.Auth
 import Yesod.Core
 import Yesod.Form
@@ -52,27 +55,45 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
     where
         url = PluginR name ["callback"]
 
-        withCallback = do
+        withCallback csrfToken = do
             tm <- getRouteToParent
             render <- lift $ getUrlRender
-            return $ oauth { oauthCallback = Just $ encodeUtf8 $ render $ tm url }
+            let newEndpoint = oauthOAuthorizeEndpoint oauth <> "&state=" <> encodeUtf8 csrfToken
+            return $ oauth { 
+                    oauthCallback = Just $ encodeUtf8 $ render $ tm url, 
+                    oauthOAuthorizeEndpoint = newEndpoint
+                }
 
         dispatch "GET" ["forward"] = do
-            authUrl <- fmap (bsToText . authorizationUrl) withCallback
+            csrfToken <- liftIO $ generateToken
+            setSession tokenSessionKey csrfToken
+            authUrl <- (bsToText . authorizationUrl) <$> withCallback csrfToken
             lift $ redirect authUrl
 
         dispatch "GET" ["callback"] = do
-            code <- lift $ runInputGet $ ireq textField "code"
-            oauth' <- withCallback
-            master <- lift getYesod
-            result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
-            case result of
-                Left _ -> permissionDenied "Unable to retreive OAuth2 token"
-                Right token -> do
-                    creds <- liftIO $ getCreds (authHttpManager master) token
-                    lift $ setCredsRedirect creds
+            newToken <- lookupGetParam "state"
+            oldToken <- lookupSession tokenSessionKey
+            deleteSession tokenSessionKey
+            case newToken of
+                Just csrfToken | newToken == oldToken -> do
+                    code <- lift $ runInputGet $ ireq textField "code"
+                    oauth' <- withCallback csrfToken
+                    master <- lift getYesod
+                    result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
+                    case result of
+                        Left _ -> permissionDenied "Unable to retreive OAuth2 token"
+                        Right token -> do
+                            creds <- liftIO $ getCreds (authHttpManager master) token
+                            lift $ setCredsRedirect creds
+                _ ->
+                    permissionDenied "Invalid OAuth2 state token"
 
         dispatch _ _ = notFound
+
+        generateToken = (pack . take 30 . randomRs ('a','z')) <$> newStdGen
+
+        tokenSessionKey :: Text
+        tokenSessionKey = "_yesod_oauth2_" <> name
 
         login tm = do
             render <- getUrlRender
