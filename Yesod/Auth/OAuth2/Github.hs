@@ -18,16 +18,16 @@ import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
-import Data.Monoid (mappend)
+-- import Data.Monoid (mappend)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-import Yesod.Core
-import Yesod.Form
+-- import Yesod.Core
+-- import Yesod.Form
 import Network.HTTP.Conduit(Manager)
-import Data.UUID (toString)
-import Data.UUID.V4 (nextRandom)
-import qualified Data.ByteString as BS
+-- import Data.UUID (toString)
+-- import Data.UUID.V4 (nextRandom)
+-- import qualified Data.ByteString as BS
 import qualified Data.Text as T
 
 data GithubUser = GithubUser
@@ -67,7 +67,7 @@ oauth2GithubScoped :: YesodAuth m
              -> Text -- ^ Client Secret
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
-oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = dispatch}
+oauth2GithubScoped clientId clientSecret scopes = basicPlugin -- {apDispatch = dispatch}
     where
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
@@ -77,27 +77,27 @@ oauth2GithubScoped clientId clientSecret scopes = basicPlugin {apDispatch = disp
                 , oauthCallback            = Nothing
                 }
 
-        withState state = authOAuth2 "github"
-            (oauth {oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth `BS.append` "&state=" `BS.append` encodeUtf8 state})
-            fetchGithubProfile
+        -- withState state = authOAuth2 "github"
+        --     (oauth {oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth `BS.append` "&state=" `BS.append` encodeUtf8 state})
+        --     fetchGithubProfile
 
         basicPlugin = authOAuth2 "github" oauth fetchGithubProfile
 
-        dispatch "GET" ["forward"] = do
-            state <- liftIO $ fmap (T.pack . toString) nextRandom
-            setSession "githubState" state
-            apDispatch (withState state) "GET" ["forward"]
+        -- dispatch "GET" ["forward"] = do
+        --     state <- liftIO $ fmap (T.pack . toString) nextRandom
+        --     setSession "githubState" state
+        --     apDispatch (withState state) "GET" ["forward"]
 
-        dispatch "GET" ["callback"] = do
-            state <- lift $ runInputGet $ ireq textField "state"
-            savedState <- lookupSession "githubState"
-            _ <- apDispatch basicPlugin "GET" ["callback"]
-            case savedState of
-                Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
-                Just saved -> invalidArgs ["state: " `mappend` state `mappend` ", and not: " `mappend` saved]
-                _ -> invalidArgs ["state: " `mappend` state]
+        -- dispatch "GET" ["callback"] = do
+        --     state <- lift $ runInputGet $ ireq textField "state"
+        --     savedState <- lookupSession "githubState"
+        --     _ <- apDispatch basicPlugin "GET" ["callback"]
+        --     case savedState of
+        --         Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
+        --         Just saved -> invalidArgs ["state: " `mappend` state `mappend` ", and not: " `mappend` saved]
+        --         _ -> invalidArgs ["state: " `mappend` state]
 
-        dispatch method ps = apDispatch basicPlugin method ps
+        -- dispatch method ps = apDispatch basicPlugin method ps
 
 fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchGithubProfile manager token = do
