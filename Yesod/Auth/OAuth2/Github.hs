@@ -67,7 +67,7 @@ oauth2GithubScoped :: YesodAuth m
              -> Text -- ^ Client Secret
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
-oauth2GithubScoped clientId clientSecret scopes = basicPlugin -- {apDispatch = dispatch}
+oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "github" oauth fetchGithubProfile
     where
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
@@ -76,28 +76,6 @@ oauth2GithubScoped clientId clientSecret scopes = basicPlugin -- {apDispatch = d
                 , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
                 , oauthCallback            = Nothing
                 }
-
-        -- withState state = authOAuth2 "github"
-        --     (oauth {oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth `BS.append` "&state=" `BS.append` encodeUtf8 state})
-        --     fetchGithubProfile
-
-        basicPlugin = authOAuth2 "github" oauth fetchGithubProfile
-
-        -- dispatch "GET" ["forward"] = do
-        --     state <- liftIO $ fmap (T.pack . toString) nextRandom
-        --     setSession "githubState" state
-        --     apDispatch (withState state) "GET" ["forward"]
-
-        -- dispatch "GET" ["callback"] = do
-        --     state <- lift $ runInputGet $ ireq textField "state"
-        --     savedState <- lookupSession "githubState"
-        --     _ <- apDispatch basicPlugin "GET" ["callback"]
-        --     case savedState of
-        --         Just saved | saved == state -> apDispatch basicPlugin "GET" ["callback"]
-        --         Just saved -> invalidArgs ["state: " `mappend` state `mappend` ", and not: " `mappend` saved]
-        --         _ -> invalidArgs ["state: " `mappend` state]
-
-        -- dispatch method ps = apDispatch basicPlugin method ps
 
 fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchGithubProfile manager token = do
