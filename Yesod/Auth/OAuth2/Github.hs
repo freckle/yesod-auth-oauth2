@@ -18,16 +18,11 @@ import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
--- import Data.Monoid (mappend)
+import Data.Monoid ((<>))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
--- import Yesod.Core
--- import Yesod.Form
 import Network.HTTP.Conduit(Manager)
--- import Data.UUID (toString)
--- import Data.UUID.V4 (nextRandom)
--- import qualified Data.ByteString as BS
 import qualified Data.Text as T
 
 data GithubUser = GithubUser
@@ -72,7 +67,7 @@ oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "github" oauth fetc
         oauth = OAuth2
                 { oauthClientId            = encodeUtf8 clientId
                 , oauthClientSecret        = encodeUtf8 clientSecret
-                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" `T.append` T.intercalate "," scopes
+                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" <> T.intercalate "," scopes
                 , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
                 , oauthCallback            = Nothing
                 }

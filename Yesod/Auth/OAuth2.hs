@@ -14,11 +14,12 @@ module Yesod.Auth.OAuth2
     , module Network.OAuth.OAuth2
     ) where
 
+import Control.Applicative ((<$>))
 import Control.Exception.Lifted
 import Control.Monad.IO.Class
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as BS
-import Data.Text (Text, append, pack)
+import Data.Monoid ((<>))
+import Data.Text (Text, pack)
 import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
 import Data.Text.Encoding.Error (lenientDecode)
 import Data.Typeable
@@ -57,7 +58,7 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
         withCallback csrfToken = do
             tm <- getRouteToParent
             render <- lift $ getUrlRender
-            let newEndpoint = oauthOAuthorizeEndpoint oauth `BS.append` "&state=" `BS.append` encodeUtf8 csrfToken
+            let newEndpoint = oauthOAuthorizeEndpoint oauth <> "&state=" <> encodeUtf8 csrfToken
             return $ oauth { 
                     oauthCallback = Just $ encodeUtf8 $ render $ tm url, 
                     oauthOAuthorizeEndpoint = newEndpoint
@@ -66,7 +67,7 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
         dispatch "GET" ["forward"] = do
             csrfToken <- liftIO $ generateToken
             setSession tokenSessionKey csrfToken
-            authUrl <- fmap (bsToText . authorizationUrl) $ withCallback csrfToken
+            authUrl <- (bsToText . authorizationUrl) <$> withCallback csrfToken
             lift $ redirect authUrl
 
         dispatch "GET" ["callback"] = do
@@ -89,10 +90,10 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
 
         dispatch _ _ = notFound
 
-        generateToken = fmap (pack . take 30 . randomRs ('a','z')) newStdGen
+        generateToken = (pack . take 30 . randomRs ('a','z')) <$> newStdGen
 
         tokenSessionKey :: Text
-        tokenSessionKey = "_yesod_oauth2_" `append` name
+        tokenSessionKey = "_yesod_oauth2_" <> name
 
         login tm = do
             render <- getUrlRender
