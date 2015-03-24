@@ -5,7 +5,7 @@
 --
 -- Generic OAuth2 plugin for Yesod
 --
--- * See Yesod.Auth.OAuth2.Learn for example usage.
+-- * See Yesod.Auth.OAuth2.GitHub for example usage.
 --
 module Yesod.Auth.OAuth2
     ( authOAuth2

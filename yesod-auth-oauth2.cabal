@@ -45,9 +45,9 @@ library
                    , lifted-base             >= 0.2       && < 0.4
 
     exposed-modules: Yesod.Auth.OAuth2
-                     Yesod.Auth.OAuth2.Learn
                      Yesod.Auth.OAuth2.Github
                      Yesod.Auth.OAuth2.Spotify
+                     Yesod.Auth.OAuth2.Upcase
 
     ghc-options:     -Wall
 
