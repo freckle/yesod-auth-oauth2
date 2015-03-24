@@ -57,17 +57,17 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
 
         withCallback csrfToken = do
             tm <- getRouteToParent
-            render <- lift $ getUrlRender
-            let newEndpoint = oauthOAuthorizeEndpoint oauth <> "&state=" <> encodeUtf8 csrfToken
-            return $ oauth { 
-                    oauthCallback = Just $ encodeUtf8 $ render $ tm url, 
-                    oauthOAuthorizeEndpoint = newEndpoint
+            render <- lift getUrlRender
+            return oauth
+                { oauthCallback = Just $ encodeUtf8 $ render $ tm url
+                , oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth
+                    <> "&state=" <> encodeUtf8 csrfToken
                 }
 
         dispatch "GET" ["forward"] = do
-            csrfToken <- liftIO $ generateToken
+            csrfToken <- liftIO generateToken
             setSession tokenSessionKey csrfToken
-            authUrl <- (bsToText . authorizationUrl) <$> withCallback csrfToken
+            authUrl <- bsToText . authorizationUrl <$> withCallback csrfToken
             lift $ redirect authUrl
 
         dispatch "GET" ["callback"] = do
@@ -90,15 +90,14 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
 
         dispatch _ _ = notFound
 
-        generateToken = (pack . take 30 . randomRs ('a','z')) <$> newStdGen
+        generateToken = pack . take 30 . randomRs ('a', 'z') <$> newStdGen
 
         tokenSessionKey :: Text
         tokenSessionKey = "_yesod_oauth2_" <> name
 
-        login tm = do
-            render <- getUrlRender
-            let oaUrl = render $ tm $ oauth2Url name
-            [whamlet| <a href=#{oaUrl}>Login via #{name} |]
+        login tm = [whamlet|
+            <a href=@{tm $ oauth2Url name}>Login via #{name}
+            |]
 
 bsToText :: ByteString -> Text
 bsToText = decodeUtf8With lenientDecode
