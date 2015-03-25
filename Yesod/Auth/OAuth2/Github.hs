@@ -17,27 +17,28 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.Text (Text)
 import Data.Monoid ((<>))
+import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
+import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-import Network.HTTP.Conduit(Manager)
+
 import qualified Data.Text as T
 
 data GithubUser = GithubUser
-    { githubUserId    :: Int
-    , githubUserName  :: Maybe Text
+    { githubUserId :: Int
+    , githubUserName :: Maybe Text
     , githubUserLogin :: Text
     , githubUserAvatarUrl :: Text
     }
 
 instance FromJSON GithubUser where
-    parseJSON (Object o) =
-        GithubUser <$> o .: "id"
-                   <*> o .:? "name"
-                   <*> o .: "login"
-                   <*> o .: "avatar_url"
+    parseJSON (Object o) = GithubUser
+        <$> o .: "id"
+        <*> o .:? "name"
+        <*> o .: "login"
+        <*> o .: "avatar_url"
 
     parseJSON _ = mzero
 
@@ -46,8 +47,8 @@ data GithubUserEmail = GithubUserEmail
     }
 
 instance FromJSON GithubUserEmail where
-    parseJSON (Object o) =
-        GithubUserEmail <$> o .: "email"
+    parseJSON (Object o) = GithubUserEmail
+        <$> o .: "email"
 
     parseJSON _ = mzero
 
@@ -63,14 +64,14 @@ oauth2GithubScoped :: YesodAuth m
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
 oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "github" oauth fetchGithubProfile
-    where
-        oauth = OAuth2
-                { oauthClientId            = encodeUtf8 clientId
-                , oauthClientSecret        = encodeUtf8 clientSecret
-                , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" <> T.intercalate "," scopes
-                , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
-                , oauthCallback            = Nothing
-                }
+  where
+    oauth = OAuth2
+        { oauthClientId = encodeUtf8 clientId
+        , oauthClientSecret = encodeUtf8 clientSecret
+        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" <> T.intercalate "," scopes
+        , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
+        , oauthCallback = Nothing
+        }
 
 fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchGithubProfile manager token = do
@@ -84,14 +85,17 @@ fetchGithubProfile manager token = do
         (_, Left err) -> throwIO $ InvalidProfileResponse "github" err
 
 toCreds :: GithubUser -> [GithubUserEmail] -> AccessToken -> Creds m
-toCreds user userMail token = Creds "github"
-    (T.pack $ show $ githubUserId user)
-    cExtra
-    where
-        cExtra = [ ("email", githubUserEmail $ head userMail)
-                 , ("login", githubUserLogin user)
-                 , ("avatar_url", githubUserAvatarUrl user)
-                 , ("access_token", decodeUtf8 $ accessToken token)
-                 ] ++ (maybeName $ githubUserName user)
-        maybeName Nothing     = []
-        maybeName (Just name) = [("name", name)]
+toCreds user userMail token = Creds
+    { credsPlugin = "github"
+    , credsIdent = T.pack $ show $ githubUserId user
+    , credsExtra =
+        [ ("email", githubUserEmail $ head userMail)
+        , ("login", githubUserLogin user)
+        , ("avatar_url", githubUserAvatarUrl user)
+        , ("access_token", decodeUtf8 $ accessToken token)
+        ] ++ maybeName (githubUserName user)
+    }
+
+  where
+    maybeName Nothing = []
+    maybeName (Just name) = [("name", name)]

@@ -24,26 +24,26 @@ import Network.HTTP.Conduit(Manager)
 import qualified Data.Text as T
 
 data UpcaseUser = UpcaseUser
-    { upcaseUserId        :: Int
+    { upcaseUserId :: Int
     , upcaseUserFirstName :: Text
-    , upcaseUserLastName  :: Text
-    , upcaseUserEmail     :: Text
+    , upcaseUserLastName :: Text
+    , upcaseUserEmail :: Text
     }
 
 instance FromJSON UpcaseUser where
-    parseJSON (Object o) =
-        UpcaseUser <$> o .: "id"
-                  <*> o .: "first_name"
-                  <*> o .: "last_name"
-                  <*> o .: "email"
+    parseJSON (Object o) = UpcaseUser
+        <$> o .: "id"
+        <*> o .: "first_name"
+        <*> o .: "last_name"
+        <*> o .: "email"
 
     parseJSON _ = mzero
 
 data UpcaseResponse = UpcaseResponse UpcaseUser
 
 instance FromJSON UpcaseResponse where
-    parseJSON (Object o) =
-        UpcaseResponse <$> o .: "user"
+    parseJSON (Object o) = UpcaseResponse
+        <$> o .: "user"
 
     parseJSON _ = mzero
 
@@ -53,11 +53,11 @@ oauth2Upcase :: YesodAuth m
             -> AuthPlugin m
 oauth2Upcase clientId clientSecret = authOAuth2 "upcase"
     OAuth2
-        { oauthClientId            = encodeUtf8 clientId
-        , oauthClientSecret        = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint  = "http://upcase.com/oauth/authorize"
+        { oauthClientId = encodeUtf8 clientId
+        , oauthClientSecret = encodeUtf8 clientSecret
+        , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
         , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
-        , oauthCallback            = Nothing
+        , oauthCallback = Nothing
         }
     fetchUpcaseProfile
 
@@ -70,9 +70,12 @@ fetchUpcaseProfile manager token = do
         Left err -> throwIO $ InvalidProfileResponse "upcase" err
 
 toCreds :: UpcaseUser -> Creds m
-toCreds user = Creds "upcase"
-    (T.pack $ show $ upcaseUserId user)
-    [ ("first_name", upcaseUserFirstName user)
-    , ("last_name" , upcaseUserLastName user)
-    , ("email"     , upcaseUserEmail user)
-    ]
+toCreds user = Creds
+    { credsPlugin = "upcase"
+    , credsIdent = T.pack $ show $ upcaseUserId user
+    , credsExtra =
+        [ ("first_name", upcaseUserFirstName user)
+        , ("last_name" , upcaseUserLastName user)
+        , ("email"     , upcaseUserEmail user)
+        ]
+    }
