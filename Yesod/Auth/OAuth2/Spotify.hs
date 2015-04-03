@@ -13,14 +13,12 @@ module Yesod.Auth.OAuth2.Spotify
 import Control.Applicative ((<$>), (<*>), pure)
 #endif
 
-import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.ByteString (ByteString)
 import Data.Maybe
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
-import Network.HTTP.Conduit(Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
 
@@ -78,14 +76,7 @@ oauth2Spotify clientId clientSecret scope = authOAuth2 "spotify"
         , oauthAccessTokenEndpoint = "https://accounts.spotify.com/api/token"
         , oauthCallback = Nothing
         }
-    fetchSpotifyProfile
-
-fetchSpotifyProfile :: Manager -> AccessToken -> IO (Creds m)
-fetchSpotifyProfile manager token = do
-    result <- authGetJSON manager token "https://api.spotify.com/v1/me"
-    case result of
-        Right user -> return $ toCreds user
-        Left err -> throwIO $ InvalidProfileResponse "spotify" err
+    $ fromProfileURL "spotify" "https://api.spotify.com/v1/me" toCreds
 
 toCreds :: SpotifyUser -> Creds m
 toCreds user = Creds

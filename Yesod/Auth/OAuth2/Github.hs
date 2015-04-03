@@ -15,7 +15,7 @@ module Yesod.Auth.OAuth2.Github
     ) where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>), pure)
+import Control.Applicative ((<$>), (<*>))
 #endif
 
 import Control.Exception.Lifted

@@ -12,6 +12,7 @@
 module Yesod.Auth.OAuth2
     ( authOAuth2
     , oauth2Url
+    , fromProfileURL
     , YesodOAuth2Exception(..)
     , module Network.OAuth.OAuth2
     ) where
@@ -54,6 +55,9 @@ authOAuth2 :: YesodAuth m
            --   retrieve additional information about the user, to be
            --   set in the session as @'Creds'@. Usually this means a
            --   second authorized request to @api/me.json@.
+           --
+           --   See @'fromProfileURL'@ for an example.
+           --
            -> AuthPlugin m
 authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
 
@@ -103,6 +107,22 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
     login tm = [whamlet|
         <a href=@{tm $ oauth2Url name}>Login via #{name}
         |]
+
+-- | Handle the common case of fetching Profile information a JSON endpoint
+--
+-- Throws @'InvalidProfileResponse'@ if JSON parsing fails
+--
+fromProfileURL :: FromJSON a
+               => Text           -- ^ Plugin name
+               -> URI            -- ^ Profile URI
+               -> (a -> Creds m) -- ^ Conversion to Creds
+               -> Manager -> AccessToken -> IO (Creds m)
+fromProfileURL name url toCreds manager token = do
+    result <- authGetJSON manager token url
+
+    case result of
+        Right profile -> return $ toCreds profile
+        Left err -> throwIO $ InvalidProfileResponse name err
 
 bsToText :: ByteString -> Text
 bsToText = decodeUtf8With lenientDecode
