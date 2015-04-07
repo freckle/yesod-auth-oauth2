@@ -1,4 +1,6 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveDataTypeable #-}
+{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 -- |
@@ -14,7 +16,10 @@ module Yesod.Auth.OAuth2
     , module Network.OAuth.OAuth2
     ) where
 
+#if __GLASGOW_HASKELL__ < 710
 import Control.Applicative ((<$>))
+#endif
+
 import Control.Exception.Lifted
 import Control.Monad.IO.Class
 import Data.ByteString (ByteString)

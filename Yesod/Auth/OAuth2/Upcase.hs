@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- |
 --
@@ -12,7 +13,10 @@ module Yesod.Auth.OAuth2.Upcase
     , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Applicative ((<$>), (<*>))
+#if __GLASGOW_HASKELL__ < 710
+import Control.Applicative ((<$>), (<*>), pure)
+#endif
+
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
