@@ -10,8 +10,10 @@
 -- * See Yesod.Auth.OAuth2.GitHub for example usage.
 --
 module Yesod.Auth.OAuth2
-    ( authOAuth2
+    ( OAuth2Plugin(..)
     , oauth2Url
+    , oauth2Plugin
+    , authOAuth2
     , YesodOAuth2Exception(..)
     , module Network.OAuth.OAuth2
     ) where
@@ -43,8 +45,44 @@ data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
 
 instance Exception YesodOAuth2Exception
 
+data OAuth2Plugin a = OAuth2Plugin
+    { oapName :: Text
+    , oapAuthEndpoint :: Text
+    , oapTokenEndpoint :: Text
+    , oapFetchProfile :: Manager -> AccessToken -> IO (Either BL.ByteString a)
+    , oapToCredsIdent :: a -> Text
+    , oapToCredsExtra :: a -> [(Text, Text)]
+    }
+
 oauth2Url :: Text -> AuthRoute
 oauth2Url name = PluginR name ["forward"]
+
+oauth2Plugin :: YesodAuth m
+             => OAuth2Plugin a
+             -> Text -- ^ Client ID
+             -> Text -- ^ Client Secret
+             -> AuthPlugin m
+oauth2Plugin oap clientId clientSecret =
+    authOAuth2 (oapName oap) oapOauth $ \manager token -> do
+        result <- oapFetchProfile oap manager token
+
+        case result of
+            Left err -> throwIO $ InvalidProfileResponse (oapName oap) err
+            Right user -> return Creds
+                { credsIdent = oapToCredsIdent oap user
+                , credsPlugin = oapName oap
+                , credsExtra = oapToCredsExtra oap user
+                }
+
+  where
+    oapOauth :: OAuth2
+    oapOauth = OAuth2
+        { oauthClientId = encodeUtf8 clientId
+        , oauthClientSecret = encodeUtf8 clientSecret
+        , oauthOAuthorizeEndpoint = encodeUtf8 $ oapAuthEndpoint oap
+        , oauthAccessTokenEndpoint = encodeUtf8 $ oapTokenEndpoint oap
+        , oauthCallback = Nothing
+        }
 
 authOAuth2 :: YesodAuth m
            => Text   -- ^ Service name
@@ -89,7 +127,7 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
                     Left _ -> permissionDenied "Unable to retreive OAuth2 token"
                     Right token -> do
                         creds <- liftIO $ getCreds (authHttpManager master) token
-                        lift $ setCredsRedirect creds
+                        lift $ setCredsRedirect $ addAccessToken token creds
             _ ->
                 permissionDenied "Invalid OAuth2 state token"
 
@@ -103,6 +141,11 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
     login tm = [whamlet|
         <a href=@{tm $ oauth2Url name}>Login via #{name}
         |]
+
+    addAccessToken token creds = creds
+        { credsExtra =
+            ("access_token", bsToText $ accessToken token) : credsExtra creds
+        }
 
 bsToText :: ByteString -> Text
 bsToText = decodeUtf8With lenientDecode

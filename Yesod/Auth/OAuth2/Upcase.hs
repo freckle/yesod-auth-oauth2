@@ -14,17 +14,14 @@ module Yesod.Auth.OAuth2.Upcase
     ) where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>), pure)
+import Control.Applicative ((<$>), (<*>))
 #endif
 
-import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-import Network.HTTP.Conduit(Manager)
 import qualified Data.Text as T
 
 data UpcaseUser = UpcaseUser
@@ -55,31 +52,19 @@ oauth2Upcase :: YesodAuth m
             => Text -- ^ Client ID
             -> Text -- ^ Client Secret
             -> AuthPlugin m
-oauth2Upcase clientId clientSecret = authOAuth2 "upcase"
-    OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
-        , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
-        , oauthCallback = Nothing
-        }
-    fetchUpcaseProfile
-
-fetchUpcaseProfile :: Manager -> AccessToken -> IO (Creds m)
-fetchUpcaseProfile manager token = do
-    result <- authGetJSON manager token "http://upcase.com/api/v1/me.json"
-
-    case result of
-        Right (UpcaseResponse user) -> return $ toCreds user
-        Left err -> throwIO $ InvalidProfileResponse "upcase" err
-
-toCreds :: UpcaseUser -> Creds m
-toCreds user = Creds
-    { credsPlugin = "upcase"
-    , credsIdent = T.pack $ show $ upcaseUserId user
-    , credsExtra =
-        [ ("first_name", upcaseUserFirstName user)
-        , ("last_name" , upcaseUserLastName user)
-        , ("email"     , upcaseUserEmail user)
-        ]
+oauth2Upcase = oauth2Plugin OAuth2Plugin
+    { oapName = "upcase"
+    , oapAuthEndpoint = "http://upcase.com/oauth/authorize"
+    , oapTokenEndpoint = "http://upcase.com/oauth/token"
+    , oapFetchProfile = \manager token ->
+        authGetJSON manager token "http://upcase.com/api/v1/me.json"
+    , oapToCredsIdent = T.pack . show . upcaseUserId
+    , oapToCredsExtra = toCredsExtra
     }
+
+toCredsExtra :: UpcaseUser -> [(Text, Text)]
+toCredsExtra user =
+    [ ("first_name", upcaseUserFirstName user)
+    , ("last_name" , upcaseUserLastName user)
+    , ("email"     , upcaseUserEmail user)
+    ]

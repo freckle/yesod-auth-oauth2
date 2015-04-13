@@ -10,21 +10,17 @@ module Yesod.Auth.OAuth2.Spotify
     ) where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>), pure)
+import Control.Applicative ((<$>), (<*>))
 #endif
 
-import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.ByteString (ByteString)
 import Data.Maybe
+import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
-import Network.HTTP.Conduit(Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
 
-import qualified Data.ByteString as B
 import qualified Data.Text as T
 
 data SpotifyUserImage = SpotifyUserImage
@@ -66,33 +62,22 @@ instance FromJSON SpotifyUser where
     parseJSON _ = mzero
 
 oauth2Spotify :: YesodAuth m
-              => Text -- ^ Client ID
+              => [Text] -- ^ Scopes
+              -> Text -- ^ Client ID
               -> Text -- ^ Client Secret
-              -> [ByteString] -- ^ Scopes
               -> AuthPlugin m
-oauth2Spotify clientId clientSecret scope = authOAuth2 "spotify"
-    OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = B.append "https://accounts.spotify.com/authorize?scope=" (B.intercalate "%20" scope)
-        , oauthAccessTokenEndpoint = "https://accounts.spotify.com/api/token"
-        , oauthCallback = Nothing
-        }
-    fetchSpotifyProfile
-
-fetchSpotifyProfile :: Manager -> AccessToken -> IO (Creds m)
-fetchSpotifyProfile manager token = do
-    result <- authGetJSON manager token "https://api.spotify.com/v1/me"
-    case result of
-        Right user -> return $ toCreds user
-        Left err -> throwIO $ InvalidProfileResponse "spotify" err
-
-toCreds :: SpotifyUser -> Creds m
-toCreds user = Creds
-    { credsPlugin = "spotify"
-    , credsIdent = spotifyUserId user
-    , credsExtra = mapMaybe getExtra extrasTemplate
+oauth2Spotify scopes = oauth2Plugin OAuth2Plugin
+    { oapName = "spotify"
+    , oapAuthEndpoint = "https://accounts.spotify.com/authorize?scope=" <> T.intercalate "%20" scopes
+    , oapTokenEndpoint = "https://accounts.spotify.com/api/token"
+    , oapFetchProfile = \manager token ->
+        authGetJSON manager token "https://api.spotify.com/v1/me"
+    , oapToCredsIdent = spotifyUserId
+    , oapToCredsExtra = toCredsExtra
     }
+
+toCredsExtra :: SpotifyUser -> [(Text, Text)]
+toCredsExtra user = mapMaybe getExtra extrasTemplate
 
   where
     userImage :: Maybe SpotifyUserImage
