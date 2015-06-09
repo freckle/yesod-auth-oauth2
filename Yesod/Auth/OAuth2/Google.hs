@@ -19,7 +19,7 @@ import Control.Applicative ((<$>), (<*>))
 #endif
 
 import Control.Exception.Lifted
-import Control.Monad (mzero, liftM)
+import Control.Monad (mzero)
 import Data.Aeson
 import Data.Monoid ((<>))
 import Data.Maybe (maybeToList)
@@ -47,7 +47,8 @@ oauth2GoogleScoped clientId clientSecret scopes = authOAuth2 "google" oauth fetc
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId
         , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://accounts.google.com/o/oauth2/auth?scope=" <> T.intercalate "+" scopes
+        , oauthOAuthorizeEndpoint = encodeUtf8 $
+                                    "https://accounts.google.com/o/oauth2/auth?scope=" <> T.intercalate "+" scopes
         , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
         , oauthCallback = Nothing
         }
