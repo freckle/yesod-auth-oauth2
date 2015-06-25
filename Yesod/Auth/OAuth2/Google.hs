@@ -5,8 +5,12 @@
 -- OAuth2 plugin for http://www.google.com
 --
 -- * Authenticates against Google
--- * Uses Google user id as credentials identifier
+-- * Uses Google user id or email as credentials identifier
 -- * Returns given_name, family_name, email, and avatar_url as extras
+--
+-- Note: This may eventually replace Yesod.Auth.GoogleEmail2. Currently it
+-- provides the same functionality except that GoogleEmail2 returns more profile
+-- information.
 --
 module Yesod.Auth.OAuth2.Google
     ( oauth2Google
@@ -34,12 +38,21 @@ import Yesod.Auth.OAuth2
 
 import qualified Data.Text as T
 
+-- | Auth with Google
+--
+-- Requests @openid@ and @email@ scopes and uses email as the @'Creds'@
+-- identifier.
+--
 oauth2Google :: YesodAuth m
                 => Text -- ^ Client ID
                 -> Text -- ^ Client Secret
                 -> AuthPlugin m
 oauth2Google = oauth2GoogleScoped ["openid", "email"]
 
+-- | Auth with Google
+--
+-- Requests custom scopes and uses email as the @'Creds'@ identifier.
+--
 oauth2GoogleScoped :: YesodAuth m
                       => [Text] -- ^ List of scopes to request
                       -> Text -- ^ Client ID
@@ -47,6 +60,13 @@ oauth2GoogleScoped :: YesodAuth m
                       -> AuthPlugin m
 oauth2GoogleScoped = oauth2GoogleScopedWithCustomId emailUid
 
+-- | Auth with Google
+--
+-- Requests custom scopes and uses the given function to create credentials
+-- which allows for using any attribute as the identifier.
+--
+-- See @'emailUid'@ and @'googleUid'@.
+--
 oauth2GoogleScopedWithCustomId :: YesodAuth m
                                   => (GoogleUser -> AccessToken -> Creds m) -- ^ A function to generate the credentials
                                   -> [Text] -- ^ List of scopes to request
@@ -94,12 +114,12 @@ instance FromJSON GoogleUser where
         <*> o .:? "hd"
 
     parseJSON _ = mzero
-  
 
+-- | Build a @'Creds'@ using the user's google-uid as the identifier
 googleUid :: GoogleUser -> AccessToken -> Creds m
 googleUid = uidBuilder $ ("google-uid:" <>) . googleUserId
 
-
+-- | Build a @'Creds'@ using the user's email as the identifier
 emailUid :: GoogleUser -> AccessToken -> Creds m
 emailUid = uidBuilder googleUserEmail
 
