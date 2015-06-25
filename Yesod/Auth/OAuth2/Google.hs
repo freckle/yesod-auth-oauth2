@@ -44,9 +44,9 @@ import qualified Data.Text as T
 -- identifier.
 --
 oauth2Google :: YesodAuth m
-                => Text -- ^ Client ID
-                -> Text -- ^ Client Secret
-                -> AuthPlugin m
+             => Text -- ^ Client ID
+             -> Text -- ^ Client Secret
+             -> AuthPlugin m
 oauth2Google = oauth2GoogleScoped ["openid", "email"]
 
 -- | Auth with Google
@@ -54,10 +54,10 @@ oauth2Google = oauth2GoogleScoped ["openid", "email"]
 -- Requests custom scopes and uses email as the @'Creds'@ identifier.
 --
 oauth2GoogleScoped :: YesodAuth m
-                      => [Text] -- ^ List of scopes to request
-                      -> Text -- ^ Client ID
-                      -> Text -- ^ Client Secret
-                      -> AuthPlugin m
+                   => [Text] -- ^ List of scopes to request
+                   -> Text -- ^ Client ID
+                   -> Text -- ^ Client Secret
+                   -> AuthPlugin m
 oauth2GoogleScoped = oauth2GoogleScopedWithCustomId emailUid
 
 -- | Auth with Google
@@ -68,23 +68,24 @@ oauth2GoogleScoped = oauth2GoogleScopedWithCustomId emailUid
 -- See @'emailUid'@ and @'googleUid'@.
 --
 oauth2GoogleScopedWithCustomId :: YesodAuth m
-                                  => (GoogleUser -> AccessToken -> Creds m) -- ^ A function to generate the credentials
-                                  -> [Text] -- ^ List of scopes to request
-                                  -> Text -- ^ Client ID
-                                  -> Text -- ^ Client secret
-                                  -> AuthPlugin m
-oauth2GoogleScopedWithCustomId toCreds scopes clientId clientSecret = authOAuth2 "google" oauth $ fetchGoogleProfile toCreds
-    where
-      oauth = OAuth2
-          { oauthClientId = encodeUtf8 clientId
-          , oauthClientSecret = encodeUtf8 clientSecret
-          , oauthOAuthorizeEndpoint = encodeUtf8 $
-                                      "https://accounts.google.com/o/oauth2/auth?scope=" <> T.intercalate "+" scopes
-          , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
-          , oauthCallback = Nothing
-          }
+                               => (GoogleUser -> AccessToken -> Creds m)
+                               -- ^ A function to generate the credentials
+                               -> [Text] -- ^ List of scopes to request
+                               -> Text -- ^ Client ID
+                               -> Text -- ^ Client secret
+                               -> AuthPlugin m
+oauth2GoogleScopedWithCustomId toCreds scopes clientId clientSecret =
+    authOAuth2 "google" oauth $ fetchGoogleProfile toCreds
 
-
+  where
+    oauth = OAuth2
+        { oauthClientId = encodeUtf8 clientId
+        , oauthClientSecret = encodeUtf8 clientSecret
+        , oauthOAuthorizeEndpoint = encodeUtf8
+            $ "https://accounts.google.com/o/oauth2/auth?scope=" <> T.intercalate "+" scopes
+        , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
+        , oauthCallback = Nothing
+        }
 
 fetchGoogleProfile :: (GoogleUser -> AccessToken -> Creds m) -> Manager -> AccessToken -> IO (Creds m)
 fetchGoogleProfile toCreds manager token = do
