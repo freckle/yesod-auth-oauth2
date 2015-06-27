@@ -36,7 +36,8 @@ library
                    , transformers            >= 0.2.2     && < 0.5
                    , hoauth2                 >= 0.4.7     && < 0.5
                    , lifted-base             >= 0.2       && < 0.4
-                   , time                    --dependency of yesod-core. Let cabal choose version.
+                   , time                    
+                   --dependency of yesod-core. Let cabal choose version.
 
     exposed-modules: Yesod.Auth.OAuth2
                      Yesod.Auth.OAuth2.Github
