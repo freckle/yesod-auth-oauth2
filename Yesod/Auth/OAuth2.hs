@@ -11,6 +11,7 @@
 --
 module Yesod.Auth.OAuth2
     ( authOAuth2
+    , authOAuth2Image
     , oauth2Url
     , fromProfileURL
     , YesodOAuth2Exception(..)
@@ -57,9 +58,22 @@ authOAuth2 :: YesodAuth m
            --   second authorized request to @api/me.json@.
            --
            --   See @'fromProfileURL'@ for an example.
-           --
            -> AuthPlugin m
-authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
+authOAuth2 name oauth getCreds = authOAuth2Image name oauth getCreds Nothing
+
+authOAuth2Image :: YesodAuth m
+           => Text   -- ^ Service name
+           -> OAuth2 -- ^ Service details
+           -> (Manager -> AccessToken -> IO (Creds m))
+           -- ^ This function defines how to take an @'AccessToken'@ and
+           --   retrieve additional information about the user, to be
+           --   set in the session as @'Creds'@. Usually this means a
+           --   second authorized request to @api/me.json@.
+           --
+           --   See @'fromProfileURL'@ for an example.
+           -> Maybe Text -- ^ URL to image shown instead of "Login with xxx"-Text
+           -> AuthPlugin m
+authOAuth2Image name oauth getCreds im = AuthPlugin name dispatch login
 
   where
     url = PluginR name ["callback"]
@@ -105,7 +119,11 @@ authOAuth2 name oauth getCreds = AuthPlugin name dispatch login
     tokenSessionKey = "_yesod_oauth2_" <> name
 
     login tm = [whamlet|
-        <a href=@{tm $ oauth2Url name}>Login via #{name}
+        <a href=@{tm $ oauth2Url name}>
+          $maybe image <- im
+            <img src=#{image}>
+          $nothing
+            Login via #{name}
         |]
 
 -- | Handle the common case of fetching Profile information a JSON endpoint
