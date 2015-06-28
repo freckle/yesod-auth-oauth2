@@ -59,7 +59,7 @@ authOAuth2 :: YesodAuth m
            --
            --   See @'fromProfileURL'@ for an example.
            -> AuthPlugin m
-authOAuth2 name oauth getCreds = authOAuth2Widget name oauth getCreds Nothing
+authOAuth2 name oauth getCreds = authOAuth2Widget name oauth getCreds [whamlet|Login via #{name}|]
 
 authOAuth2Widget :: YesodAuth m
                  => Text   -- ^ Service name
@@ -71,7 +71,7 @@ authOAuth2Widget :: YesodAuth m
                  --   second authorized request to @api/me.json@.
                  --
                  --   See @'fromProfileURL'@ for an example.
-                 -> Maybe (WidgetT m IO ()) -- ^ Widget to be shown instead of "Login with xxx"-Text
+                 -> WidgetT m IO () -- ^ Widget to be shown instead of "Login with xxx"-Text
                  -> AuthPlugin m
 authOAuth2Widget name oauth getCreds widget = AuthPlugin name dispatch login
 
@@ -120,10 +120,7 @@ authOAuth2Widget name oauth getCreds widget = AuthPlugin name dispatch login
 
     login tm = [whamlet|
         <a href=@{tm $ oauth2Url name}>
-          $maybe w <- widget
-            ^{w}
-          $nothing
-            Login via #{name}
+          ^{widget}
         |]
 
 -- | Handle the common case of fetching Profile information a JSON endpoint

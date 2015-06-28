@@ -88,7 +88,10 @@ oauth2EveScoped :: YesodAuth m
                 -> [Text] -- ^ List of scopes to request
                 -> Maybe (WidgetT m IO ()) -- ^ Login-Widget
                 -> AuthPlugin m
-oauth2EveScoped clientId clientSecret scopes = authOAuth2Widget "eveonline" oauth fetchEveProfile
+oauth2EveScoped clientId clientSecret scopes widget =
+  case widget of
+    Just w  -> authOAuth2Widget "eveonline" oauth fetchEveProfile w
+    Nothing -> authOAuth2 "eveonline" oauth fetchEveProfile
   where
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId
