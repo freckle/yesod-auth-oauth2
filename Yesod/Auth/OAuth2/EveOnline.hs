@@ -27,7 +27,6 @@ import Data.Monoid ((<>))
 import Data.Text as T (Text,unwords)
 import Data.ByteString as B (ByteString)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
-import Data.Time.Clock (UTCTime)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
