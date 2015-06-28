@@ -1,5 +1,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 -- |
 --
 -- OAuth2 plugin for http://eveonline.com
@@ -10,9 +11,9 @@
 --
 module Yesod.Auth.OAuth2.EveOnline
     ( oauth2Eve
-    , oauth2EveImage
+    , oauth2EveWidget
     , oauth2EveScoped
-    , ImageType(..)
+    , WidgetType(..)
     , module Yesod.Auth.OAuth2
     ) where
 
@@ -30,15 +31,16 @@ import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
+import Yesod.Core.Widget
 
 import qualified Data.Text as T
 
-data ImageType 
+data YesodAuth m => WidgetType m 
     = BigWhite
     | SmallWhite
     | BigBlack
     | SmallBlack
-    | Custom Text
+    | Custom (WidgetT m IO ())
 
 data EveUser = EveUser
     { eveUserId :: Int
@@ -66,27 +68,27 @@ oauth2Eve :: YesodAuth m
           -> AuthPlugin m
 oauth2Eve clientId clientSecret = oauth2EveScoped clientId clientSecret ["publicData"] Nothing
 
-oauth2EveImage :: YesodAuth m
-               => Text -- ^ Client ID
-               -> Text -- ^ Client Secret
-               -> ImageType
-               -> AuthPlugin m
-oauth2EveImage clientId clientSecret im = oauth2EveScoped clientId clientSecret ["publicData"] (Just . toURI $ im)
+oauth2EveWidget :: YesodAuth m
+                => Text -- ^ Client ID
+                -> Text -- ^ Client Secret
+                -> WidgetType m
+                -> AuthPlugin m
+oauth2EveWidget clientId clientSecret w = oauth2EveScoped clientId clientSecret ["publicData"] (Just . toWidget $ w)
   where
-    toURI :: ImageType -> Text
-    toURI BigWhite = "https://images.contentful.com/idjq7aai9ylm/4PTzeiAshqiM8osU2giO0Y/5cc4cb60bac52422da2e45db87b6819c/EVE_SSO_Login_Buttons_Large_White.png?w=270&h=45"
-    toURI BigBlack = "https://images.contentful.com/idjq7aai9ylm/4fSjj56uD6CYwYyus4KmES/4f6385c91e6de56274d99496e6adebab/EVE_SSO_Login_Buttons_Large_Black.png?w=270&h=45"
-    toURI SmallWhite = "https://images.contentful.com/idjq7aai9ylm/18BxKSXCymyqY4QKo8KwKe/c2bdded6118472dd587c8107f24104d7/EVE_SSO_Login_Buttons_Small_White.png?w=195&h=30"
-    toURI SmallBlack = "https://images.contentful.com/idjq7aai9ylm/12vrPsIMBQi28QwCGOAqGk/33234da7672c6b0cdca394fc8e0b1c2b/EVE_SSO_Login_Buttons_Small_Black.png?w=195&h=30"
-    toURI (Custom a) = a
+    toWidget :: YesodAuth m => WidgetType m -> WidgetT m IO ()
+    toWidget BigWhite = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/4PTzeiAshqiM8osU2giO0Y/5cc4cb60bac52422da2e45db87b6819c/EVE_SSO_Login_Buttons_Large_White.png?w=270&h=45">|]
+    toWidget BigBlack = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/4fSjj56uD6CYwYyus4KmES/4f6385c91e6de56274d99496e6adebab/EVE_SSO_Login_Buttons_Large_Black.png?w=270&h=45">|]
+    toWidget SmallWhite = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/18BxKSXCymyqY4QKo8KwKe/c2bdded6118472dd587c8107f24104d7/EVE_SSO_Login_Buttons_Small_White.png?w=195&h=30">|]
+    toWidget SmallBlack = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/12vrPsIMBQi28QwCGOAqGk/33234da7672c6b0cdca394fc8e0b1c2b/EVE_SSO_Login_Buttons_Small_Black.png?w=195&h=30">|]
+    toWidget (Custom a) = a
 
 oauth2EveScoped :: YesodAuth m
                 => Text -- ^ Client ID
                 -> Text -- ^ Client Secret
                 -> [Text] -- ^ List of scopes to request
-                -> Maybe Text -- ^ Login-Image
+                -> Maybe (WidgetT m IO ()) -- ^ Login-Widget
                 -> AuthPlugin m
-oauth2EveScoped clientId clientSecret scopes = authOAuth2Image "eveonline" oauth fetchEveProfile
+oauth2EveScoped clientId clientSecret scopes = authOAuth2Widget "eveonline" oauth fetchEveProfile
   where
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId

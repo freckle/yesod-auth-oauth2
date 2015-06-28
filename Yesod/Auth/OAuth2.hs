@@ -11,7 +11,7 @@
 --
 module Yesod.Auth.OAuth2
     ( authOAuth2
-    , authOAuth2Image
+    , authOAuth2Widget
     , oauth2Url
     , fromProfileURL
     , YesodOAuth2Exception(..)
@@ -59,21 +59,21 @@ authOAuth2 :: YesodAuth m
            --
            --   See @'fromProfileURL'@ for an example.
            -> AuthPlugin m
-authOAuth2 name oauth getCreds = authOAuth2Image name oauth getCreds Nothing
+authOAuth2 name oauth getCreds = authOAuth2Widget name oauth getCreds Nothing
 
-authOAuth2Image :: YesodAuth m
-           => Text   -- ^ Service name
-           -> OAuth2 -- ^ Service details
-           -> (Manager -> AccessToken -> IO (Creds m))
-           -- ^ This function defines how to take an @'AccessToken'@ and
-           --   retrieve additional information about the user, to be
-           --   set in the session as @'Creds'@. Usually this means a
-           --   second authorized request to @api/me.json@.
-           --
-           --   See @'fromProfileURL'@ for an example.
-           -> Maybe Text -- ^ URL to image shown instead of "Login with xxx"-Text
-           -> AuthPlugin m
-authOAuth2Image name oauth getCreds im = AuthPlugin name dispatch login
+authOAuth2Widget :: YesodAuth m
+                 => Text   -- ^ Service name
+                 -> OAuth2 -- ^ Service details
+                 -> (Manager -> AccessToken -> IO (Creds m))
+                 -- ^ This function defines how to take an @'AccessToken'@ and
+                 --   retrieve additional information about the user, to be
+                 --   set in the session as @'Creds'@. Usually this means a
+                 --   second authorized request to @api/me.json@.
+                 --
+                 --   See @'fromProfileURL'@ for an example.
+                 -> Maybe (WidgetT m IO ()) -- ^ Widget to be shown instead of "Login with xxx"-Text
+                 -> AuthPlugin m
+authOAuth2Widget name oauth getCreds widget = AuthPlugin name dispatch login
 
   where
     url = PluginR name ["callback"]
@@ -120,8 +120,8 @@ authOAuth2Image name oauth getCreds im = AuthPlugin name dispatch login
 
     login tm = [whamlet|
         <a href=@{tm $ oauth2Url name}>
-          $maybe image <- im
-            <img src=#{image}>
+          $maybe w <- widget
+            ^{w}
           $nothing
             Login via #{name}
         |]
