@@ -43,6 +43,7 @@ library
                      Yesod.Auth.OAuth2.Spotify
                      Yesod.Auth.OAuth2.Twitter
                      Yesod.Auth.OAuth2.Upcase
+                     Yesod.Auth.OAuth2.EveOnline
 
     ghc-options:     -Wall
 
