@@ -42,20 +42,16 @@ data WidgetType m
     | Custom (WidgetT m IO ())
 
 data EveUser = EveUser
-    { _eveUserId :: Int
-    , eveUserName :: Text
+    { eveUserName :: Text
     , eveUserExpire :: Text
-    , _eveScopes :: [Text]
     , eveTokenType :: Text
     , eveCharOwnerHash :: Text
     }
 
 instance FromJSON EveUser where
     parseJSON (Object o) = EveUser
-        <$> o .: "CharacterID"
-        <*> o .: "CharacterName"
+        <$> o .: "CharacterName"
         <*> o .: "ExpiresOn"
-        <*> (T.words <$> o .: "Scopes")
         <*> o .: "TokenType"
         <*> o .: "CharacterOwnerHash"
 
