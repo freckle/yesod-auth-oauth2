@@ -7,7 +7,7 @@
 --
 -- * Authenticates against eveonline
 -- * Uses EVEs unique account-user-char-hash as credentials identifier
--- * Returns charName, tokenType and expires as extras
+-- * Returns charName, tokenType, accessToken and expires as extras
 --
 module Yesod.Auth.OAuth2.EveOnline
     ( oauth2Eve
@@ -25,7 +25,7 @@ import Control.Monad (mzero)
 import Data.Aeson
 import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
+import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
@@ -100,12 +100,13 @@ fetchEveProfile manager token = do
         Left err-> throwIO $ InvalidProfileResponse "eveonline" err
 
 toCreds :: EveUser -> AccessToken -> Creds m
-toCreds user _ = Creds
+toCreds user token = Creds
     { credsPlugin = "eveonline"
     , credsIdent = T.pack $ show $ eveCharOwnerHash user
     , credsExtra =
         [ ("charName", eveUserName user)
         , ("tokenType", eveTokenType user)
         , ("expires", eveUserExpire user)
+        , ("accessToken", decodeUtf8 . accessToken $ token)
         ]
     }
