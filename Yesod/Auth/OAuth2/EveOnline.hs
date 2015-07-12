@@ -7,7 +7,7 @@
 --
 -- * Authenticates against eveonline
 -- * Uses EVEs unique account-user-char-hash as credentials identifier
--- * Returns charName, tokenType, accessToken and expires as extras
+-- * Returns charName, charId, tokenType, accessToken and expires as extras
 --
 module Yesod.Auth.OAuth2.EveOnline
     ( oauth2Eve
@@ -46,6 +46,7 @@ data EveUser = EveUser
     , eveUserExpire :: Text
     , eveTokenType :: Text
     , eveCharOwnerHash :: Text
+    , eveCharId :: Integer
     }
 
 instance FromJSON EveUser where
@@ -54,6 +55,7 @@ instance FromJSON EveUser where
         <*> o .: "ExpiresOn"
         <*> o .: "TokenType"
         <*> o .: "CharacterOwnerHash"
+        <*> o .: "CharacterID"
 
     parseJSON _ = mzero
 
@@ -105,6 +107,7 @@ toCreds user token = Creds
     , credsIdent = T.pack $ show $ eveCharOwnerHash user
     , credsExtra =
         [ ("charName", eveUserName user)
+        , ("charId", T.pack . show . eveCharId $ user)
         , ("tokenType", eveTokenType user)
         , ("expires", eveUserExpire user)
         , ("accessToken", decodeUtf8 . accessToken $ token)
