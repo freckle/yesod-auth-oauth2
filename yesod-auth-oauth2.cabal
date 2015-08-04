@@ -24,6 +24,7 @@ library
 
     build-depends:   base                    >= 4.5       && < 5
                    , bytestring              >= 0.9.1.4
+                   , http-client             >= 0.4.0     && < 0.5
                    , http-conduit            >= 2.0       && < 3.0
                    , http-types              >= 0.8       && < 0.9
                    , aeson                   >= 0.6       && < 0.9
@@ -36,6 +37,7 @@ library
                    , transformers            >= 0.2.2     && < 0.5
                    , hoauth2                 >= 0.4.7     && < 0.5
                    , lifted-base             >= 0.2       && < 0.4
+                   , vector                  >= 0.10      && < 0.11
 
     exposed-modules: Yesod.Auth.OAuth2
                      Yesod.Auth.OAuth2.Github
@@ -44,6 +46,7 @@ library
                      Yesod.Auth.OAuth2.Twitter
                      Yesod.Auth.OAuth2.Upcase
                      Yesod.Auth.OAuth2.EveOnline
+                     Yesod.Auth.OAuth2.Nylas
 
     ghc-options:     -Wall
 
