@@ -53,15 +53,14 @@ oauth2Nylas :: YesodAuth m
             => Text -- ^ Client ID
             -> Text -- ^ Client Secret
             -> AuthPlugin m
-oauth2Nylas clientId clientSecret =
-    oauth2NylasScoped clientId clientSecret ["email"]
+oauth2Nylas = oauth2NylasScoped ["email"]
 
 oauth2NylasScoped :: YesodAuth m
-                  => Text -- ^ Client ID
-                  -> Text -- ^ Client Secret
-                  -> [Text] -- ^ Scopes
+                  => [Text] -- ^ Scopes
+                  -> Text   -- ^ Client ID
+                  -> Text   -- ^ Client Secret
                   -> AuthPlugin m
-oauth2NylasScoped clientId clientSecret scopes =
+oauth2NylasScoped scopes clientId clientSecret =
     authOAuth2 "nylas" oauth fetchCreds
   where
     authorizeUrl = encodeUtf8
