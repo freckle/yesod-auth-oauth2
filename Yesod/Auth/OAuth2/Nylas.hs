@@ -17,11 +17,13 @@ import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Data.Vector ((!?))
-import Network.HTTP.Client (applyBasicAuth, parseUrl, httpLbs, responseStatus, responseBody)
+import Network.HTTP.Client (applyBasicAuth, parseUrl, httpLbs, responseStatus
+                           , responseBody)
 import Network.HTTP.Conduit (Manager)
-
-import Yesod.Auth
-import Yesod.Auth.OAuth2
+import Yesod.Auth (Creds(..), YesodAuth, AuthPlugin)
+import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..)
+                         , YesodOAuth2Exception(InvalidProfileResponse)
+                         , authOAuth2)
 
 import qualified Data.Text as T
 import qualified Network.HTTP.Types as HT
@@ -51,32 +53,42 @@ oauth2Nylas :: YesodAuth m
             => Text -- ^ Client ID
             -> Text -- ^ Client Secret
             -> AuthPlugin m
-oauth2Nylas clientId clientSecret = oauth2NylasScoped clientId clientSecret ["email"]
+oauth2Nylas clientId clientSecret =
+    oauth2NylasScoped clientId clientSecret ["email"]
 
 oauth2NylasScoped :: YesodAuth m
                   => Text -- ^ Client ID
                   -> Text -- ^ Client Secret
                   -> [Text] -- ^ Scopes
                   -> AuthPlugin m
-oauth2NylasScoped clientId clientSecret scopes = authOAuth2 "nylas" oauth fetchCreds
+oauth2NylasScoped clientId clientSecret scopes =
+    authOAuth2 "nylas" oauth fetchCreds
   where
+    authorizeUrl = encodeUtf8
+                 $ "https://api.nylas.com/oauth/authorize?scope="
+                 <> T.intercalate "," scopes
+    tokenUrl = "https://api.nylas.com/oauth/token"
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId
         , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://api.nylas.com/oauth/authorize?scope=" <> T.intercalate "," scopes
-        , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
+        , oauthOAuthorizeEndpoint = authorizeUrl
+        , oauthAccessTokenEndpoint = tokenUrl
         , oauthCallback = Nothing
         }
 
 fetchCreds :: Manager -> AccessToken -> IO (Creds a)
 fetchCreds manager token = do
-    req <- applyBasicAuth (accessToken token) "" <$> parseUrl "https://api.nylas.com/n"
+    req <- authorize <$> parseUrl "https://api.nylas.com/n"
     resp <- httpLbs req manager
     if HT.statusIsSuccessful (responseStatus resp)
         then case decode (responseBody resp) of
             Just ns -> return $ toCreds ns token
-            Nothing -> throwIO $ InvalidProfileResponse "nylas" "failed to parse namespace"
-        else throwIO $ InvalidProfileResponse "nylas" "failed to get namespace"
+            Nothing -> throwIO parseFailure
+        else throwIO requestFailure
+  where
+    authorize = applyBasicAuth (accessToken token) ""
+    parseFailure = InvalidProfileResponse "nylas" "failed to parse namespace"
+    requestFailure = InvalidProfileResponse "nylas" "failed to get namespace"
 
 toCreds :: NylasNamespace -> AccessToken -> Creds a
 toCreds ns token = Creds
