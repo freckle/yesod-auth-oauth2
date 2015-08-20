@@ -16,7 +16,6 @@ import Data.Aeson (FromJSON, Value(..), parseJSON, decode, (.:))
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
-import Data.Vector ((!?))
 import Network.HTTP.Client (applyBasicAuth, parseUrl, httpLbs, responseStatus
                            , responseBody)
 import Network.HTTP.Conduit (Manager)
@@ -28,25 +27,21 @@ import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..)
 import qualified Data.Text as T
 import qualified Network.HTTP.Types as HT
 
-data NylasNamespace = NylasNamespace
-    { nylasNamespaceId :: Text
-    , nylasNamespaceAccountId :: Text
-    , nylasNamespaceEmailAddress :: Text
-    , nylasNamespaceName :: Text
-    , nylasNamespaceProvider :: Text
-    , nylasNamespaceOrganizationUnit :: Text
+data NylasAccount = NylasAccount
+    { nylasAccountId :: Text
+    , nylasAccountEmailAddress :: Text
+    , nylasAccountName :: Text
+    , nylasAccountProvider :: Text
+    , nylasAccountOrganizationUnit :: Text
     }
 
-instance FromJSON NylasNamespace where
-    parseJSON (Array singleton) = case singleton !? 0 of
-        Just (Object o) -> NylasNamespace
-            <$> o .: "id"
-            <*> o .: "account_id"
-            <*> o .: "email_address"
-            <*> o .: "name"
-            <*> o .: "provider"
-            <*> o .: "organization_unit"
-        _ -> mzero
+instance FromJSON NylasAccount where
+    parseJSON (Object o) = NylasAccount
+        <$> o .: "id"
+        <*> o .: "email_address"
+        <*> o .: "name"
+        <*> o .: "provider"
+        <*> o .: "organization_unit"
     parseJSON _ = mzero
 
 oauth2Nylas :: YesodAuth m
@@ -77,7 +72,7 @@ oauth2NylasScoped scopes clientId clientSecret =
 
 fetchCreds :: Manager -> AccessToken -> IO (Creds a)
 fetchCreds manager token = do
-    req <- authorize <$> parseUrl "https://api.nylas.com/n"
+    req <- authorize <$> parseUrl "https://api.nylas.com/account"
     resp <- httpLbs req manager
     if HT.statusIsSuccessful (responseStatus resp)
         then case decode (responseBody resp) of
@@ -86,19 +81,18 @@ fetchCreds manager token = do
         else throwIO requestFailure
   where
     authorize = applyBasicAuth (accessToken token) ""
-    parseFailure = InvalidProfileResponse "nylas" "failed to parse namespace"
-    requestFailure = InvalidProfileResponse "nylas" "failed to get namespace"
+    parseFailure = InvalidProfileResponse "nylas" "failed to parse account"
+    requestFailure = InvalidProfileResponse "nylas" "failed to get account"
 
-toCreds :: NylasNamespace -> AccessToken -> Creds a
+toCreds :: NylasAccount -> AccessToken -> Creds a
 toCreds ns token = Creds
     { credsPlugin = "nylas"
-    , credsIdent = nylasNamespaceId ns
+    , credsIdent = nylasAccountId ns
     , credsExtra =
-        [ ("account_id", nylasNamespaceAccountId ns)
-        , ("email_address", nylasNamespaceEmailAddress ns)
-        , ("name", nylasNamespaceName ns)
-        , ("provider", nylasNamespaceProvider ns)
-        , ("organization_unit", nylasNamespaceOrganizationUnit ns)
+        [ ("email_address", nylasAccountEmailAddress ns)
+        , ("name", nylasAccountName ns)
+        , ("provider", nylasAccountProvider ns)
+        , ("organization_unit", nylasAccountOrganizationUnit ns)
         , ("access_token", decodeUtf8 $ accessToken token)
         ]
     }
