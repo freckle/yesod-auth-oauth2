@@ -102,15 +102,18 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         deleteSession tokenSessionKey
         case newToken of
             Just csrfToken | newToken == oldToken -> do
-                code <- lift $ runInputGet $ ireq textField "code"
-                oauth' <- withCallback csrfToken
-                master <- lift getYesod
-                result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
-                case result of
-                    Left _ -> permissionDenied "Unable to retreive OAuth2 token"
-                    Right token -> do
-                        creds <- liftIO $ getCreds (authHttpManager master) token
-                        lift $ setCredsRedirect creds
+                mcode <- lift $ runInputGet $ iopt textField "code"
+                case mcode of
+                     Nothing -> permissionDenied "`Code` field not provided."
+                     Just code -> do
+                        oauth' <- withCallback csrfToken
+                        master <- lift getYesod
+                        result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
+                        case result of
+                            Left _ -> permissionDenied "Unable to retreive OAuth2 token"
+                            Right token -> do
+                                creds <- liftIO $ getCreds (authHttpManager master) token
+                                lift $ setCredsRedirect creds
             _ ->
                 permissionDenied "Invalid OAuth2 state token"
 

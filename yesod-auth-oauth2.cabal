@@ -1,5 +1,5 @@
 name:            yesod-auth-oauth2
-version:         0.1.4
+version:         0.1.5
 license:         BSD3
 license-file:    LICENSE
 author:          Tom Streller
@@ -52,4 +52,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/thoughtbot/authenticate-oauth2.git
+  location: https://github.com/thoughtbot/yesod-auth-oauth2.git
