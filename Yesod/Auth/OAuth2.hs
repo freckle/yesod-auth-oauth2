@@ -38,6 +38,7 @@ import Yesod.Core
 import Yesod.Form
 
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Char8 as C8
 
 -- | Provider name and Aeson parse error
 data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
@@ -87,7 +88,7 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         return oauth
             { oauthCallback = Just $ encodeUtf8 $ render $ tm url
             , oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth
-                <> "&state=" <> encodeUtf8 csrfToken
+                `appendQuery` "state=" <> encodeUtf8 csrfToken
             }
 
     dispatch "GET" ["forward"] = do
@@ -141,3 +142,9 @@ fromProfileURL name url toCreds manager token = do
 
 bsToText :: ByteString -> Text
 bsToText = decodeUtf8With lenientDecode
+
+appendQuery :: ByteString -> ByteString -> ByteString
+appendQuery url query =
+    if '?' `C8.elem` url
+        then url <> "&" <> query
+        else url <> "?" <> query
