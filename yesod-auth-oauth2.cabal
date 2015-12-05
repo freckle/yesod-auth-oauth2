@@ -8,7 +8,7 @@ synopsis:        OAuth 2.0 authentication plugins
 description:     Library to authenticate with OAuth 2.0 for Yesod web applications.
 category:        Web
 stability:       Experimental
-cabal-version:   >= 1.6
+cabal-version:   >= 1.8
 build-type:      Simple
 homepage:        http://github.com/thoughtbot/yesod-auth-oauth2
 

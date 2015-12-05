@@ -1,0 +1,6 @@
+flags:
+  yesod-auth-oauth2:
+    network-uri: true
+packages:
+- '.'
+resolver: lts-3.5
