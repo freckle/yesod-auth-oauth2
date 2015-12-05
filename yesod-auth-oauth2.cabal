@@ -52,4 +52,4 @@ library
 
 source-repository head
   type:     git
-  location: https://github.com/thoughtbot/authenticate-oauth2.git
+  location: https://github.com/thoughtbot/yesod-auth-oauth2.git

@@ -24,6 +24,7 @@ import Control.Applicative ((<$>))
 
 import Control.Exception.Lifted
 import Control.Monad.IO.Class
+import Control.Monad (unless)
 import Data.ByteString (ByteString)
 import Data.Monoid ((<>))
 import Data.Text (Text, pack)
@@ -35,7 +36,6 @@ import Network.OAuth.OAuth2
 import System.Random
 import Yesod.Auth
 import Yesod.Core
-import Yesod.Form
 
 import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Char8 as C8
@@ -98,22 +98,23 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         lift $ redirect authUrl
 
     dispatch "GET" ["callback"] = do
-        newToken <- lookupGetParam "state"
+        csrfToken <- requireGetParam "state"
         oldToken <- lookupSession tokenSessionKey
         deleteSession tokenSessionKey
-        case newToken of
-            Just csrfToken | newToken == oldToken -> do
-                code <- lift $ runInputGet $ ireq textField "code"
-                oauth' <- withCallback csrfToken
-                master <- lift getYesod
-                result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
-                case result of
-                    Left _ -> permissionDenied "Unable to retreive OAuth2 token"
-                    Right token -> do
-                        creds <- liftIO $ getCreds (authHttpManager master) token
-                        lift $ setCredsRedirect creds
-            _ ->
-                permissionDenied "Invalid OAuth2 state token"
+        unless (oldToken == (Just csrfToken)) $ permissionDenied "Invalid OAuth2 state token"
+        code <- requireGetParam "code"
+        oauth' <- withCallback csrfToken
+        master <- lift getYesod
+        result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
+        case result of
+            Left _ -> permissionDenied "Unable to retreive OAuth2 token"
+            Right token -> do
+                creds <- liftIO $ getCreds (authHttpManager master) token
+                lift $ setCredsRedirect creds
+          where
+              requireGetParam key = do
+                  m <- lookupGetParam key
+                  maybe (permissionDenied $ "'" <> key <> "' parameter not provided") return m
 
     dispatch _ _ = notFound
 
