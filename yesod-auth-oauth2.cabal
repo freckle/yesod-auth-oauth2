@@ -58,6 +58,9 @@ test-suite test
   build-depends:   base
                  , yesod-auth-oauth2
                  , hspec
+                 , text
+                 , yesod
+                 , yesod-auth
 
 source-repository head
   type:     git
