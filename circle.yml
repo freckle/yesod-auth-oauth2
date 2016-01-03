@@ -1,0 +1,14 @@
+dependencies:
+  cache_directories:
+    - "~/.stack"
+  pre:
+    - wget https://github.com/commercialhaskell/stack/releases/download/v0.1.6.0/stack-0.1.6.0-linux-x86_64.tar.gz -O /tmp/stack.tar.gz
+    - tar xvzOf /tmp/stack.tar.gz stack-0.1.6.0-linux-x86_64/stack > /tmp/stack
+    - chmod +x /tmp/stack && sudo mv /tmp/stack /usr/bin/stack
+  override:
+    - stack setup
+    - stack build
+
+test:
+  override:
+    - stack test
