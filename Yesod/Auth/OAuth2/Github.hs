@@ -21,6 +21,8 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
+import Data.Maybe (fromMaybe)
+import Data.List (find)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
@@ -49,12 +51,14 @@ instance FromJSON GithubUser where
     parseJSON _ = mzero
 
 data GithubUserEmail = GithubUserEmail
-    { githubUserEmail :: Text
+    { githubUserEmailAddress :: Text
+    , githubUserEmailPrimary :: Bool
     }
 
 instance FromJSON GithubUserEmail where
     parseJSON (Object o) = GithubUserEmail
         <$> o .: "email"
+        <*> o .: "primary"
 
     parseJSON _ = mzero
 
@@ -91,11 +95,11 @@ fetchGithubProfile manager token = do
         (_, Left err) -> throwIO $ InvalidProfileResponse "github" err
 
 toCreds :: GithubUser -> [GithubUserEmail] -> AccessToken -> Creds m
-toCreds user userMail token = Creds
+toCreds user userMails token = Creds
     { credsPlugin = "github"
     , credsIdent = T.pack $ show $ githubUserId user
     , credsExtra =
-        [ ("email", githubUserEmail $ head userMail)
+        [ ("email", githubUserEmailAddress email)
         , ("login", githubUserLogin user)
         , ("avatar_url", githubUserAvatarUrl user)
         , ("location", githubUserLocation user)
@@ -104,5 +108,6 @@ toCreds user userMail token = Creds
     }
 
   where
+    email = fromMaybe (head userMails) $ find githubUserEmailPrimary userMails
     maybeName Nothing = []
     maybeName (Just name) = [("name", name)]
