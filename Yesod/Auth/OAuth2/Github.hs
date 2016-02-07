@@ -38,6 +38,7 @@ data GithubUser = GithubUser
     , githubUserLogin :: Text
     , githubUserAvatarUrl :: Text
     , githubUserLocation :: Text
+    , githubUserPublicEmail :: Maybe Text
     }
 
 instance FromJSON GithubUser where
@@ -47,6 +48,7 @@ instance FromJSON GithubUser where
         <*> o .: "login"
         <*> o .: "avatar_url"
         <*> o .: "location"
+        <*> o .: "email"
 
     parseJSON _ = mzero
 
@@ -104,10 +106,16 @@ toCreds user userMails token = Creds
         , ("avatar_url", githubUserAvatarUrl user)
         , ("location", githubUserLocation user)
         , ("access_token", decodeUtf8 $ accessToken token)
-        ] ++ maybeName (githubUserName user)
+        ]
+        ++ maybeName (githubUserName user)
+        ++ maybePublicEmail (githubUserPublicEmail user)
     }
 
   where
     email = fromMaybe (head userMails) $ find githubUserEmailPrimary userMails
+
     maybeName Nothing = []
     maybeName (Just name) = [("name", name)]
+
+    maybePublicEmail Nothing = []
+    maybePublicEmail (Just e) = [("public_email", e)]
