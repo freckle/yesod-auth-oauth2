@@ -4,3 +4,5 @@ flags:
 packages:
 - '.'
 resolver: lts-3.5
+extra-deps:
+- load-env-0.1.1

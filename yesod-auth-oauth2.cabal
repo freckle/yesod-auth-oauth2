@@ -16,6 +16,10 @@ flag network-uri
    description: Get Network.URI from the network-uri package
    default: True
 
+flag example
+  description: Build the example application
+  default: False
+
 library
     if flag(network-uri)
         build-depends: network-uri >= 2.6
@@ -48,6 +52,25 @@ library
                      Yesod.Auth.OAuth2.Nylas
 
     ghc-options:     -Wall
+
+executable yesod-auth-oauth2-example
+  if flag(example)
+    buildable: True
+  else
+    buildable: False
+
+  hs-source-dirs:      example
+  main-is:             main.hs
+  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+  build-depends:       base
+                     , containers
+                     , http-conduit
+                     , load-env
+                     , text
+                     , warp
+                     , yesod
+                     , yesod-auth
+                     , yesod-auth-oauth2
 
 test-suite test
   type:              exitcode-stdio-1.0

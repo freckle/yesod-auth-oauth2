@@ -1,7 +1,8 @@
 *.swp
-dist/
-cabal-dev/
 .cabal-sandbox
-cabal.sandbox.config
-tags
+.env*
 .stack-work
+cabal-dev/
+cabal.sandbox.config
+dist/
+tags
