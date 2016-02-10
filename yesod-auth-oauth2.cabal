@@ -1,5 +1,5 @@
 name:            yesod-auth-oauth2
-version:         0.1.6
+version:         0.1.7
 license:         BSD3
 license-file:    LICENSE
 author:          Tom Streller
