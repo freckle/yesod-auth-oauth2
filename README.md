@@ -22,6 +22,28 @@ clientSecret :: Text
 clientSecret = "..."
 ```
 
+Some plugins, such as GitHub and Slack, have scoped functions for requesting
+additional information:
+
+```haskell
+import Yesod.Auth
+import Yesod.Auth.OAuth2.Slack
+
+instance YesodAuth App where
+    -- ...
+
+    authPlugins _ =
+        [oauth2SlackScoped clientId clientSecret slackScopes]
+      where
+        slackScopes = [SlackEmailScope, SlackAvatarScope, ScopeSlackTeamScope]
+
+clientId :: Text
+clientId = "..."
+
+clientSecret :: Text
+clientSecret = "..."
+```
+
 ## Advanced Usage
 
 To use any other provider:

@@ -50,6 +50,7 @@ library
                      Yesod.Auth.OAuth2.Upcase
                      Yesod.Auth.OAuth2.EveOnline
                      Yesod.Auth.OAuth2.Nylas
+                     Yesod.Auth.OAuth2.Slack
 
     ghc-options:     -Wall
 
