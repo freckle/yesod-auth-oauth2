@@ -33,8 +33,8 @@ data SpotifyUserImage = SpotifyUserImage
 
 instance FromJSON SpotifyUserImage where
     parseJSON (Object v) = SpotifyUserImage
-        <$> v .: "height"
-        <*> v .: "width"
+        <$> v .:? "height"
+        <*> v .:? "width"
         <*> v .: "url"
 
     parseJSON _ = mzero
