@@ -37,7 +37,7 @@ data GithubUser = GithubUser
     , githubUserName :: Maybe Text
     , githubUserLogin :: Text
     , githubUserAvatarUrl :: Text
-    , githubUserLocation :: Text
+    , githubUserLocation :: Maybe Text
     , githubUserPublicEmail :: Maybe Text
     }
 
@@ -47,8 +47,8 @@ instance FromJSON GithubUser where
         <*> o .:? "name"
         <*> o .: "login"
         <*> o .: "avatar_url"
-        <*> o .: "location"
-        <*> o .: "email"
+        <*> o .:? "location"
+        <*> o .:? "email"
 
     parseJSON _ = mzero
 
@@ -104,11 +104,11 @@ toCreds user userMails token = Creds
         [ ("email", githubUserEmailAddress email)
         , ("login", githubUserLogin user)
         , ("avatar_url", githubUserAvatarUrl user)
-        , ("location", githubUserLocation user)
         , ("access_token", decodeUtf8 $ accessToken token)
         ]
         ++ maybeName (githubUserName user)
         ++ maybePublicEmail (githubUserPublicEmail user)
+        ++ maybeLocation (githubUserLocation user)
     }
 
   where
@@ -119,3 +119,6 @@ toCreds user userMails token = Creds
 
     maybePublicEmail Nothing = []
     maybePublicEmail (Just e) = [("public_email", e)]
+
+    maybeLocation Nothing = []
+    maybeLocation (Just location) = [("location", location)]
