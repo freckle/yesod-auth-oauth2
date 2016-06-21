@@ -106,19 +106,10 @@ toCreds user userMails token = Creds
         , ("avatar_url", githubUserAvatarUrl user)
         , ("access_token", decodeUtf8 $ accessToken token)
         ]
-        ++ maybeName (githubUserName user)
-        ++ maybePublicEmail (githubUserPublicEmail user)
-        ++ maybeLocation (githubUserLocation user)
+        ++ maybeExtra "name" (githubUserName user)
+        ++ maybeExtra "email" (githubUserPublicEmail user)
+        ++ maybeExtra "location" (githubUserLocation user)
     }
 
   where
     email = fromMaybe (head userMails) $ find githubUserEmailPrimary userMails
-
-    maybeName Nothing = []
-    maybeName (Just name) = [("name", name)]
-
-    maybePublicEmail Nothing = []
-    maybePublicEmail (Just e) = [("public_email", e)]
-
-    maybeLocation Nothing = []
-    maybeLocation (Just location) = [("location", location)]

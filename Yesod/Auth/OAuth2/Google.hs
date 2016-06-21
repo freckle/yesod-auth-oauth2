@@ -29,7 +29,6 @@ import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Monoid ((<>))
-import Data.Maybe (maybeToList)
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
@@ -135,8 +134,6 @@ uidBuilder f user token = Creds
         , ("family_name", googleUserFamilyName user)
         , ("avatar_url", googleUserPicture user)
         , ("access_token", decodeUtf8 $ accessToken token)
-        ] ++ maybeHostedDomain
+        ]
+        ++ maybeExtra "hosted_domain" (googleUserHostedDomain user)
     }
-
-  where
-    maybeHostedDomain = maybeToList $ (,) "hosted_domain" <$> googleUserHostedDomain user

@@ -15,6 +15,7 @@ module Yesod.Auth.OAuth2
     , oauth2Url
     , fromProfileURL
     , YesodOAuth2Exception(..)
+    , maybeExtra
     , module Network.OAuth.OAuth2
     ) where
 
@@ -149,3 +150,9 @@ appendQuery url query =
     if '?' `C8.elem` url
         then url <> "&" <> query
         else url <> "?" <> query
+
+-- | A helper for providing an optional value to credsExtra
+--
+maybeExtra :: Text -> Maybe Text -> [(Text, Text)]
+maybeExtra k (Just v) = [(k, v)]
+maybeExtra _ Nothing  = []
