@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
---
+-- |
 -- OAuth2 plugin for https://slack.com/
 --
 -- * Authenticates against slack
