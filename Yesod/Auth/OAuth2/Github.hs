@@ -107,7 +107,7 @@ toCreds user userMails token = Creds
         , ("access_token", decodeUtf8 $ accessToken token)
         ]
         ++ maybeExtra "name" (githubUserName user)
-        ++ maybeExtra "email" (githubUserPublicEmail user)
+        ++ maybeExtra "public_email" (githubUserPublicEmail user)
         ++ maybeExtra "location" (githubUserLocation user)
     }
 
