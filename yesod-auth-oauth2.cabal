@@ -51,6 +51,7 @@ library
                      Yesod.Auth.OAuth2.EveOnline
                      Yesod.Auth.OAuth2.Nylas
                      Yesod.Auth.OAuth2.Slack
+                     Yesod.Auth.OAuth2.Salesforce
 
     ghc-options:     -Wall
 
