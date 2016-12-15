@@ -53,6 +53,7 @@ library
                      Yesod.Auth.OAuth2.Slack
                      Yesod.Auth.OAuth2.Salesforce
                      Yesod.Auth.OAuth2.Bitbucket
+                     Yesod.Auth.OAuth2.BattleNet
 
     ghc-options:     -Wall
 
