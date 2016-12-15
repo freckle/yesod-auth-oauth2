@@ -75,7 +75,7 @@ oauth2GithubScoped :: YesodAuth m
              -> Text -- ^ Client Secret
              -> [Text] -- ^ List of scopes to request
              -> AuthPlugin m
-oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "github" oauth fetchGithubProfile
+oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "GitHub" oauth fetchGithubProfile
   where
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId
