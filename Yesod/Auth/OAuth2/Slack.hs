@@ -7,7 +7,7 @@
 -- * Returns name, access_token, email, avatar, team_id, and team_name as extras
 --
 module Yesod.Auth.OAuth2.Slack
-    ( SlackScope(..)
+    ( defaultSlackIdentityScopes
     , oauth2Slack
     , oauth2SlackScoped
     ) where
@@ -26,10 +26,12 @@ import Network.HTTP.Conduit (Manager)
 import qualified Data.Text as Text
 import qualified Network.HTTP.Conduit as HTTP
 
-data SlackScope
-    = SlackEmailScope
-    | SlackTeamScope
-    | SlackAvatarScope
+defaultSlackIdentityScopes :: [Text]
+defaultSlackIdentityScopes =
+    [ "identity.email"
+    , "identity.team"
+    , "identity.avatar"
+    ]
 
 data SlackUser = SlackUser
     { slackUserId :: Text
@@ -80,7 +82,7 @@ oauth2Slack clientId clientSecret = oauth2SlackScoped clientId clientSecret []
 oauth2SlackScoped :: YesodAuth m
              => Text -- ^ Client ID
              -> Text -- ^ Client Secret
-             -> [SlackScope]
+             -> [Text]
              -> AuthPlugin m
 oauth2SlackScoped clientId clientSecret scopes =
     authOAuth2 "slack" oauth fetchSlackProfile
@@ -95,12 +97,7 @@ oauth2SlackScoped clientId clientSecret scopes =
         , oauthAccessTokenEndpoint = "https://slack.com/api/oauth.access"
         , oauthCallback = Nothing
         }
-    scopeTexts = "identity.basic":map scopeText scopes
-
-scopeText :: SlackScope -> Text
-scopeText SlackEmailScope = "identity.email"
-scopeText SlackTeamScope = "identity.team"
-scopeText SlackAvatarScope = "identity.avatar"
+    scopeTexts = "identity.basic":scopes
 
 fetchSlackProfile :: Manager -> AccessToken -> IO (Creds m)
 fetchSlackProfile manager token = do
