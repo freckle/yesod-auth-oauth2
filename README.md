@@ -35,7 +35,7 @@ instance YesodAuth App where
     authPlugins _ =
         [oauth2SlackScoped clientId clientSecret slackScopes]
       where
-        slackScopes = [SlackEmailScope, SlackAvatarScope, ScopeSlackTeamScope]
+        slackScopes = [SlackEmailScope, SlackAvatarScope, SlackTeamScope]
 
 clientId :: Text
 clientId = "..."
