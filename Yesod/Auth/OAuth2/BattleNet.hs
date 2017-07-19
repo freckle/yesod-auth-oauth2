@@ -78,5 +78,3 @@ makeCredentials region manager token = do
                  case r of
                    "cn" -> "api.battlenet.com.cn"
                    _    -> E.encodeUtf8 r <> ".api.battle.net"
-
-
