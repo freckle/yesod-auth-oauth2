@@ -41,7 +41,7 @@ instance FromJSON UpcaseUser where
 
     parseJSON _ = mzero
 
-data UpcaseResponse = UpcaseResponse UpcaseUser
+newtype UpcaseResponse = UpcaseResponse UpcaseUser
 
 instance FromJSON UpcaseResponse where
     parseJSON (Object o) = UpcaseResponse

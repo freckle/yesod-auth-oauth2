@@ -50,7 +50,7 @@ instance FromJSON BitbucketUser where
 
     parseJSON _ = mzero
 
-data BitbucketUserLinks = BitbucketUserLinks
+newtype BitbucketUserLinks = BitbucketUserLinks
     { bitbucketAvatarLink :: BitbucketLink
     }
 
@@ -60,24 +60,24 @@ instance FromJSON BitbucketUserLinks where
 
     parseJSON _ = mzero
 
-data BitbucketLink = BitbucketLink
+newtype BitbucketLink = BitbucketLink
     { bitbucketLinkHref :: Text
     }
 
 instance FromJSON BitbucketLink where
     parseJSON (Object o) = BitbucketLink
         <$> o .: "href"
-  
+
     parseJSON _ = mzero
 
-data BitbucketEmailSearchResults = BitbucketEmailSearchResults
+newtype BitbucketEmailSearchResults = BitbucketEmailSearchResults
     { bitbucketEmails :: [BitbucketUserEmail]
     }
 
 instance FromJSON BitbucketEmailSearchResults where
     parseJSON (Object o) = BitbucketEmailSearchResults
         <$> o .: "values"
-  
+
     parseJSON _ = mzero
 
 data BitbucketUserEmail = BitbucketUserEmail
