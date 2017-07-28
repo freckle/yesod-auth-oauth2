@@ -16,13 +16,13 @@ import Data.Aeson (FromJSON, Value(..), parseJSON, decode, (.:))
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8)
-import Network.HTTP.Client (applyBasicAuth, parseUrl, httpLbs, responseStatus
-                           , responseBody)
+import Network.HTTP.Client (applyBasicAuth, httpLbs, parseRequest, responseBody,
+                            responseStatus)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth (Creds(..), YesodAuth, AuthPlugin)
-import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..)
-                         , YesodOAuth2Exception(InvalidProfileResponse)
-                         , authOAuth2)
+import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..),
+                          YesodOAuth2Exception(InvalidProfileResponse),
+                          authOAuth2)
 import qualified Network.HTTP.Types as HT
 
 data NylasAccount = NylasAccount
@@ -61,7 +61,7 @@ oauth2Nylas clientId clientSecret = authOAuth2 "nylas" oauth fetchCreds
 
 fetchCreds :: Manager -> AccessToken -> IO (Creds a)
 fetchCreds manager token = do
-    req <- authorize <$> parseUrl "https://api.nylas.com/account"
+    req <- authorize <$> parseRequest "https://api.nylas.com/account"
     resp <- httpLbs req manager
     if HT.statusIsSuccessful (responseStatus resp)
         then case decode (responseBody resp) of
