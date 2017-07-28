@@ -23,8 +23,6 @@ import Yesod.Auth (Creds(..), YesodAuth, AuthPlugin)
 import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..)
                          , YesodOAuth2Exception(InvalidProfileResponse)
                          , authOAuth2)
-
-import qualified Data.Text as T
 import qualified Network.HTTP.Types as HT
 
 data NylasAccount = NylasAccount
@@ -48,25 +46,16 @@ oauth2Nylas :: YesodAuth m
             => Text -- ^ Client ID
             -> Text -- ^ Client Secret
             -> AuthPlugin m
-oauth2Nylas = oauth2NylasScoped ["email"]
-
-oauth2NylasScoped :: YesodAuth m
-                  => [Text] -- ^ Scopes
-                  -> Text   -- ^ Client ID
-                  -> Text   -- ^ Client Secret
-                  -> AuthPlugin m
-oauth2NylasScoped scopes clientId clientSecret =
-    authOAuth2 "nylas" oauth fetchCreds
+oauth2Nylas clientId clientSecret = authOAuth2 "nylas" oauth fetchCreds
   where
-    authorizeUrl = encodeUtf8
-                 $ "https://api.nylas.com/oauth/authorize?scope="
-                 <> T.intercalate "," scopes
-    tokenUrl = "https://api.nylas.com/oauth/token"
+    authorizeUrl = encodeUtf8 $ "https://api.nylas.com/oauth/authorize" <>
+        "?response_type=code&scope=email&client_id=" <> clientId
+
     oauth = OAuth2
         { oauthClientId = encodeUtf8 clientId
         , oauthClientSecret = encodeUtf8 clientSecret
         , oauthOAuthorizeEndpoint = authorizeUrl
-        , oauthAccessTokenEndpoint = tokenUrl
+        , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
         , oauthCallback = Nothing
         }
 
