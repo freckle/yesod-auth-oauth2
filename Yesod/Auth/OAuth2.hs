@@ -108,7 +108,7 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         master <- lift getYesod
         result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
         case result of
-            Left _ -> permissionDenied "Unable to retreive OAuth2 token"
+            Left _ -> permissionDenied "Unable to retrieve OAuth2 token"
             Right token -> do
                 creds <- liftIO $ getCreds (authHttpManager master) token
                 lift $ setCredsRedirect creds
