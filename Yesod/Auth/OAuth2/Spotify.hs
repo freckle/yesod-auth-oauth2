@@ -15,14 +15,12 @@ import Control.Applicative ((<$>), (<*>), pure)
 
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.ByteString (ByteString)
 import Data.Maybe
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
 
-import qualified Data.ByteString as B
 import qualified Data.Text as T
 
 data SpotifyUserImage = SpotifyUserImage
@@ -66,13 +64,15 @@ instance FromJSON SpotifyUser where
 oauth2Spotify :: YesodAuth m
               => Text -- ^ Client ID
               -> Text -- ^ Client Secret
-              -> [ByteString] -- ^ Scopes
+              -> [Text] -- ^ Scopes
               -> AuthPlugin m
 oauth2Spotify clientId clientSecret scope = authOAuth2 "spotify"
     OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = B.append "https://accounts.spotify.com/authorize?scope=" (B.intercalate "%20" scope)
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://accounts.spotify.com/authorize" `withQuery`
+            [ ("scope", encodeUtf8 $ T.intercalate " " scope)
+            ]
         , oauthAccessTokenEndpoint = "https://accounts.spotify.com/api/token"
         , oauthCallback = Nothing
         }

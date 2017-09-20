@@ -23,12 +23,10 @@ import Control.Monad (mzero)
 import Data.Aeson (FromJSON, Value(Object), parseJSON, (.:), (.:?))
 import Data.Maybe (fromMaybe)
 import Data.List (find)
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth (YesodAuth, Creds(..), AuthPlugin)
-import Yesod.Auth.OAuth2 (AccessToken, YesodOAuth2Exception(InvalidProfileResponse), OAuth2(..), authOAuth2, maybeExtra, accessToken, authGetJSON)
+import Yesod.Auth.OAuth2
 
 import qualified Data.Text as T
 
@@ -106,24 +104,26 @@ oauth2BitbucketScoped :: YesodAuth m
 oauth2BitbucketScoped clientId clientSecret scopes = authOAuth2 "bitbucket" oauth fetchBitbucketProfile
   where
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://bitbucket.com/site/oauth2/authorize?scope=" <> T.intercalate "," scopes
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://bitbucket.com/site/oauth2/authorize" `withQuery`
+            [ scopeParam "," scopes
+            ]
         , oauthAccessTokenEndpoint = "https://bitbucket.com/site/oauth2/access_token"
         , oauthCallback = Nothing
         }
 
-fetchBitbucketProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchBitbucketProfile :: Manager -> OAuth2Token -> IO (Creds m)
 fetchBitbucketProfile manager token = do
-    userResult <- authGetJSON manager token "https://api.bitbucket.com/2.0/user"
-    mailResult <- authGetJSON manager token "https://api.bitbucket.com/2.0/user/emails"
+    userResult <- authGetJSON manager (accessToken token) "https://api.bitbucket.com/2.0/user"
+    mailResult <- authGetJSON manager (accessToken token) "https://api.bitbucket.com/2.0/user/emails"
 
     case (userResult, mailResult) of
         (Right user, Right mails) -> return $ toCreds user (bitbucketEmails mails) token
-        (Left err, _) -> throwIO $ InvalidProfileResponse "bitbucket" err
-        (_, Left err) -> throwIO $ InvalidProfileResponse "bitbucket" err
+        (Left err, _) -> throwIO $ invalidProfileResponse "bitbucket" err
+        (_, Left err) -> throwIO $ invalidProfileResponse "bitbucket" err
 
-toCreds :: BitbucketUser -> [BitbucketUserEmail] -> AccessToken -> Creds m
+toCreds :: BitbucketUser -> [BitbucketUserEmail] -> OAuth2Token -> Creds m
 toCreds user userMails token = Creds
     { credsPlugin = "bitbucket"
     , credsIdent = T.pack $ show $ bitbucketUserId user
@@ -131,7 +131,7 @@ toCreds user userMails token = Creds
         [ ("email", bitbucketUserEmailAddress email)
         , ("login", bitbucketUserLogin user)
         , ("avatar_url", bitbucketLinkHref (bitbucketAvatarLink (bitbucketUserLinks user)))
-        , ("access_token", decodeUtf8 $ accessToken token)
+        , ("access_token", atoken $ accessToken token)
         ]
         ++ maybeExtra "name" (bitbucketUserName user)
         ++ maybeExtra "location" (bitbucketUserLocation user)

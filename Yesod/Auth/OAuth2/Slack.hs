@@ -18,12 +18,10 @@ import Yesod.Auth.OAuth2
 
 import Control.Exception.Lifted (throwIO)
 import Data.Maybe (catMaybes)
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (decodeUtf8, encodeUtf8)
+import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 
-import qualified Data.Text as Text
 import qualified Network.HTTP.Conduit as HTTP
 
 data SlackScope
@@ -86,39 +84,37 @@ oauth2SlackScoped clientId clientSecret scopes =
     authOAuth2 "slack" oauth fetchSlackProfile
   where
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint =
-            encodeUtf8
-            $ "https://slack.com/oauth/authorize?scope="
-            <> Text.intercalate "," scopeTexts
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://slack.com/oauth/authorize" `withQuery`
+            [ scopeParam "," $ "identity.basic" : map scopeText scopes
+            ]
         , oauthAccessTokenEndpoint = "https://slack.com/api/oauth.access"
         , oauthCallback = Nothing
         }
-    scopeTexts = "identity.basic":map scopeText scopes
 
 scopeText :: SlackScope -> Text
 scopeText SlackEmailScope = "identity.email"
 scopeText SlackTeamScope = "identity.team"
 scopeText SlackAvatarScope = "identity.avatar"
 
-fetchSlackProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchSlackProfile :: Manager -> OAuth2Token -> IO (Creds m)
 fetchSlackProfile manager token = do
     request
-        <- HTTP.setQueryString [("token", Just $ accessToken token)]
-        <$> HTTP.parseUrl "https://slack.com/api/users.identity"
+        <- HTTP.setQueryString [("token", Just $ encodeUtf8 $ atoken $ accessToken token)]
+        <$> HTTP.parseUrlThrow "https://slack.com/api/users.identity"
     body <- HTTP.responseBody <$> HTTP.httpLbs request manager
     case eitherDecode body of
         Left _ -> throwIO $ InvalidProfileResponse "slack" body
         Right u -> return $ toCreds u token
 
-toCreds :: SlackUser -> AccessToken -> Creds m
+toCreds :: SlackUser -> OAuth2Token -> Creds m
 toCreds user token = Creds
     { credsPlugin = "slack"
     , credsIdent = slackUserId user
     , credsExtra = catMaybes
         [ Just ("name", slackUserName user)
-        , Just ("access_token", decodeUtf8 $ accessToken token)
+        , Just ("access_token", atoken $ accessToken token)
         , (,) <$> pure "email" <*> slackUserEmail user
         , (,) <$> pure "avatar" <*> slackUserAvatarUrl user
         , (,) <$> pure "team_name" <*> (slackTeamName <$> slackUserTeam user)

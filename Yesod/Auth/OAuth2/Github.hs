@@ -23,9 +23,7 @@ import Control.Monad (mzero)
 import Data.Aeson
 import Data.Maybe (fromMaybe)
 import Data.List (find)
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
@@ -78,25 +76,27 @@ oauth2GithubScoped :: YesodAuth m
 oauth2GithubScoped clientId clientSecret scopes = authOAuth2 "github" oauth fetchGithubProfile
   where
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://github.com/login/oauth/authorize?scope=" <> T.intercalate "," scopes
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://github.com/login/oauth/authorize" `withQuery`
+            [ scopeParam "," scopes
+            ]
         , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
         , oauthCallback = Nothing
         }
 
-fetchGithubProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchGithubProfile :: Manager -> OAuth2Token -> IO (Creds m)
 fetchGithubProfile manager token = do
-    userResult <- authGetJSON manager token "https://api.github.com/user"
-    mailResult <- authGetJSON manager token "https://api.github.com/user/emails"
+    userResult <- authGetJSON manager (accessToken token) "https://api.github.com/user"
+    mailResult <- authGetJSON manager (accessToken token) "https://api.github.com/user/emails"
 
     case (userResult, mailResult) of
         (Right _, Right []) -> throwIO $ InvalidProfileResponse "github" "no mail address for user"
         (Right user, Right mails) -> return $ toCreds user mails token
-        (Left err, _) -> throwIO $ InvalidProfileResponse "github" err
-        (_, Left err) -> throwIO $ InvalidProfileResponse "github" err
+        (Left err, _) -> throwIO $ invalidProfileResponse "github" err
+        (_, Left err) -> throwIO $ invalidProfileResponse "github" err
 
-toCreds :: GithubUser -> [GithubUserEmail] -> AccessToken -> Creds m
+toCreds :: GithubUser -> [GithubUserEmail] -> OAuth2Token -> Creds m
 toCreds user userMails token = Creds
     { credsPlugin = "github"
     , credsIdent = T.pack $ show $ githubUserId user
@@ -104,7 +104,7 @@ toCreds user userMails token = Creds
         [ ("email", githubUserEmailAddress email)
         , ("login", githubUserLogin user)
         , ("avatar_url", githubUserAvatarUrl user)
-        , ("access_token", decodeUtf8 $ accessToken token)
+        , ("access_token", atoken $ accessToken token)
         ]
         ++ maybeExtra "name" (githubUserName user)
         ++ maybeExtra "public_email" (githubUserPublicEmail user)

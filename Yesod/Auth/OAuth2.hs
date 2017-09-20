@@ -3,6 +3,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+{-# LANGUAGE TupleSections #-}
 -- |
 --
 -- Generic OAuth2 plugin for Yesod
@@ -15,8 +16,12 @@ module Yesod.Auth.OAuth2
     , oauth2Url
     , fromProfileURL
     , YesodOAuth2Exception(..)
+    , invalidProfileResponse
+    , scopeParam
     , maybeExtra
     , module Network.OAuth.OAuth2
+    , module URI.ByteString
+    , module URI.ByteString.Extension
     ) where
 
 #if __GLASGOW_HASKELL__ < 710
@@ -26,26 +31,36 @@ import Control.Applicative ((<$>))
 import Control.Exception.Lifted
 import Control.Monad.IO.Class
 import Control.Monad (unless)
-import Data.ByteString (ByteString)
+import Data.Aeson (Value(..), encode)
 import Data.Monoid ((<>))
+import Data.ByteString (ByteString)
 import Data.Text (Text, pack)
-import Data.Text.Encoding (decodeUtf8With, encodeUtf8)
-import Data.Text.Encoding.Error (lenientDecode)
+import Data.Text.Encoding (encodeUtf8)
 import Data.Typeable
 import Network.HTTP.Conduit (Manager)
-import Network.OAuth.OAuth2
+import Network.OAuth.OAuth2 hiding (error)
 import System.Random
+import URI.ByteString
+import URI.ByteString.Extension
 import Yesod.Auth
 import Yesod.Core
 
+import qualified Data.Text as T
 import qualified Data.ByteString.Lazy as BL
-import qualified Data.ByteString.Char8 as C8
 
 -- | Provider name and Aeson parse error
 data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
     deriving (Show, Typeable)
 
 instance Exception YesodOAuth2Exception
+
+-- | Construct an @'InvalidProfileResponse'@ exception from an @'OAuth2Error'@
+--
+-- This forces the @e@ in @'OAuth2Error' e@ to parse as a JSON @'Value'@ which
+-- is then re-encoded for the exception message.
+--
+invalidProfileResponse :: Text -> OAuth2Error Value -> YesodOAuth2Exception
+invalidProfileResponse name = InvalidProfileResponse name . encode
 
 oauth2Url :: Text -> AuthRoute
 oauth2Url name = PluginR name ["forward"]
@@ -57,11 +72,11 @@ oauth2Url name = PluginR name ["forward"]
 authOAuth2 :: YesodAuth m
            => Text   -- ^ Service name
            -> OAuth2 -- ^ Service details
-           -> (Manager -> AccessToken -> IO (Creds m))
-           -- ^ This function defines how to take an @'AccessToken'@ and
-           --   retrieve additional information about the user, to be
-           --   set in the session as @'Creds'@. Usually this means a
-           --   second authorized request to @api/me.json@.
+           -> (Manager -> OAuth2Token -> IO (Creds m))
+           -- ^ This function defines how to take an @'OAuth2Token'@ and
+           --   retrieve additional information about the user, to be set in the
+           --   session as @'Creds'@. Usually this means a second authorized
+           --   request to @api/me.json@.
            --
            --   See @'fromProfileURL'@ for an example.
            -> AuthPlugin m
@@ -76,7 +91,7 @@ authOAuth2Widget :: YesodAuth m
                  => WidgetT m IO ()
                  -> Text
                  -> OAuth2
-                 -> (Manager -> AccessToken -> IO (Creds m))
+                 -> (Manager -> OAuth2Token -> IO (Creds m))
                  -> AuthPlugin m
 authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
 
@@ -87,15 +102,15 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         tm <- getRouteToParent
         render <- lift getUrlRender
         return oauth
-            { oauthCallback = Just $ encodeUtf8 $ render $ tm url
+            { oauthCallback = Just $ unsafeFromText $ render $ tm url
             , oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth
-                `appendQuery` "state=" <> encodeUtf8 csrfToken
+                `withQuery` [("state", encodeUtf8 csrfToken)]
             }
 
     dispatch "GET" ["forward"] = do
         csrfToken <- liftIO generateToken
         setSession tokenSessionKey csrfToken
-        authUrl <- bsToText . authorizationUrl <$> withCallback csrfToken
+        authUrl <- toText . authorizationUrl <$> withCallback csrfToken
         lift $ redirect authUrl
 
     dispatch "GET" ["callback"] = do
@@ -106,7 +121,7 @@ authOAuth2Widget widget name oauth getCreds = AuthPlugin name dispatch login
         code <- requireGetParam "code"
         oauth' <- withCallback csrfToken
         master <- lift getYesod
-        result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (encodeUtf8 code)
+        result <- liftIO $ fetchAccessToken (authHttpManager master) oauth' (ExchangeToken code)
         case result of
             Left _ -> permissionDenied "Unable to retrieve OAuth2 token"
             Right token -> do
@@ -134,25 +149,19 @@ fromProfileURL :: FromJSON a
                => Text           -- ^ Plugin name
                -> URI            -- ^ Profile URI
                -> (a -> Creds m) -- ^ Conversion to Creds
-               -> Manager -> AccessToken -> IO (Creds m)
+               -> Manager -> OAuth2Token -> IO (Creds m)
 fromProfileURL name url toCreds manager token = do
-    result <- authGetJSON manager token url
+    result <- authGetJSON manager (accessToken token) url
 
     case result of
         Right profile -> return $ toCreds profile
-        Left err -> throwIO $ InvalidProfileResponse name err
+        Left err -> throwIO $ invalidProfileResponse name err
 
-bsToText :: ByteString -> Text
-bsToText = decodeUtf8With lenientDecode
-
-appendQuery :: ByteString -> ByteString -> ByteString
-appendQuery url query =
-    if '?' `C8.elem` url
-        then url <> "&" <> query
-        else url <> "?" <> query
+-- | A tuple of @scope@ and the given scopes separated by a delimiter
+scopeParam :: Text -> [Text] -> (ByteString, ByteString)
+scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
 
 -- | A helper for providing an optional value to credsExtra
---
 maybeExtra :: Text -> Maybe Text -> [(Text, Text)]
 maybeExtra k (Just v) = [(k, v)]
 maybeExtra _ Nothing  = []
