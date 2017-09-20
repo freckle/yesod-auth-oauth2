@@ -20,7 +20,6 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
 import qualified Data.Text as T
@@ -55,8 +54,8 @@ oauth2Upcase :: YesodAuth m
              -> AuthPlugin m
 oauth2Upcase clientId clientSecret = authOAuth2 "upcase"
     OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
         , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
         , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
         , oauthCallback = Nothing

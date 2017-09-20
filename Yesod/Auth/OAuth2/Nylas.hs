@@ -13,16 +13,14 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Monad (mzero)
 import Control.Exception.Lifted (throwIO)
 import Data.Aeson (FromJSON, Value(..), parseJSON, decode, (.:))
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
+import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Client (applyBasicAuth, httpLbs, parseRequest, responseBody,
                             responseStatus)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth (Creds(..), YesodAuth, AuthPlugin)
-import Yesod.Auth.OAuth2 (OAuth2(..), AccessToken(..),
-                          YesodOAuth2Exception(InvalidProfileResponse),
-                          authOAuth2)
+import Yesod.Auth.OAuth2
+
 import qualified Network.HTTP.Types as HT
 
 data NylasAccount = NylasAccount
@@ -48,18 +46,19 @@ oauth2Nylas :: YesodAuth m
             -> AuthPlugin m
 oauth2Nylas clientId clientSecret = authOAuth2 "nylas" oauth fetchCreds
   where
-    authorizeUrl = encodeUtf8 $ "https://api.nylas.com/oauth/authorize" <>
-        "?response_type=code&scope=email&client_id=" <> clientId
-
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = authorizeUrl
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://api.nylas.com/oauth/authorize" `withQuery`
+            [ ("response_type", "code")
+            , ("scope", "email")
+            , ("client_id", encodeUtf8 clientId)
+            ]
         , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
         , oauthCallback = Nothing
         }
 
-fetchCreds :: Manager -> AccessToken -> IO (Creds a)
+fetchCreds :: Manager -> OAuth2Token -> IO (Creds a)
 fetchCreds manager token = do
     req <- authorize <$> parseRequest "https://api.nylas.com/account"
     resp <- httpLbs req manager
@@ -69,11 +68,11 @@ fetchCreds manager token = do
             Nothing -> throwIO parseFailure
         else throwIO requestFailure
   where
-    authorize = applyBasicAuth (accessToken token) ""
+    authorize = applyBasicAuth (encodeUtf8 $ atoken $ accessToken token) ""
     parseFailure = InvalidProfileResponse "nylas" "failed to parse account"
     requestFailure = InvalidProfileResponse "nylas" "failed to get account"
 
-toCreds :: NylasAccount -> AccessToken -> Creds a
+toCreds :: NylasAccount -> OAuth2Token -> Creds a
 toCreds ns token = Creds
     { credsPlugin = "nylas"
     , credsIdent = nylasAccountId ns
@@ -82,6 +81,6 @@ toCreds ns token = Creds
         , ("name", nylasAccountName ns)
         , ("provider", nylasAccountProvider ns)
         , ("organization_unit", nylasAccountOrganizationUnit ns)
-        , ("access_token", decodeUtf8 $ accessToken token)
+        , ("access_token", atoken $ accessToken token)
         ]
     }

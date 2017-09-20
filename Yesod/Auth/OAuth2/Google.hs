@@ -30,12 +30,9 @@ import Control.Monad (mzero)
 import Data.Aeson
 import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-
-import qualified Data.Text as T
 
 -- | Auth with Google
 --
@@ -67,7 +64,7 @@ oauth2GoogleScoped = oauth2GoogleScopedWithCustomId emailUid
 -- See @'emailUid'@ and @'googleUid'@.
 --
 oauth2GoogleScopedWithCustomId :: YesodAuth m
-                               => (GoogleUser -> AccessToken -> Creds m)
+                               => (GoogleUser -> OAuth2Token -> Creds m)
                                -- ^ A function to generate the credentials
                                -> [Text] -- ^ List of scopes to request
                                -> Text -- ^ Client ID
@@ -78,20 +75,21 @@ oauth2GoogleScopedWithCustomId toCreds scopes clientId clientSecret =
 
   where
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8
-            $ "https://accounts.google.com/o/oauth2/auth?scope=" <> T.intercalate "+" scopes
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://accounts.google.com/o/oauth2/auth" `withQuery`
+            [ scopeParam "+" scopes
+            ]
         , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
         , oauthCallback = Nothing
         }
 
-fetchGoogleProfile :: (GoogleUser -> AccessToken -> Creds m) -> Manager -> AccessToken -> IO (Creds m)
+fetchGoogleProfile :: (GoogleUser -> OAuth2Token -> Creds m) -> Manager -> OAuth2Token -> IO (Creds m)
 fetchGoogleProfile toCreds manager token = do
-    userInfo <- authGetJSON manager token "https://www.googleapis.com/oauth2/v3/userinfo"
+    userInfo <- authGetJSON manager (accessToken token) "https://www.googleapis.com/oauth2/v3/userinfo"
     case userInfo of
       Right user -> return $ toCreds user token
-      Left err -> throwIO $ InvalidProfileResponse "google" err
+      Left err -> throwIO $ invalidProfileResponse "google" err
 
 data GoogleUser = GoogleUser
     { googleUserId :: Text
@@ -116,14 +114,14 @@ instance FromJSON GoogleUser where
     parseJSON _ = mzero
 
 -- | Build a @'Creds'@ using the user's google-uid as the identifier
-googleUid :: GoogleUser -> AccessToken -> Creds m
+googleUid :: GoogleUser -> OAuth2Token -> Creds m
 googleUid = uidBuilder $ ("google-uid:" <>) . googleUserId
 
 -- | Build a @'Creds'@ using the user's email as the identifier
-emailUid :: GoogleUser -> AccessToken -> Creds m
+emailUid :: GoogleUser -> OAuth2Token -> Creds m
 emailUid = uidBuilder googleUserEmail
 
-uidBuilder :: (GoogleUser -> Text) -> GoogleUser -> AccessToken -> Creds m
+uidBuilder :: (GoogleUser -> Text) -> GoogleUser -> OAuth2Token -> Creds m
 uidBuilder f user token = Creds
     { credsPlugin = "google"
     , credsIdent = f user
@@ -133,7 +131,7 @@ uidBuilder f user token = Creds
         , ("given_name", googleUserGivenName user)
         , ("family_name", googleUserFamilyName user)
         , ("avatar_url", googleUserPicture user)
-        , ("access_token", decodeUtf8 $ accessToken token)
+        , ("access_token", atoken $ accessToken token)
         ]
         ++ maybeExtra "hosted_domain" (googleUserHostedDomain user)
     }

@@ -24,9 +24,7 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
@@ -51,19 +49,21 @@ oauth2SalesforceScoped scopes clientId clientSecret =
     authOAuth2 svcName oauth fetchSalesforceUser
   where
     oauth = OAuth2
-        { oauthClientId            = encodeUtf8 clientId
-        , oauthClientSecret        = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://login.salesforce.com/services/oauth2/authorize?scope=" <> T.intercalate " " scopes
+        { oauthClientId            = clientId
+        , oauthClientSecret        = clientSecret
+        , oauthOAuthorizeEndpoint  = "https://login.salesforce.com/services/oauth2/authorize" `withQuery`
+            [ scopeParam " " scopes
+            ]
         , oauthAccessTokenEndpoint = "https://login.salesforce.com/services/oauth2/token"
         , oauthCallback            = Nothing
         }
 
-fetchSalesforceUser :: Manager -> AccessToken -> IO (Creds m)
+fetchSalesforceUser :: Manager -> OAuth2Token -> IO (Creds m)
 fetchSalesforceUser manager token = do
-    result <- authGetJSON manager token "https://login.salesforce.com/services/oauth2/userinfo"
+    result <- authGetJSON manager (accessToken token) "https://login.salesforce.com/services/oauth2/userinfo"
     case result of
         Right user -> return $ toCreds svcName user token
-        Left err -> throwIO $ InvalidProfileResponse svcName err
+        Left err -> throwIO $ invalidProfileResponse svcName err
 
 svcNameSb :: Text
 svcNameSb = "salesforce-sandbox"
@@ -84,19 +84,21 @@ oauth2SalesforceSandboxScoped scopes clientId clientSecret =
     authOAuth2 svcNameSb oauth fetchSalesforceSandboxUser
   where
     oauth = OAuth2
-        { oauthClientId            = encodeUtf8 clientId
-        , oauthClientSecret        = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint  = encodeUtf8 $ "https://test.salesforce.com/services/oauth2/authorize?scope=" <> T.intercalate " " scopes
+        { oauthClientId            = clientId
+        , oauthClientSecret        = clientSecret
+        , oauthOAuthorizeEndpoint  = "https://test.salesforce.com/services/oauth2/authorize" `withQuery`
+            [ scopeParam " " scopes
+            ]
         , oauthAccessTokenEndpoint = "https://test.salesforce.com/services/oauth2/token"
         , oauthCallback            = Nothing
         }
 
-fetchSalesforceSandboxUser :: Manager -> AccessToken -> IO (Creds m)
+fetchSalesforceSandboxUser :: Manager -> OAuth2Token -> IO (Creds m)
 fetchSalesforceSandboxUser manager token = do
-    result <- authGetJSON manager token "https://test.salesforce.com/services/oauth2/userinfo"
+    result <- authGetJSON manager (accessToken token) $ "https://test.salesforce.com/services/oauth2/userinfo"
     case result of
         Right user -> return $ toCreds svcNameSb user token
-        Left err -> throwIO $ InvalidProfileResponse svcNameSb err
+        Left err -> throwIO $ invalidProfileResponse svcNameSb err
 
 data User = User
     { userId :: Text
@@ -130,7 +132,7 @@ instance FromJSON User where
 
     parseJSON _ = mzero
 
-toCreds :: Text -> User -> AccessToken -> Creds m
+toCreds :: Text -> User -> OAuth2Token -> Creds m
 toCreds name user token = Creds
     { credsPlugin = name
     , credsIdent = userId user
@@ -144,9 +146,9 @@ toCreds name user token = Creds
         , ("time_zone", userTimeZone user)
         , ("avatar_url", userPicture user)
         , ("rest_url", userRestUrl user)
-        , ("access_token", decodeUtf8 $ accessToken token)
+        , ("access_token", atoken $ accessToken token)
         ]
-        ++ maybeExtra "refresh_token" (decodeUtf8 <$> refreshToken token)
+        ++ maybeExtra "refresh_token" (rtoken <$> refreshToken token)
         ++ maybeExtra "expires_in" ((T.pack . show) <$> expiresIn token)
         ++ maybeExtra "phone_number" (userPhone user)
     }

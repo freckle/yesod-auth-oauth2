@@ -23,9 +23,7 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.Monoid ((<>))
 import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8, decodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
@@ -86,22 +84,25 @@ oauth2EveScoped clientId clientSecret scopes widget =
 
   where
     oauth = OAuth2
-        { oauthClientId = encodeUtf8 clientId
-        , oauthClientSecret = encodeUtf8 clientSecret
-        , oauthOAuthorizeEndpoint = encodeUtf8 $ "https://login.eveonline.com/oauth/authorize?response_type=code&scope=" <> T.intercalate " " scopes
+        { oauthClientId = clientId
+        , oauthClientSecret = clientSecret
+        , oauthOAuthorizeEndpoint = "https://login.eveonline.com/oauth/authorize" `withQuery`
+            [ ("response_type", "code")
+            , scopeParam " " scopes
+            ]
         , oauthAccessTokenEndpoint = "https://login.eveonline.com/oauth/token"
         , oauthCallback = Nothing
         }
 
-fetchEveProfile :: Manager -> AccessToken -> IO (Creds m)
+fetchEveProfile :: Manager -> OAuth2Token -> IO (Creds m)
 fetchEveProfile manager token = do
-    userResult <- authGetJSON manager token "https://login.eveonline.com/oauth/verify"
+    userResult <- authGetJSON manager (accessToken token) $ "https://login.eveonline.com/oauth/verify"
 
     case userResult of
         Right user -> return $ toCreds user token
-        Left err-> throwIO $ InvalidProfileResponse "eveonline" err
+        Left err-> throwIO $ invalidProfileResponse "eveonline" err
 
-toCreds :: EveUser -> AccessToken -> Creds m
+toCreds :: EveUser -> OAuth2Token -> Creds m
 toCreds user token = Creds
     { credsPlugin = "eveonline"
     , credsIdent = T.pack $ show $ eveCharOwnerHash user
@@ -110,6 +111,6 @@ toCreds user token = Creds
         , ("charId", T.pack . show . eveCharId $ user)
         , ("tokenType", eveTokenType user)
         , ("expires", eveUserExpire user)
-        , ("accessToken", decodeUtf8 . accessToken $ token)
+        , ("accessToken", atoken $ accessToken token)
         ]
     }
