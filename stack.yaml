@@ -1,8 +1,9 @@
+---
 resolver: lts-9.18
 flags:
   yesod-auth-oauth2:
     network-uri: true
 packages:
-- .
+  - .
 extra-deps:
-- load-env-0.1.1
+  - load-env-0.1.1
