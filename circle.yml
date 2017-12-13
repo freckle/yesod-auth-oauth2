@@ -7,7 +7,10 @@ dependencies:
     - chmod +x /tmp/stack && sudo mv /tmp/stack /usr/bin/stack
   override:
     - stack setup
-    - stack build --flag yesod-auth-oauth2:example
+    - stack build
+      --pedantic
+      --test --no-run-tests
+      --flag yesod-auth-oauth2:example
 
 test:
   override:
