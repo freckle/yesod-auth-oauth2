@@ -89,6 +89,7 @@ test-suite test
                  , yesod-auth-oauth2
                  , hspec
                  , uri-bytestring
+  other-modules:   URI.ByteString.ExtensionSpec
 
 source-repository head
   type:     git
