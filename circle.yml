@@ -1,14 +1,30 @@
+---
+machine:
+  pre:
+    # https://github.com/commercialhaskell/stack/issues/1658
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.6 20
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.6 20
+    - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.9 10
+    - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.9 10
 dependencies:
   cache_directories:
     - "~/.stack"
   pre:
-    - wget https://github.com/commercialhaskell/stack/releases/download/v1.4.0/stack-1.4.0-linux-x86_64.tar.gz -O /tmp/stack.tar.gz
-    - tar xvzOf /tmp/stack.tar.gz stack-1.4.0-linux-x86_64/stack > /tmp/stack
+    - wget https://github.com/commercialhaskell/stack/releases/download/v1.6.1/stack-1.6.1-linux-x86_64.tar.gz -O /tmp/stack.tar.gz
+    - tar xvzOf /tmp/stack.tar.gz stack-1.6.1-linux-x86_64/stack > /tmp/stack
     - chmod +x /tmp/stack && sudo mv /tmp/stack /usr/bin/stack
   override:
     - stack setup
-    - stack build --flag yesod-auth-oauth2:example
+    - stack build
+      --pedantic
+      --test --no-run-tests
+      --flag yesod-auth-oauth2:example
 
 test:
   override:
     - stack test
+
+    # Check compilation with nightly. If this proves problematic, add || true
+    # after to not fail the build.
+    - stack setup --resolver nightly
+    - stack build --resolver nightly --pedantic --test --no-run-tests
