@@ -15,3 +15,8 @@ dependencies:
 test:
   override:
     - stack test
+
+    # Check compilation with nightly. If this proves problematic, add || true
+    # after to not fail the build.
+    - stack setup --resolver nightly
+    - stack build --resolver nightly --pedantic --test --no-run-tests
