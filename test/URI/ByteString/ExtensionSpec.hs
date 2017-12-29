@@ -1,8 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 module URI.ByteString.ExtensionSpec
-    ( main
-    , spec
+    ( spec
     ) where
 
 import Test.Hspec
@@ -12,9 +11,6 @@ import Data.List (isInfixOf)
 import URI.ByteString
 import URI.ByteString.Extension
 import URI.ByteString.QQ
-
-main :: IO ()
-main = hspec spec
 
 spec :: Spec
 spec = do
