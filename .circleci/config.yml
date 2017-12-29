@@ -1,0 +1,34 @@
+---
+version: 2.0
+
+jobs:
+  build:
+    docker:
+      - image: fpco/stack-build:lts
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - stack-{{ .Branch }}-{{ checksum "stack.yaml" }}
+            - stack-{{ .Branch }}
+            - stack-
+      - run:
+          name: Dependencies
+          command: make setup
+      - run:
+          name: Build
+          command: make build
+      - save_cache:
+          key: stack-{{ .Branch }}-{{ checksum "stack.yaml" }}
+          paths:
+            - ~/.stack
+            - ./.stack-work
+      - run:
+          name: Test
+          command: make test
+      - run:
+          name: Lint
+          command: make lint
+      - run:
+          name: Build Nightly
+          command: make check-nightly
