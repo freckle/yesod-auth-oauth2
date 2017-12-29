@@ -7,10 +7,9 @@ import Data.String (IsString(..))
 import Data.Text (Text)
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Lens.Micro
+import URI.ByteString
 
 import qualified Data.ByteString.Char8 as C8
-
-import URI.ByteString
 
 instance IsString Scheme where
     fromString = Scheme . fromString

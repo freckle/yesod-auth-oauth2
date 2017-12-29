@@ -1,85 +1,33 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
-
--- |
---
--- OAuth2 plugin for Battle.Net
---
--- * Authenticates against battle.net.
--- * Uses user's id as credentials identifier.
--- * Returns user's battletag in extras.
---
 module Yesod.Auth.OAuth2.BattleNet
-  ( oAuth2BattleNet
+  ( oauth2BattleNet
   ) where
 
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
-
-import Control.Exception (throwIO)
-import Control.Monad (mzero)
-import Data.Aeson
 import Data.Monoid ((<>))
 import Data.Text (Text)
-import qualified Data.Text as T (pack, toLower)
-import qualified Data.Text.Encoding as E (encodeUtf8)
-import Network.HTTP.Conduit (Manager)
-import Prelude
-import Yesod.Auth
-import Yesod.Auth.OAuth2
-import Yesod.Core.Widget
+import Data.Text.Encoding (encodeUtf8)
+import URI.ByteString (Host(..))
+import URI.ByteString.Extension (fromRelative)
+import Yesod.Auth.OAuth2.Provider
+import Yesod.Auth.OAuth2.UserId
 
-data BattleNetUser = BattleNetUser
-    { userId :: Int
-    , battleTag :: Text
+oauth2BattleNet
+    :: Text -- ^ Lower-case region (cn, us, etc)
+    -> Provider m UserId
+oauth2BattleNet region = Provider
+    { pName = "battle.net"
+    , pAuthorizeEndpoint = const $ AuthorizeEndpoint $ wwwPath "/oauth/authorize"
+    , pAccessTokenEndpoint = AccessTokenEndpoint $ wwwPath "/oauth/token"
+    , pFetchUserProfile = authGetProfile $ apiPath "/account/user"
     }
-
-instance FromJSON BattleNetUser where
-    parseJSON (Object o) = BattleNetUser
-        <$> o .: "id"
-        <*> o .: "battletag"
-    parseJSON _ = mzero
-
-oAuth2BattleNet
-    :: YesodAuth m
-    => Text -- ^ Client ID
-    -> Text -- ^ Client Secret
-    -> Text -- ^ User region (e.g. "eu", "cn", "us")
-    -> WidgetT m IO () -- ^ Login widget
-    -> AuthPlugin m
-oAuth2BattleNet clientId clientSecret region widget =
-    authOAuth2Widget widget "battle.net" oAuthData $ makeCredentials region
   where
-    oAuthData = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
-        , oauthAccessTokenEndpoint = fromRelative "https" host "/oauth/token"
-        , oauthCallback = Nothing
-        }
-
-    host = wwwHost $ T.toLower region
-
-makeCredentials :: Text -> Manager -> OAuth2Token -> IO (Creds m)
-makeCredentials region manager token = do
-    userResult <- authGetJSON manager (accessToken token)
-        $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
-
-    either
-        (throwIO . invalidProfileResponse "battle.net")
-        (\user ->
-            return Creds
-               { credsPlugin = "battle.net"
-               , credsIdent = T.pack $ show $ userId user
-               , credsExtra = [("battletag", battleTag user)]
-               }
-        ) userResult
+    apiPath = fromRelative "https" (apiHost region)
+    wwwPath = fromRelative "https" (wwwHost region)
 
 apiHost :: Text -> Host
 apiHost "cn" = "api.battlenet.com.cn"
-apiHost region = Host $ E.encodeUtf8 $ region <> ".api.battle.net"
+apiHost region = Host $ encodeUtf8 $ region <> ".api.battle.net"
 
 wwwHost :: Text -> Host
 wwwHost "cn" = "www.battlenet.com.cn"
-wwwHost region = Host $ E.encodeUtf8 $ region <> ".battle.net"
+wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"
