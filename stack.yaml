@@ -1,6 +1,4 @@
 ---
-resolver: lts-9.18
+resolver: lts-10.1
 packages:
   - .
-extra-deps:
-  - load-env-0.1.1
