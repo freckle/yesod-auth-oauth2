@@ -1,4 +1,4 @@
-{-# LANGUAGE CPP               #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
@@ -15,24 +15,24 @@ module Yesod.Auth.OAuth2.BattleNet
   where
 
 #if __GLASGOW_HASKELL__ < 710
-import           Control.Applicative  ((<$>), (<*>))
+import Control.Applicative ((<$>), (<*>))
 #endif
 
-import           Control.Exception    (throwIO)
-import           Control.Monad        (mzero)
+import Control.Exception (throwIO)
+import Control.Monad (mzero)
 
-import           Yesod.Auth
-import           Yesod.Auth.OAuth2
+import Yesod.Auth
+import Yesod.Auth.OAuth2
 
-import           Data.Monoid          ((<>))
-import           Network.HTTP.Conduit (Manager)
+import Data.Monoid ((<>))
+import Network.HTTP.Conduit (Manager)
 
-import           Data.Aeson
-import           Data.Text            (Text)
-import qualified Data.Text            as T (pack, toLower)
-import qualified Data.Text.Encoding   as E (encodeUtf8)
-import           Prelude
-import           Yesod.Core.Widget
+import Data.Aeson
+import Data.Text (Text)
+import qualified Data.Text as T (pack, toLower)
+import qualified Data.Text.Encoding as E (encodeUtf8)
+import Prelude
+import Yesod.Core.Widget
 
 data BattleNetUser = BattleNetUser
               { userId    :: Int
