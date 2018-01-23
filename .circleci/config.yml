@@ -7,9 +7,13 @@ jobs:
       - image: fpco/stack-build:lts
     steps:
       - checkout
+      - run:
+          name: Source digest
+          command: git ls-files | xargs md5sum > digest
+
       - restore_cache:
           keys:
-            - stack-{{ .Branch }}-{{ checksum "stack.yaml" }}
+            - stack-{{ .Branch }}-{{ checksum "digest" }}
             - stack-{{ .Branch }}
             - stack-
       - run:
@@ -19,7 +23,7 @@ jobs:
           name: Build
           command: make build
       - save_cache:
-          key: stack-{{ .Branch }}-{{ checksum "stack.yaml" }}
+          key: stack-{{ .Branch }}-{{ checksum "digest" }}
           paths:
             - ~/.stack
             - ./.stack-work
