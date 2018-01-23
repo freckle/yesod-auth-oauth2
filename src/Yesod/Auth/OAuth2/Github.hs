@@ -21,8 +21,8 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
-import Data.Maybe (fromMaybe)
 import Data.List (find)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth

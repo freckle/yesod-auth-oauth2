@@ -29,11 +29,11 @@ import Control.Applicative ((<$>))
 #endif
 
 import Control.Exception.Lifted
-import Control.Monad.IO.Class
 import Control.Monad (unless)
+import Control.Monad.IO.Class
 import Data.Aeson (Value(..), encode)
-import Data.Monoid ((<>))
 import Data.ByteString (ByteString)
+import Data.Monoid ((<>))
 import Data.Text (Text, pack)
 import Data.Text.Encoding (encodeUtf8)
 import Data.Typeable
@@ -45,8 +45,8 @@ import URI.ByteString.Extension
 import Yesod.Auth
 import Yesod.Core
 
-import qualified Data.Text as T
 import qualified Data.ByteString.Lazy as BL
+import qualified Data.Text as T
 
 -- | Provider name and Aeson parse error
 data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString

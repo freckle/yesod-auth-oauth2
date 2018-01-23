@@ -21,11 +21,11 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Exception.Lifted (throwIO)
 import Control.Monad (mzero)
 import Data.Aeson (FromJSON, Value(Object), parseJSON, (.:), (.:?))
-import Data.Maybe (fromMaybe)
 import Data.List (find)
+import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Network.HTTP.Conduit (Manager)
-import Yesod.Auth (YesodAuth, Creds(..), AuthPlugin)
+import Yesod.Auth (AuthPlugin, Creds(..), YesodAuth)
 import Yesod.Auth.OAuth2
 
 import qualified Data.Text as T

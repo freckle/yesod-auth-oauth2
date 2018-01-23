@@ -10,7 +10,7 @@ module Yesod.Auth.OAuth2.Spotify
     ) where
 
 #if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>), pure)
+import Control.Applicative (pure, (<$>), (<*>))
 #endif
 
 import Control.Monad (mzero)
