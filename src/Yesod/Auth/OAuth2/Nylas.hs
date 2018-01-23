@@ -10,15 +10,15 @@ module Yesod.Auth.OAuth2.Nylas
 import Control.Applicative ((<$>), (<*>))
 #endif
 
-import Control.Monad (mzero)
 import Control.Exception.Lifted (throwIO)
-import Data.Aeson (FromJSON, Value(..), parseJSON, decode, (.:))
+import Control.Monad (mzero)
+import Data.Aeson (FromJSON, Value(..), decode, parseJSON, (.:))
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
-import Network.HTTP.Client (applyBasicAuth, httpLbs, parseRequest, responseBody,
-                            responseStatus)
+import Network.HTTP.Client
+    (applyBasicAuth, httpLbs, parseRequest, responseBody, responseStatus)
 import Network.HTTP.Conduit (Manager)
-import Yesod.Auth (Creds(..), YesodAuth, AuthPlugin)
+import Yesod.Auth (AuthPlugin, Creds(..), YesodAuth)
 import Yesod.Auth.OAuth2
 
 import qualified Network.HTTP.Types as HT

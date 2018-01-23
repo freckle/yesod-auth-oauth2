@@ -20,9 +20,9 @@ import Control.Applicative ((<$>), (<*>))
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
+import qualified Data.Text as T
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-import qualified Data.Text as T
 
 data UpcaseUser = UpcaseUser
     { upcaseUserId :: Int
