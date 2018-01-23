@@ -96,7 +96,7 @@ oauth2EveScoped clientId clientSecret scopes widget =
 
 fetchEveProfile :: Manager -> OAuth2Token -> IO (Creds m)
 fetchEveProfile manager token = do
-    userResult <- authGetJSON manager (accessToken token) $ "https://login.eveonline.com/oauth/verify"
+    userResult <- authGetJSON manager (accessToken token) "https://login.eveonline.com/oauth/verify"
 
     case userResult of
         Right user -> return $ toCreds user token

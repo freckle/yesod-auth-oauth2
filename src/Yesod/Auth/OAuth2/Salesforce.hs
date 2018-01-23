@@ -95,7 +95,7 @@ oauth2SalesforceSandboxScoped scopes clientId clientSecret =
 
 fetchSalesforceSandboxUser :: Manager -> OAuth2Token -> IO (Creds m)
 fetchSalesforceSandboxUser manager token = do
-    result <- authGetJSON manager (accessToken token) $ "https://test.salesforce.com/services/oauth2/userinfo"
+    result <- authGetJSON manager (accessToken token) "https://test.salesforce.com/services/oauth2/userinfo"
     case result of
         Right user -> return $ toCreds svcNameSb user token
         Left err -> throwIO $ invalidProfileResponse svcNameSb err
