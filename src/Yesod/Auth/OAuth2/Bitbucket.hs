@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- |
 --
@@ -13,10 +12,6 @@ module Yesod.Auth.OAuth2.Bitbucket
     , oauth2BitbucketScoped
     , module Yesod.Auth.OAuth2
     ) where
-
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
 
 import Control.Exception.Lifted (throwIO)
 import Control.Monad (mzero)

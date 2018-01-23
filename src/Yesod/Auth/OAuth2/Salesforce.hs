@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 -- |
@@ -17,19 +16,14 @@ module Yesod.Auth.OAuth2.Salesforce
     , module Yesod.Auth.OAuth2
     ) where
 
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
-
 import Control.Exception.Lifted
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Text (Text)
+import qualified Data.Text as T
 import Network.HTTP.Conduit (Manager)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-
-import qualified Data.Text as T
 
 oauth2Salesforce :: YesodAuth m
                  => Text -- ^ Client ID

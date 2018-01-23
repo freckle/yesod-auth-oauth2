@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- |
@@ -12,10 +11,6 @@
 module Yesod.Auth.OAuth2.BattleNet
   ( oAuth2BattleNet
   ) where
-
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
 
 import Control.Exception (throwIO)
 import Control.Monad (mzero)
