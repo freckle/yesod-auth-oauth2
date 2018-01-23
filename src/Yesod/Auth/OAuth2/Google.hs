@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- |
 --
@@ -20,10 +19,6 @@ module Yesod.Auth.OAuth2.Google
     , emailUid
     , module Yesod.Auth.OAuth2
     ) where
-
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
 
 import Control.Exception.Lifted
 import Control.Monad (mzero)

@@ -1,14 +1,9 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 module Yesod.Auth.OAuth2.Nylas
     ( oauth2Nylas
     , module Yesod.Auth.OAuth2
     ) where
-
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
 
 import Control.Exception.Lifted (throwIO)
 import Control.Monad (mzero)
@@ -18,10 +13,9 @@ import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Client
     (applyBasicAuth, httpLbs, parseRequest, responseBody, responseStatus)
 import Network.HTTP.Conduit (Manager)
+import qualified Network.HTTP.Types as HT
 import Yesod.Auth (AuthPlugin, Creds(..), YesodAuth)
 import Yesod.Auth.OAuth2
-
-import qualified Network.HTTP.Types as HT
 
 data NylasAccount = NylasAccount
     { nylasAccountId :: Text

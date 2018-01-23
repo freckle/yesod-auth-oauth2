@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- |
 --
@@ -9,19 +8,14 @@ module Yesod.Auth.OAuth2.Spotify
     , module Yesod.Auth.OAuth2
     ) where
 
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative (pure, (<$>), (<*>))
-#endif
-
 import Control.Monad (mzero)
 import Data.Aeson
 import Data.Maybe
 import Data.Text (Text)
+import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-
-import qualified Data.Text as T
 
 data SpotifyUserImage = SpotifyUserImage
     { spotifyUserImageHeight :: Maybe Int

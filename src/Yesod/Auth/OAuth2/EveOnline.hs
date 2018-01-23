@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
 -- |
@@ -15,10 +14,6 @@ module Yesod.Auth.OAuth2.EveOnline
     , WidgetType(..)
     , module Yesod.Auth.OAuth2
     ) where
-
-#if __GLASGOW_HASKELL__ < 710
-import Control.Applicative ((<$>), (<*>))
-#endif
 
 import Control.Exception.Lifted
 import Control.Monad (mzero)
