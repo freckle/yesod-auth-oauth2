@@ -1,3 +1,8 @@
+---
+- ignore:
+    # https://github.com/ndmitchell/hlint/issues/427
+    name: Eta reduce
+    within: authOAuth2
 - ignore:
     name: Redundant do
     within: spec
