@@ -75,3 +75,15 @@ makeCredentials manager token = do
 ```
 
 *If you write one of these, please consider opening a Pull Request*
+
+## Development & Tests
+
+```console
+stack setup
+stack build --dependencies-only
+stack build --pedantic --test
+```
+
+---
+
+[CHANGELOG](./CHANGELOG.md) | [LICENSE](./LICENSE)
