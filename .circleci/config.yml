@@ -14,11 +14,10 @@ references:
             git ls-files | xargs md5sum > sdigest
       - restore_cache:
           keys:
-            # yamllint disable-line rule:line-length
-            - stack-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
-            - stack-{{ .Branch }}-{{ checksum "rdigest" }}-
-            - stack-{{ .Branch }}-
-            - stack-
+            - 1-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
+            - 1-{{ .Branch }}-{{ checksum "rdigest" }}-
+            - 1-{{ .Branch }}-
+            - 1-master-
       - run:
           name: Dependencies
           command: make setup
@@ -26,8 +25,7 @@ references:
           name: Build
           command: make build
       - save_cache:
-          # yamllint disable-line rule:line-length
-          key: stack-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
+          key: 1-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
           paths:
             - ~/.stack
             - ./.stack-work
