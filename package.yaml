@@ -10,6 +10,8 @@ license: BSD3
 github: thoughtbot/yesod-auth-oauth2.git
 homepage: http://github.com/thoughtbot/yesod-auth-oauth2
 
+ghc-options: -Wall
+
 dependencies:
   - base >=4.8.0.0 && <5
 
