@@ -5,8 +5,8 @@ synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
 author: Tom Streller
-maintainer: Pat Brisbin <pat@thoughtbot.com>
-license: BSD3
+maintainer: Pat Brisbin <pbrisbin@gmail.com>
+license: MIT
 github: thoughtbot/yesod-auth-oauth2.git
 homepage: http://github.com/thoughtbot/yesod-auth-oauth2
 
