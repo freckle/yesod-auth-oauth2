@@ -58,7 +58,8 @@ workflows:
   version: 2
   builds:
     jobs:
-      - build_7.10.3
+      # FIXME: https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/113
+      # - build_7.10.3
       - build_8.0.2
       - build_8.2.2
       - build_nightly
