@@ -12,17 +12,9 @@ module Yesod.Auth.OAuth2.BattleNet
   ( oAuth2BattleNet
   ) where
 
-import Control.Exception (throwIO)
-import Control.Monad (mzero)
-import Data.Aeson
-import Data.Monoid ((<>))
-import Data.Text (Text)
+import Yesod.Auth.OAuth2.Prelude
+
 import qualified Data.Text as T (pack, toLower)
-import qualified Data.Text.Encoding as E (encodeUtf8)
-import Network.HTTP.Conduit (Manager)
-import Prelude
-import Yesod.Auth
-import Yesod.Auth.OAuth2
 import Yesod.Core.Widget
 
 data BattleNetUser = BattleNetUser
@@ -31,10 +23,9 @@ data BattleNetUser = BattleNetUser
     }
 
 instance FromJSON BattleNetUser where
-    parseJSON (Object o) = BattleNetUser
+    parseJSON = withObject "BattleNetUser" $ \o -> BattleNetUser
         <$> o .: "id"
         <*> o .: "battletag"
-    parseJSON _ = mzero
 
 oAuth2BattleNet
     :: YesodAuth m
@@ -73,8 +64,8 @@ makeCredentials region manager token = do
 
 apiHost :: Text -> Host
 apiHost "cn" = "api.battlenet.com.cn"
-apiHost region = Host $ E.encodeUtf8 $ region <> ".api.battle.net"
+apiHost region = Host $ encodeUtf8 $ region <> ".api.battle.net"
 
 wwwHost :: Text -> Host
 wwwHost "cn" = "www.battlenet.com.cn"
-wwwHost region = Host $ E.encodeUtf8 $ region <> ".battle.net"
+wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"

@@ -10,19 +10,12 @@
 module Yesod.Auth.OAuth2.Bitbucket
     ( oauth2Bitbucket
     , oauth2BitbucketScoped
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted (throwIO)
-import Control.Monad (mzero)
-import Data.Aeson (FromJSON, Value(Object), parseJSON, (.:), (.:?))
+import Yesod.Auth.OAuth2.Prelude
+
 import Data.List (find)
 import Data.Maybe (fromMaybe)
-import Data.Text (Text)
-import Network.HTTP.Conduit (Manager)
-import Yesod.Auth (AuthPlugin, Creds(..), YesodAuth)
-import Yesod.Auth.OAuth2
-
 import qualified Data.Text as T
 
 data BitbucketUser = BitbucketUser
@@ -34,44 +27,36 @@ data BitbucketUser = BitbucketUser
     }
 
 instance FromJSON BitbucketUser where
-    parseJSON (Object o) = BitbucketUser
+    parseJSON = withObject "BitbucketUser" $ \o -> BitbucketUser
         <$> o .: "uuid"
         <*> o .:? "display_name"
         <*> o .: "username"
         <*> o .:? "location"
         <*> o .: "links"
 
-    parseJSON _ = mzero
-
 newtype BitbucketUserLinks = BitbucketUserLinks
     { bitbucketAvatarLink :: BitbucketLink
     }
 
 instance FromJSON BitbucketUserLinks where
-    parseJSON (Object o) = BitbucketUserLinks
+    parseJSON = withObject "BitbucketUserLinks" $ \o -> BitbucketUserLinks
         <$> o .: "avatar"
-
-    parseJSON _ = mzero
 
 newtype BitbucketLink = BitbucketLink
     { bitbucketLinkHref :: Text
     }
 
 instance FromJSON BitbucketLink where
-    parseJSON (Object o) = BitbucketLink
+    parseJSON = withObject "BitbucketLink" $ \o -> BitbucketLink
         <$> o .: "href"
-
-    parseJSON _ = mzero
 
 newtype BitbucketEmailSearchResults = BitbucketEmailSearchResults
     { bitbucketEmails :: [BitbucketUserEmail]
     }
 
 instance FromJSON BitbucketEmailSearchResults where
-    parseJSON (Object o) = BitbucketEmailSearchResults
+    parseJSON = withObject "BitbucketEmailSearchResults" $ \o -> BitbucketEmailSearchResults
         <$> o .: "values"
-
-    parseJSON _ = mzero
 
 data BitbucketUserEmail = BitbucketUserEmail
     { bitbucketUserEmailAddress :: Text
@@ -79,11 +64,9 @@ data BitbucketUserEmail = BitbucketUserEmail
     }
 
 instance FromJSON BitbucketUserEmail where
-    parseJSON (Object o) = BitbucketUserEmail
+    parseJSON = withObject "BitbucketUserEmail" $ \o -> BitbucketUserEmail
         <$> o .: "email"
         <*> o .: "is_primary"
-
-    parseJSON _ = mzero
 
 oauth2Bitbucket :: YesodAuth m
              => Text -- ^ Client ID

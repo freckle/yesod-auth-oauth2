@@ -5,17 +5,12 @@
 --
 module Yesod.Auth.OAuth2.Spotify
     ( oauth2Spotify
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Monad (mzero)
-import Data.Aeson
+import Yesod.Auth.OAuth2.Prelude
+
 import Data.Maybe
-import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Text.Encoding (encodeUtf8)
-import Yesod.Auth
-import Yesod.Auth.OAuth2
 
 data SpotifyUserImage = SpotifyUserImage
     { spotifyUserImageHeight :: Maybe Int
@@ -24,12 +19,10 @@ data SpotifyUserImage = SpotifyUserImage
     }
 
 instance FromJSON SpotifyUserImage where
-    parseJSON (Object v) = SpotifyUserImage
+    parseJSON = withObject "SpotifyUserImage" $ \v -> SpotifyUserImage
         <$> v .:? "height"
         <*> v .:? "width"
         <*> v .: "url"
-
-    parseJSON _ = mzero
 
 data SpotifyUser = SpotifyUser
     { spotifyUserId :: Text
@@ -43,7 +36,7 @@ data SpotifyUser = SpotifyUser
     }
 
 instance FromJSON SpotifyUser where
-    parseJSON (Object v) = SpotifyUser
+    parseJSON = withObject "SpotifyUser" $ \v -> SpotifyUser
         <$> v .: "id"
         <*> v .: "href"
         <*> v .: "uri"
@@ -52,8 +45,6 @@ instance FromJSON SpotifyUser where
         <*> v .:? "country"
         <*> v .:? "email"
         <*> v .:? "images"
-
-    parseJSON _ = mzero
 
 oauth2Spotify :: YesodAuth m
               => Text -- ^ Client ID

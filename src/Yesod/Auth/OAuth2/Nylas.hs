@@ -2,20 +2,14 @@
 
 module Yesod.Auth.OAuth2.Nylas
     ( oauth2Nylas
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted (throwIO)
-import Control.Monad (mzero)
-import Data.Aeson (FromJSON, Value(..), decode, parseJSON, (.:))
-import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
+import Yesod.Auth.OAuth2.Prelude
+
+import qualified Data.ByteString.Lazy.Char8 as BSL8
 import Network.HTTP.Client
     (applyBasicAuth, httpLbs, parseRequest, responseBody, responseStatus)
-import Network.HTTP.Conduit (Manager)
 import qualified Network.HTTP.Types as HT
-import Yesod.Auth (AuthPlugin, Creds(..), YesodAuth)
-import Yesod.Auth.OAuth2
 
 data NylasAccount = NylasAccount
     { nylasAccountId :: Text
@@ -26,13 +20,12 @@ data NylasAccount = NylasAccount
     }
 
 instance FromJSON NylasAccount where
-    parseJSON (Object o) = NylasAccount
+    parseJSON = withObject "NylasAccount" $ \o -> NylasAccount
         <$> o .: "id"
         <*> o .: "email_address"
         <*> o .: "name"
         <*> o .: "provider"
         <*> o .: "organization_unit"
-    parseJSON _ = mzero
 
 oauth2Nylas :: YesodAuth m
             => Text -- ^ Client ID
@@ -57,13 +50,13 @@ fetchCreds manager token = do
     req <- authorize <$> parseRequest "https://api.nylas.com/account"
     resp <- httpLbs req manager
     if HT.statusIsSuccessful (responseStatus resp)
-        then case decode (responseBody resp) of
-            Just ns -> return $ toCreds ns token
-            Nothing -> throwIO parseFailure
+        then case eitherDecode (responseBody resp) of
+            Right ns -> return $ toCreds ns token
+            Left err -> throwIO $ parseFailure err
         else throwIO requestFailure
   where
     authorize = applyBasicAuth (encodeUtf8 $ atoken $ accessToken token) ""
-    parseFailure = InvalidProfileResponse "nylas" "failed to parse account"
+    parseFailure = InvalidProfileResponse "nylas" . BSL8.pack
     requestFailure = InvalidProfileResponse "nylas" "failed to get account"
 
 toCreds :: NylasAccount -> OAuth2Token -> Creds a

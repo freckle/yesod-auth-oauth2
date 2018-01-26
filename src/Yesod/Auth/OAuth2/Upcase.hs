@@ -9,15 +9,11 @@
 --
 module Yesod.Auth.OAuth2.Upcase
     ( oauth2Upcase
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Monad (mzero)
-import Data.Aeson
-import Data.Text (Text)
+import Yesod.Auth.OAuth2.Prelude
+
 import qualified Data.Text as T
-import Yesod.Auth
-import Yesod.Auth.OAuth2
 
 data UpcaseUser = UpcaseUser
     { upcaseUserId :: Int
@@ -27,21 +23,17 @@ data UpcaseUser = UpcaseUser
     }
 
 instance FromJSON UpcaseUser where
-    parseJSON (Object o) = UpcaseUser
+    parseJSON = withObject "UpcaseUser" $ \o -> UpcaseUser
         <$> o .: "id"
         <*> o .: "first_name"
         <*> o .: "last_name"
         <*> o .: "email"
 
-    parseJSON _ = mzero
-
 newtype UpcaseResponse = UpcaseResponse UpcaseUser
 
 instance FromJSON UpcaseResponse where
-    parseJSON (Object o) = UpcaseResponse
+    parseJSON = withObject "UpcaseResponse" $ \o -> UpcaseResponse
         <$> o .: "user"
-
-    parseJSON _ = mzero
 
 oauth2Upcase :: YesodAuth m
              => Text -- ^ Client ID

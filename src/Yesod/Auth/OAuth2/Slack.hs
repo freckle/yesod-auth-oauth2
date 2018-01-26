@@ -12,16 +12,9 @@ module Yesod.Auth.OAuth2.Slack
     , oauth2SlackScoped
     ) where
 
-import Data.Aeson
-import Yesod.Auth
-import Yesod.Auth.OAuth2
+import Yesod.Auth.OAuth2.Prelude
 
-import Control.Exception.Lifted (throwIO)
 import Data.Maybe (catMaybes)
-import Data.Text (Text)
-import Data.Text.Encoding (encodeUtf8)
-import Network.HTTP.Conduit (Manager)
-
 import qualified Network.HTTP.Conduit as HTTP
 
 data SlackScope
