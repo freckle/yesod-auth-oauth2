@@ -143,6 +143,6 @@ toCreds name user token = Creds
         , ("access_token", atoken $ accessToken token)
         ]
         ++ maybeExtra "refresh_token" (rtoken <$> refreshToken token)
-        ++ maybeExtra "expires_in" ((T.pack . show) <$> expiresIn token)
+        ++ maybeExtra "expires_in" (T.pack . show <$> expiresIn token)
         ++ maybeExtra "phone_number" (userPhone user)
     }
