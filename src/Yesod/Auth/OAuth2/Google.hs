@@ -17,17 +17,9 @@ module Yesod.Auth.OAuth2.Google
     , oauth2GoogleScopedWithCustomId
     , googleUid
     , emailUid
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted
-import Control.Monad (mzero)
-import Data.Aeson
-import Data.Monoid ((<>))
-import Data.Text (Text)
-import Network.HTTP.Conduit (Manager)
-import Yesod.Auth
-import Yesod.Auth.OAuth2
+import Yesod.Auth.OAuth2.Prelude
 
 -- | Auth with Google
 --
@@ -97,7 +89,7 @@ data GoogleUser = GoogleUser
     }
 
 instance FromJSON GoogleUser where
-    parseJSON (Object o) = GoogleUser
+    parseJSON = withObject "GoogleUser" $ \o -> GoogleUser
         <$> o .: "sub"
         <*> o .: "name"
         <*> o .: "email"
@@ -105,8 +97,6 @@ instance FromJSON GoogleUser where
         <*> o .: "given_name"
         <*> o .: "family_name"
         <*> o .:? "hd"
-
-    parseJSON _ = mzero
 
 -- | Build a @'Creds'@ using the user's google-uid as the identifier
 googleUid :: GoogleUser -> OAuth2Token -> Creds m

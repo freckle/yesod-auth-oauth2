@@ -12,19 +12,12 @@ module Yesod.Auth.OAuth2.EveOnline
     ( oauth2Eve
     , oauth2EveScoped
     , WidgetType(..)
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted
-import Control.Monad (mzero)
-import Data.Aeson
-import Data.Text (Text)
-import Network.HTTP.Conduit (Manager)
-import Yesod.Auth
-import Yesod.Auth.OAuth2
-import Yesod.Core.Widget
+import Yesod.Auth.OAuth2.Prelude
 
 import qualified Data.Text as T
+import Yesod.Core.Widget
 
 data WidgetType m
     = Plain -- ^ Simple "Login via eveonline" text
@@ -43,14 +36,12 @@ data EveUser = EveUser
     }
 
 instance FromJSON EveUser where
-    parseJSON (Object o) = EveUser
+    parseJSON = withObject "EveUser" $ \o -> EveUser
         <$> o .: "CharacterName"
         <*> o .: "ExpiresOn"
         <*> o .: "TokenType"
         <*> o .: "CharacterOwnerHash"
         <*> o .: "CharacterID"
-
-    parseJSON _ = mzero
 
 oauth2Eve :: YesodAuth m
           => Text -- ^ Client ID

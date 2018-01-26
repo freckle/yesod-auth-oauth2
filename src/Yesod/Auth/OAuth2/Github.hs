@@ -10,19 +10,12 @@
 module Yesod.Auth.OAuth2.Github
     ( oauth2Github
     , oauth2GithubScoped
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted
-import Control.Monad (mzero)
-import Data.Aeson
+import Yesod.Auth.OAuth2.Prelude
+
 import Data.List (find)
 import Data.Maybe (fromMaybe)
-import Data.Text (Text)
-import Network.HTTP.Conduit (Manager)
-import Yesod.Auth
-import Yesod.Auth.OAuth2
-
 import qualified Data.Text as T
 
 data GithubUser = GithubUser
@@ -35,7 +28,7 @@ data GithubUser = GithubUser
     }
 
 instance FromJSON GithubUser where
-    parseJSON (Object o) = GithubUser
+    parseJSON = withObject "GithubUser" $ \o -> GithubUser
         <$> o .: "id"
         <*> o .:? "name"
         <*> o .: "login"
@@ -43,19 +36,15 @@ instance FromJSON GithubUser where
         <*> o .:? "location"
         <*> o .:? "email"
 
-    parseJSON _ = mzero
-
 data GithubUserEmail = GithubUserEmail
     { githubUserEmailAddress :: Text
     , githubUserEmailPrimary :: Bool
     }
 
 instance FromJSON GithubUserEmail where
-    parseJSON (Object o) = GithubUserEmail
+    parseJSON = withObject "GithubUserEmail" $ \o -> GithubUserEmail
         <$> o .: "email"
         <*> o .: "primary"
-
-    parseJSON _ = mzero
 
 oauth2Github :: YesodAuth m
              => Text -- ^ Client ID

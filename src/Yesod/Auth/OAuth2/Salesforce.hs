@@ -13,17 +13,11 @@ module Yesod.Auth.OAuth2.Salesforce
     , oauth2SalesforceScoped
     , oauth2SalesforceSandbox
     , oauth2SalesforceSandboxScoped
-    , module Yesod.Auth.OAuth2
     ) where
 
-import Control.Exception.Lifted
-import Control.Monad (mzero)
-import Data.Aeson
-import Data.Text (Text)
+import Yesod.Auth.OAuth2.Prelude
+
 import qualified Data.Text as T
-import Network.HTTP.Conduit (Manager)
-import Yesod.Auth
-import Yesod.Auth.OAuth2
 
 oauth2Salesforce :: YesodAuth m
                  => Text -- ^ Client ID
@@ -109,7 +103,7 @@ data User = User
     }
 
 instance FromJSON User where
-    parseJSON (Object o) = do
+    parseJSON = withObject "User" $ \o -> do
         userId          <- o .: "user_id"
         userOrg         <- o .: "organization_id"
         userNickname    <- o .: "nickname"
@@ -123,8 +117,6 @@ instance FromJSON User where
         urls            <- o .: "urls"
         userRestUrl     <- urls .: "rest"
         return User{..}
-
-    parseJSON _ = mzero
 
 toCreds :: Text -> User -> OAuth2Token -> Creds m
 toCreds name user token = Creds
