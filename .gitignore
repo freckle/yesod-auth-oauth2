@@ -1,3 +1,4 @@
 *.cabal
 .env*
 .stack-work
+TESTREPORT
