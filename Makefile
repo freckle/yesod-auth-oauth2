@@ -2,25 +2,20 @@ all: setup build test lint
 
 .PHONY: setup
 setup:
-	stack setup
-	stack build --dependencies-only --test --no-run-tests
-	stack install hlint weeder
+	stack setup $(STACK_ARGUMENTS)
+	stack build $(STACK_ARGUMENTS) --dependencies-only --test --no-run-tests
+	stack install $(STACK_ARGUMENTS) hlint weeder
 
 .PHONY: build
 build:
-	stack build --pedantic --test --no-run-tests
+	stack build $(STACK_ARGUMENTS) --pedantic --test --no-run-tests
 
 .PHONY: test
 test:
-	stack test
+	stack build $(STACK_ARGUMENTS) --test
 
 
 .PHONY: lint
 lint:
 	hlint src test
 	weeder .
-
-.PHONY: check-nightly
-check-nightly:
-	stack setup --resolver nightly
-	stack build --resolver nightly --pedantic --test

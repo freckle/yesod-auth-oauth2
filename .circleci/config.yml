@@ -1,20 +1,23 @@
 ---
 version: 2.0
 
-jobs:
-  build:
+references:
+  stack_build: &stack_build
     docker:
       - image: fpco/stack-build:lts
     steps:
       - checkout
       - run:
-          name: Source digest
-          command: git ls-files | xargs md5sum > digest
-
+          name: Digest
+          command: |
+            echo -- "$STACK_ARGUMENTS" > rdigest
+            git ls-files | xargs md5sum > sdigest
       - restore_cache:
           keys:
-            - stack-{{ .Branch }}-{{ checksum "digest" }}
-            - stack-{{ .Branch }}
+            # yamllint disable-line rule:line-length
+            - stack-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
+            - stack-{{ .Branch }}-{{ checksum "rdigest" }}-
+            - stack-{{ .Branch }}-
             - stack-
       - run:
           name: Dependencies
@@ -23,7 +26,8 @@ jobs:
           name: Build
           command: make build
       - save_cache:
-          key: stack-{{ .Branch }}-{{ checksum "digest" }}
+          # yamllint disable-line rule:line-length
+          key: stack-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
           paths:
             - ~/.stack
             - ./.stack-work
@@ -33,6 +37,30 @@ jobs:
       - run:
           name: Lint
           command: make lint
-      - run:
-          name: Build Nightly
-          command: make check-nightly
+
+jobs:
+  build_7.10.3:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --resolver lts-6.35
+  build_8.0.2:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --resolver lts-9.21
+  build_8.2.2:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --resolver lts-10.3
+  build_nightly:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --resolver nightly
+
+workflows:
+  version: 2
+  builds:
+    jobs:
+      - build_7.10.3
+      - build_8.0.2
+      - build_8.2.2
+      - build_nightly
