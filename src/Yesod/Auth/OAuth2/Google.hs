@@ -6,24 +6,22 @@
 -- * Authenticates against Google
 -- * Uses Google user id as credentials identifier
 --
--- If you were previously relying on the ability to parse email as the creds
--- identifier, you can still do that by overriding it in the creds returned by
--- the plugin. For example:
+-- If you were previously relying on email as the creds identifier, you can
+-- still do that (and more) by overriding it in the creds returned by the plugin
+-- with any value read out of the new @userResponseJSON@ key in @'credsExtra'@.
 --
--- > --
--- > -- NOTE: proper use of Maybe/Either omitted for clarity.
--- > --
+-- For example:
+--
+-- > data User = User { userEmail :: Text }
 -- >
--- > parseEmail :: ByteString -> Text
--- > parseEmail = undefined
+-- > instance FromJSON User where -- you know...
 -- >
 -- > authenticate creds = do
--- >     let userResponseJSON = fromJust $ lookup "userResponseJSON" credsExtra creds
--- >         userEmail = parseEmail userResponseJSON
--- >         updatedCreds = creds { credsIdent = userEmail }
+-- >     -- 'getUserResponse' provided by "Yesod.Auth.OAuth" module
+-- >     let Right email = userEmail <$> getUserResponse creds
+-- >         updatedCreds = creds { credsIdent = email }
 -- >
 -- >     -- continue normally with updatedCreds
---
 --
 module Yesod.Auth.OAuth2.Google
     ( oauth2Google
