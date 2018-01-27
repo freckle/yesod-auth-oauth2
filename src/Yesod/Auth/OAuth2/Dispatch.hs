@@ -22,10 +22,6 @@ import Yesod.Auth
 import Yesod.Core
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
---
--- Usually this means a second authorized request to @api/me.json@. See
--- @'fromProfileURL'@ for an example.
---
 type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
 
 -- | Dispatch the various OAuth2 handshake routes
