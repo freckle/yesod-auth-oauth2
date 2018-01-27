@@ -5,7 +5,6 @@
 --
 -- * Authenticates against upcase
 -- * Uses upcase user id as credentials identifier
--- * Returns first_name, last_name, and email as extras
 --
 module Yesod.Auth.OAuth2.Upcase
     ( oauth2Upcase
@@ -15,45 +14,32 @@ import Yesod.Auth.OAuth2.Prelude
 
 import qualified Data.Text as T
 
-data UpcaseUser = UpcaseUser
-    { upcaseUserId :: Int
-    , upcaseUserFirstName :: Text
-    , upcaseUserLastName :: Text
-    , upcaseUserEmail :: Text
-    }
+newtype User = User Int
 
-instance FromJSON UpcaseUser where
-    parseJSON = withObject "UpcaseUser" $ \o -> UpcaseUser
-        <$> o .: "id"
-        <*> o .: "first_name"
-        <*> o .: "last_name"
-        <*> o .: "email"
+instance FromJSON User where
+    parseJSON = withObject "User" $ \root -> do
+        o <- root .: "user"
+        User <$> o .: "id"
 
-newtype UpcaseResponse = UpcaseResponse UpcaseUser
+pluginName :: Text
+pluginName = "upcase"
 
-instance FromJSON UpcaseResponse where
-    parseJSON = withObject "UpcaseResponse" $ \o -> UpcaseResponse
-        <$> o .: "user"
+oauth2Upcase :: YesodAuth m => Text -> Text -> AuthPlugin m
+oauth2Upcase clientId clientSecret =
+    authOAuth2 pluginName oauth2 $ \manager token -> do
+        (User userId, userResponseJSON) <-
+            authGetProfile pluginName manager token "http://upcase.com/api/v1/me.json"
 
-oauth2Upcase :: YesodAuth m
-             => Text -- ^ Client ID
-             -> Text -- ^ Client Secret
-             -> AuthPlugin m
-oauth2Upcase clientId clientSecret = authOAuth2 "upcase"
-    OAuth2
+        pure Creds
+            { credsPlugin = pluginName
+            , credsIdent = T.pack $ show userId
+            , credsExtra = setExtra token userResponseJSON
+            }
+  where
+    oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
         , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
         , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
         , oauthCallback = Nothing
-        }
-    $ fromProfileURL "upcase" "http://upcase.com/api/v1/me.json"
-    $ \user -> Creds
-        { credsPlugin = "upcase"
-        , credsIdent = T.pack $ show $ upcaseUserId user
-        , credsExtra =
-            [ ("first_name", upcaseUserFirstName user)
-            , ("last_name", upcaseUserLastName user)
-            , ("email", upcaseUserEmail user)
-            ]
         }
