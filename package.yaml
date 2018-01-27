@@ -26,6 +26,7 @@ library:
     - http-types >=0.8 && <0.10
     - microlens
     - random
+    - safe
     - safe-exceptions
     - text >=0.7 && <2.0
     - transformers >=0.2.2 && <0.6
