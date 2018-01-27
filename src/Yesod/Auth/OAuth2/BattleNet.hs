@@ -14,7 +14,6 @@ module Yesod.Auth.OAuth2.BattleNet
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T (pack, toLower)
 import Yesod.Core.Widget
 
@@ -43,10 +42,7 @@ oAuth2BattleNet clientId clientSecret region widget =
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = T.pack $ show userId
-            , credsExtra =
-                [ ("accessToken", atoken $ accessToken token)
-                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                ]
+            , credsExtra = setExtra token userResponseJSON
             }
   where
     host = wwwHost $ T.toLower region

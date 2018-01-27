@@ -32,8 +32,6 @@ module Yesod.Auth.OAuth2.Google
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy as BL
-
 newtype User = User Text
 
 instance FromJSON User where
@@ -59,10 +57,7 @@ oauth2GoogleScoped scopes clientId clientSecret =
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = userId
-            , credsExtra =
-                [ ("accessToken", atoken $ accessToken token)
-                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                ]
+            , credsExtra = setExtra token userResponseJSON
             }
   where
     oauth2 = OAuth2

@@ -13,8 +13,8 @@ module Yesod.Auth.OAuth2.Prelude
 
     -- * Helpers
     , authGetProfile
+    , setExtra
     , scopeParam
-    , maybeExtra
 
     -- * Text
     , Text
@@ -123,6 +123,13 @@ fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a
 fromAuthJSON name =
     -- FIXME: unique exception constructors
     either (throwIO . InvalidProfileResponse name . BL8.pack) pure . eitherDecode
+
+-- | Construct (part of) @'credsExtra'@ container the token and user response
+setExtra :: OAuth2Token -> BL.ByteString -> [(Text, Text)]
+setExtra token userResponseJSON =
+    [ ("accessToken", atoken $ accessToken token)
+    , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
+    ]
 
 -- | Construct an @'InvalidProfileResponse'@ exception from an @'OAuth2Error'@
 --

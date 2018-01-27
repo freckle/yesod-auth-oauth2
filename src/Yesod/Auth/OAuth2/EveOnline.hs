@@ -15,7 +15,6 @@ module Yesod.Auth.OAuth2.EveOnline
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 import Yesod.Core.Widget
 
@@ -60,10 +59,7 @@ oauth2EveScoped scopes widgetType clientId clientSecret =
             { credsPlugin = "eveonline"
             -- FIXME: Preserved bug. See similar comment in Bitbucket provider.
             , credsIdent = T.pack $ show userId
-            , credsExtra =
-                [ ("accessToken", atoken $ accessToken token)
-                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                ]
+            , credsExtra = setExtra token userResponseJSON
             }
   where
     oauth2 = OAuth2
