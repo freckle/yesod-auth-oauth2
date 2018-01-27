@@ -6,68 +6,63 @@ module Yesod.Auth.OAuth2.Nylas
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy.Char8 as BSL8
+import Control.Monad (unless)
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Lazy.Char8 as BL8
 import Network.HTTP.Client
-    (applyBasicAuth, httpLbs, parseRequest, responseBody, responseStatus)
 import qualified Network.HTTP.Types as HT
 
-data NylasAccount = NylasAccount
-    { nylasAccountId :: Text
-    , nylasAccountEmailAddress :: Text
-    , nylasAccountName :: Text
-    , nylasAccountProvider :: Text
-    , nylasAccountOrganizationUnit :: Text
-    }
+newtype User = User Text
 
-instance FromJSON NylasAccount where
-    parseJSON = withObject "NylasAccount" $ \o -> NylasAccount
+instance FromJSON User where
+    parseJSON = withObject "User" $ \o -> User
         <$> o .: "id"
-        <*> o .: "email_address"
-        <*> o .: "name"
-        <*> o .: "provider"
-        <*> o .: "organization_unit"
 
-oauth2Nylas :: YesodAuth m
-            => Text -- ^ Client ID
-            -> Text -- ^ Client Secret
-            -> AuthPlugin m
-oauth2Nylas clientId clientSecret = authOAuth2 "nylas" oauth fetchCreds
+pluginName :: Text
+pluginName = "nylas"
+
+defaultScopes :: [Text]
+defaultScopes = ["email"]
+
+oauth2Nylas :: YesodAuth m => Text -> Text -> AuthPlugin m
+oauth2Nylas clientId clientSecret =
+    authOAuth2 pluginName oauth $ \manager token -> do
+        req <- applyBasicAuth (encodeUtf8 $ atoken $ accessToken token) ""
+            <$> parseRequest "https://api.nylas.com/account"
+        resp <- httpLbs req manager
+        let userResponseJSON = responseBody resp
+
+        -- FIXME: was this working? I'm 95% sure that the client will throw its
+        -- own exception on unsuccessful status codes.
+        unless (HT.statusIsSuccessful $ responseStatus resp)
+            $ throwIO $ InvalidProfileResponse pluginName
+            $ "Unsuccessful HTTP response: " <> userResponseJSON
+
+
+        either
+            (throwIO . InvalidProfileResponse pluginName . BL8.pack)
+            (\(User userId) -> pure Creds
+                { credsPlugin = pluginName
+                , credsIdent = userId
+                , credsExtra =
+                    [ ("accessToken", atoken $ accessToken token)
+                    , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
+                    ]
+                }
+            )
+            $ eitherDecode userResponseJSON
   where
     oauth = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
         , oauthOAuthorizeEndpoint = "https://api.nylas.com/oauth/authorize" `withQuery`
             [ ("response_type", "code")
-            , ("scope", "email")
             , ("client_id", encodeUtf8 clientId)
+            -- N.B. The scopes delimeter is unknown/untested. Verify that before
+            -- extracting this to an argument and offering a Scoped function. In
+            -- its current state, it doesn't matter because it's only one scope.
+            , scopeParam "," defaultScopes
             ]
         , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
         , oauthCallback = Nothing
         }
-
-fetchCreds :: Manager -> OAuth2Token -> IO (Creds a)
-fetchCreds manager token = do
-    req <- authorize <$> parseRequest "https://api.nylas.com/account"
-    resp <- httpLbs req manager
-    if HT.statusIsSuccessful (responseStatus resp)
-        then case eitherDecode (responseBody resp) of
-            Right ns -> return $ toCreds ns token
-            Left err -> throwIO $ parseFailure err
-        else throwIO requestFailure
-  where
-    authorize = applyBasicAuth (encodeUtf8 $ atoken $ accessToken token) ""
-    parseFailure = InvalidProfileResponse "nylas" . BSL8.pack
-    requestFailure = InvalidProfileResponse "nylas" "failed to get account"
-
-toCreds :: NylasAccount -> OAuth2Token -> Creds a
-toCreds ns token = Creds
-    { credsPlugin = "nylas"
-    , credsIdent = nylasAccountId ns
-    , credsExtra =
-        [ ("email_address", nylasAccountEmailAddress ns)
-        , ("name", nylasAccountName ns)
-        , ("provider", nylasAccountProvider ns)
-        , ("organization_unit", nylasAccountOrganizationUnit ns)
-        , ("access_token", atoken $ accessToken token)
-        ]
-    }
