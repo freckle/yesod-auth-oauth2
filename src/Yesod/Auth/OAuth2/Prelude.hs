@@ -12,7 +12,7 @@ module Yesod.Auth.OAuth2.Prelude
     , invalidProfileResponse
 
     -- * Helpers
-    , fromProfileURL
+    , authGetProfile
     , scopeParam
     , maybeExtra
 
@@ -43,7 +43,6 @@ module Yesod.Auth.OAuth2.Prelude
 
     -- * HTTP
     , Manager
-    , authGetJSON
 
     -- * Yesod
     , YesodAuth(..)
@@ -59,12 +58,17 @@ module Yesod.Auth.OAuth2.Prelude
     -- * Temporary, until I finish re-structuring modules
     , authOAuth2
     , authOAuth2Widget
+
+    -- * Deprecated, until everything's moved over to @'authGetProfile'@
+    , authGetJSON
+    , fromProfileURL
     ) where
 
 import Control.Exception.Safe
 import Data.Aeson
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BSL
+import qualified Data.ByteString.Lazy.Char8 as BSL8
 import Data.Semigroup ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -80,14 +84,51 @@ import Yesod.Auth.OAuth2
 --
 -- The error is a lazy bytestring because it's most often encoded JSON.
 --
+-- Deprecated. Eventually, we'll return @Either@s all the way up.
+--
 data YesodOAuth2Exception = InvalidProfileResponse Text BSL.ByteString
     deriving (Show, Typeable)
 instance Exception YesodOAuth2Exception
+
+-- | Retrieve a user's profile as JSON
+--
+-- The response should be parsed only far enough to read the required
+-- @'credsIdent'@. The raw response is returned as well, to be set in
+-- @'credsExtra'@for consumers to re-use if information they seek is in the
+-- response already.
+--
+-- Information requiring other requests should use the access token (also in
+-- @'credsExtra'@ to make subsequent requests themselves.
+--
+authGetProfile
+    :: FromJSON a
+    => Text -- ^ Plugin name
+    -> Manager
+    -> OAuth2Token
+    -> URI
+    -> IO (a, BSL.ByteString)
+authGetProfile name manager token url = do
+    resp <- fromAuthGet name =<< authGetBS manager (accessToken token) url
+    decoded <- fromAuthJSON name resp
+    pure (decoded, resp)
+
+-- | Throws a @Left@ result as an @'InvalidProfileResponse'@
+fromAuthGet :: Text -> Either (OAuth2Error Value) BSL.ByteString -> IO BSL.ByteString
+fromAuthGet _ (Right bs) = pure bs -- nice
+fromAuthGet name (Left err) = throwIO $ invalidProfileResponse name err
+
+-- | Throws a decoding error as an @'InvalidProfileResponse'@
+fromAuthJSON :: FromJSON a => Text -> BSL.ByteString -> IO a
+fromAuthJSON name =
+    -- FIXME: unique exception constructors
+    either (throwIO . InvalidProfileResponse name . BSL8.pack) pure . eitherDecode
 
 -- | Construct an @'InvalidProfileResponse'@ exception from an @'OAuth2Error'@
 --
 -- This forces the @e@ in @'OAuth2Error' e@ to parse as a JSON @'Value'@ which
 -- is then re-encoded for the exception message.
+--
+-- Deprecated.
 --
 invalidProfileResponse :: Text -> OAuth2Error Value -> YesodOAuth2Exception
 invalidProfileResponse name = InvalidProfileResponse name . encode
@@ -96,10 +137,11 @@ invalidProfileResponse name = InvalidProfileResponse name . encode
 --
 -- Throws @'InvalidProfileResponse'@ if JSON parsing fails
 --
+-- Deprecated.
+--
 fromProfileURL :: FromJSON a => Text -> URI -> (a -> Creds m) -> FetchCreds m
-fromProfileURL name url toCreds manager token = do
-    result <- authGetJSON manager (accessToken token) url
-    either (throwIO . invalidProfileResponse name) (return . toCreds) result
+fromProfileURL name url toCreds manager token =
+    toCreds . fst <$> authGetProfile name manager token url
 
 -- | A tuple of @scope@ and the given scopes separated by a delimiter
 scopeParam :: Text -> [Text] -> (ByteString, ByteString)
