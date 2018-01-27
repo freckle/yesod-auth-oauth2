@@ -14,18 +14,18 @@ module Yesod.Auth.OAuth2.BattleNet
 
 import Yesod.Auth.OAuth2.Prelude
 
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T (pack, toLower)
 import Yesod.Core.Widget
 
-data BattleNetUser = BattleNetUser
-    { userId :: Int
-    , battleTag :: Text
-    }
+newtype User = User Int
 
-instance FromJSON BattleNetUser where
-    parseJSON = withObject "BattleNetUser" $ \o -> BattleNetUser
+instance FromJSON User where
+    parseJSON = withObject "User" $ \o -> User
         <$> o .: "id"
-        <*> o .: "battletag"
+
+pluginName :: Text
+pluginName = "battle.net"
 
 oAuth2BattleNet
     :: YesodAuth m
@@ -35,9 +35,22 @@ oAuth2BattleNet
     -> WidgetT m IO () -- ^ Login widget
     -> AuthPlugin m
 oAuth2BattleNet clientId clientSecret region widget =
-    authOAuth2Widget widget "battle.net" oAuthData $ makeCredentials region
+    authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
+        (User userId, userResponseJSON) <-
+            authGetProfile pluginName manager token
+                $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
+
+        pure Creds
+            { credsPlugin = pluginName
+            , credsIdent = T.pack $ show userId
+            , credsExtra =
+                [ ("accessToken", atoken $ accessToken token)
+                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
+                ]
+            }
   where
-    oAuthData = OAuth2
+    host = wwwHost $ T.toLower region
+    oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
         , oauthOAuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
@@ -45,22 +58,6 @@ oAuth2BattleNet clientId clientSecret region widget =
         , oauthCallback = Nothing
         }
 
-    host = wwwHost $ T.toLower region
-
-makeCredentials :: Text -> Manager -> OAuth2Token -> IO (Creds m)
-makeCredentials region manager token = do
-    userResult <- authGetJSON manager (accessToken token)
-        $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
-
-    either
-        (throwIO . invalidProfileResponse "battle.net")
-        (\user ->
-            return Creds
-               { credsPlugin = "battle.net"
-               , credsIdent = T.pack $ show $ userId user
-               , credsExtra = [("battletag", battleTag user)]
-               }
-        ) userResult
 
 apiHost :: Text -> Host
 apiHost "cn" = "api.battlenet.com.cn"
