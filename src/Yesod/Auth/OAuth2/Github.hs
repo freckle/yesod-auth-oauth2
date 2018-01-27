@@ -5,7 +5,6 @@
 --
 -- * Authenticates against github
 -- * Uses github user id as credentials identifier
--- * Returns first_name, last_name, and email as extras
 --
 module Yesod.Auth.OAuth2.Github
     ( oauth2Github
@@ -14,7 +13,6 @@ module Yesod.Auth.OAuth2.Github
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 
 newtype User = User Int
@@ -41,10 +39,7 @@ oauth2GithubScoped scopes clientId clientSecret =
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = T.pack $ show userId
-            , credsExtra =
-                [ ("accessToken", atoken $ accessToken token)
-                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                ]
+            , credsExtra = setExtra token userResponseJSON
             }
   where
     oauth2 = OAuth2

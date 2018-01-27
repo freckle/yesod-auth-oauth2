@@ -13,7 +13,6 @@ module Yesod.Auth.OAuth2.Bitbucket
 
 import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 
 newtype User = User Text
@@ -46,10 +45,7 @@ oauth2BitbucketScoped scopes clientId clientSecret =
             -- minor wart. Breaking typed APIs is one thing, causing data to go
             -- invalid is another.
             , credsIdent = T.pack $ show userId
-            , credsExtra =
-                [ ("accessToken", atoken $ accessToken token)
-                , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                ]
+            , credsExtra = setExtra token userResponseJSON
             }
   where
     oauth2 = OAuth2

@@ -7,7 +7,6 @@ module Yesod.Auth.OAuth2.Nylas
 import Yesod.Auth.OAuth2.Prelude
 
 import Control.Monad (unless)
-import qualified Data.ByteString.Lazy as BL
 import qualified Data.ByteString.Lazy.Char8 as BL8
 import Network.HTTP.Client
 import qualified Network.HTTP.Types as HT
@@ -44,10 +43,7 @@ oauth2Nylas clientId clientSecret =
             (\(User userId) -> pure Creds
                 { credsPlugin = pluginName
                 , credsIdent = userId
-                , credsExtra =
-                    [ ("accessToken", atoken $ accessToken token)
-                    , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
-                    ]
+                , credsExtra = setExtra token userResponseJSON
                 }
             )
             $ eitherDecode userResponseJSON
