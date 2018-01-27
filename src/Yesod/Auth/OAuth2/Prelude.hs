@@ -50,6 +50,7 @@ module Yesod.Auth.OAuth2.Prelude
     , Creds(..)
 
     -- * Bytestring URI types
+    , URI
     , Host(..)
 
     -- * Bytestring URI extensions
