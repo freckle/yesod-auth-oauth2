@@ -62,13 +62,14 @@ module Yesod.Auth.OAuth2.Prelude
     -- * Deprecated, until everything's moved over to @'authGetProfile'@
     , authGetJSON
     , fromProfileURL
+    , maybeExtra
     ) where
 
 import Control.Exception.Safe
 import Data.Aeson
 import Data.ByteString (ByteString)
-import qualified Data.ByteString.Lazy as BSL
-import qualified Data.ByteString.Lazy.Char8 as BSL8
+import qualified Data.ByteString.Lazy as BL
+import qualified Data.ByteString.Lazy.Char8 as BL8
 import Data.Semigroup ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -86,7 +87,7 @@ import Yesod.Auth.OAuth2
 --
 -- Deprecated. Eventually, we'll return @Either@s all the way up.
 --
-data YesodOAuth2Exception = InvalidProfileResponse Text BSL.ByteString
+data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
     deriving (Show, Typeable)
 instance Exception YesodOAuth2Exception
 
@@ -106,22 +107,22 @@ authGetProfile
     -> Manager
     -> OAuth2Token
     -> URI
-    -> IO (a, BSL.ByteString)
+    -> IO (a, BL.ByteString)
 authGetProfile name manager token url = do
     resp <- fromAuthGet name =<< authGetBS manager (accessToken token) url
     decoded <- fromAuthJSON name resp
     pure (decoded, resp)
 
 -- | Throws a @Left@ result as an @'InvalidProfileResponse'@
-fromAuthGet :: Text -> Either (OAuth2Error Value) BSL.ByteString -> IO BSL.ByteString
+fromAuthGet :: Text -> Either (OAuth2Error Value) BL.ByteString -> IO BL.ByteString
 fromAuthGet _ (Right bs) = pure bs -- nice
 fromAuthGet name (Left err) = throwIO $ invalidProfileResponse name err
 
 -- | Throws a decoding error as an @'InvalidProfileResponse'@
-fromAuthJSON :: FromJSON a => Text -> BSL.ByteString -> IO a
+fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a
 fromAuthJSON name =
     -- FIXME: unique exception constructors
-    either (throwIO . InvalidProfileResponse name . BSL8.pack) pure . eitherDecode
+    either (throwIO . InvalidProfileResponse name . BL8.pack) pure . eitherDecode
 
 -- | Construct an @'InvalidProfileResponse'@ exception from an @'OAuth2Error'@
 --
