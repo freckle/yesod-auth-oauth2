@@ -8,7 +8,7 @@
 --
 -- If you were previously relying on email as the creds identifier, you can
 -- still do that (and more) by overriding it in the creds returned by the plugin
--- with any value read out of the new @userResponseJSON@ key in @'credsExtra'@.
+-- with any value read out of the new @userResponse@ key in @'credsExtra'@.
 --
 -- For example:
 --
@@ -17,8 +17,8 @@
 -- > instance FromJSON User where -- you know...
 -- >
 -- > authenticate creds = do
--- >     -- 'getUserResponse' provided by "Yesod.Auth.OAuth" module
--- >     let Right email = userEmail <$> getUserResponse creds
+-- >     -- 'getUserResponseJSON' provided by "Yesod.Auth.OAuth" module
+-- >     let Right email = userEmail <$> getUserResponseJSON creds
 -- >         updatedCreds = creds { credsIdent = email }
 -- >
 -- >     -- continue normally with updatedCreds
@@ -49,13 +49,13 @@ oauth2Google = oauth2GoogleScoped defaultScopes
 oauth2GoogleScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2GoogleScoped scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "https://www.googleapis.com/oauth2/v3/userinfo"
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

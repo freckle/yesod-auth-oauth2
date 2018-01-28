@@ -57,12 +57,12 @@ salesforceHelper
     -> AuthPlugin m
 salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSecret =
     authOAuth2 name oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <- authGetProfile name manager token profileUri
+        (User userId, userResponse) <- authGetProfile name manager token profileUri
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

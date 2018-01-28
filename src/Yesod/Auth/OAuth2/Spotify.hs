@@ -21,13 +21,13 @@ pluginName = "spotify"
 oauth2Spotify :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2Spotify scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "https://api.spotify.com/v1/me"
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

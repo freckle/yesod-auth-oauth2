@@ -33,7 +33,7 @@ oauth2Bitbucket = oauth2BitbucketScoped defaultScopes
 oauth2BitbucketScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2BitbucketScoped scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "https://api.bitbucket.com/2.0/user"
 
         pure Creds
@@ -45,7 +45,7 @@ oauth2BitbucketScoped scopes clientId clientSecret =
             -- minor wart. Breaking typed APIs is one thing, causing data to go
             -- invalid is another.
             , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

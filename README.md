@@ -42,7 +42,7 @@ authenticate creds = do
     let
         -- You can run your own FromJSON parser on the respose we already have
         eGitHubUser :: Either String GitHubUser
-        eGitHubUser = getUserResponse creds
+        eGitHubUser = getUserResponseJSON creds
 
         -- Avert your eyes
         Right githubUser = eGitHubUser
@@ -76,9 +76,9 @@ oauth2MySite :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2MySite clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
         -- Fetch a profile using the manager and token, leave it a ByteString
-        userResponseJSON <- -- ...
+        userResponse <- -- ...
 
-        -- Parse it to your preferred identifier, see Data.Aeson
+        -- Parse it to your preferred identifier, e.g. with Data.Aeson
         userId <- -- ...
 
         -- See authGetProfile for the typical case
@@ -86,7 +86,7 @@ oauth2MySite clientId clientSecret =
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

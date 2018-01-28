@@ -27,13 +27,13 @@ pluginName = "upcase"
 oauth2Upcase :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2Upcase clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "http://upcase.com/api/v1/me.json"
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

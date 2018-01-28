@@ -117,10 +117,10 @@ scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
 -- Sets the following keys:
 --
 -- - @accessToken@: to support follow-up requests
--- - @userResponseJSON@: to support getting additional information
+-- - @userResponse@: to support getting additional information
 --
 setExtra :: OAuth2Token -> BL.ByteString -> [(Text, Text)]
-setExtra token userResponseJSON =
+setExtra token userResponse =
     [ ("accessToken", atoken $ accessToken token)
-    , ("userResponseJSON", decodeUtf8 $ BL.toStrict userResponseJSON)
+    , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)
     ]
