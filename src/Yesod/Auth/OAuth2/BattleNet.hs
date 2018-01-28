@@ -35,14 +35,14 @@ oAuth2BattleNet
     -> AuthPlugin m
 oAuth2BattleNet clientId clientSecret region widget =
     authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token
                 $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     host = wwwHost $ T.toLower region

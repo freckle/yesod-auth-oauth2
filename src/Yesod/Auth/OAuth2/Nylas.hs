@@ -29,13 +29,13 @@ oauth2Nylas clientId clientSecret =
         req <- applyBasicAuth (encodeUtf8 $ atoken $ accessToken token) ""
             <$> parseRequest "https://api.nylas.com/account"
         resp <- httpLbs req manager
-        let userResponseJSON = responseBody resp
+        let userResponse = responseBody resp
 
         -- FIXME: was this working? I'm 95% sure that the client will throw its
         -- own exception on unsuccessful status codes.
         unless (HT.statusIsSuccessful $ responseStatus resp)
             $ throwIO $ InvalidProfileResponse pluginName
-            $ "Unsuccessful HTTP response: " <> userResponseJSON
+            $ "Unsuccessful HTTP response: " <> userResponse
 
 
         either
@@ -43,10 +43,10 @@ oauth2Nylas clientId clientSecret =
             (\(User userId) -> pure Creds
                 { credsPlugin = pluginName
                 , credsIdent = userId
-                , credsExtra = setExtra token userResponseJSON
+                , credsExtra = setExtra token userResponse
                 }
             )
-            $ eitherDecode userResponseJSON
+            $ eitherDecode userResponse
   where
     oauth = OAuth2
         { oauthClientId = clientId

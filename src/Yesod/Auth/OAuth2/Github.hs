@@ -33,13 +33,13 @@ oauth2Github = oauth2GithubScoped defaultScopes
 oauth2GithubScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2GithubScoped scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "https://api.github.com/user"
 
         pure Creds
             { credsPlugin = pluginName
             , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2

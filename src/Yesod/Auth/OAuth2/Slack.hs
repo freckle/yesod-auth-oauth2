@@ -50,17 +50,17 @@ oauth2SlackScoped scopes clientId clientSecret =
         let param = encodeUtf8 $ atoken $ accessToken token
         req <- setQueryString [("token", Just param)]
             <$> parseUrlThrow "https://slack.com/api/users.identity"
-        userResponseJSON <- responseBody <$> httpLbs req manager
+        userResponse <- responseBody <$> httpLbs req manager
 
         either
-            (const $ throwIO $ InvalidProfileResponse pluginName userResponseJSON)
+            (const $ throwIO $ InvalidProfileResponse pluginName userResponse)
             (\(User userId) -> pure Creds
                 { credsPlugin = pluginName
                 , credsIdent = userId
-                , credsExtra = setExtra token userResponseJSON
+                , credsExtra = setExtra token userResponse
                 }
             )
-            $ eitherDecode userResponseJSON
+            $ eitherDecode userResponse
   where
     oauth2 = OAuth2
         { oauthClientId = clientId

@@ -19,8 +19,8 @@ module Yesod.Auth.OAuth2
 
     -- * Reading our @'credsExtra'@ keys
     , getAccessToken
-    , getUserResponseJSON
     , getUserResponse
+    , getUserResponseJSON
     ) where
 
 import Data.Aeson (FromJSON, eitherDecode)
@@ -74,15 +74,15 @@ getAccessToken = AccessToken
 --
 -- This is unsafe.
 --
-getUserResponseJSON :: Creds m -> ByteString
-getUserResponseJSON = fromStrict . encodeUtf8
-    . fromJustNote "yesod-auth-oauth2 bug: credsExtra without userResponseJSON"
-    . lookup "userResponseJSON" . credsExtra
+getUserResponse :: Creds m -> ByteString
+getUserResponse = fromStrict . encodeUtf8
+    . fromJustNote "yesod-auth-oauth2 bug: credsExtra without userResponse"
+    . lookup "userResponse" . credsExtra
 
--- | Read from the values set via @'setExtra'@
+-- | Read from the values set via @'setExtra'@, decode as JSON
 --
 -- This is unsafe if the key is missing, but safe with respect to parsing
 -- errors.
 --
-getUserResponse :: FromJSON a => Creds m -> Either String a
-getUserResponse = eitherDecode . getUserResponseJSON
+getUserResponseJSON :: FromJSON a => Creds m -> Either String a
+getUserResponseJSON = eitherDecode . getUserResponse

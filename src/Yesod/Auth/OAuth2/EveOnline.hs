@@ -52,14 +52,14 @@ oauth2Eve = oauth2EveScoped defaultScopes
 oauth2EveScoped :: YesodAuth m => [Text] -> WidgetType m -> Text -> Text -> AuthPlugin m
 oauth2EveScoped scopes widgetType clientId clientSecret =
     authOAuth2Widget (asWidget widgetType) pluginName oauth2 $ \manager token -> do
-        (User userId, userResponseJSON) <-
+        (User userId, userResponse) <-
             authGetProfile pluginName manager token "https://login.eveonline.com/oauth/verify"
 
         pure Creds
             { credsPlugin = "eveonline"
             -- FIXME: Preserved bug. See similar comment in Bitbucket provider.
             , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponseJSON
+            , credsExtra = setExtra token userResponse
             }
   where
     oauth2 = OAuth2
