@@ -9,8 +9,9 @@
 -- * Returns user's battletag in extras.
 --
 module Yesod.Auth.OAuth2.BattleNet
-  ( oAuth2BattleNet
-  ) where
+    ( oauth2BattleNet
+    , oAuth2BattleNet
+    ) where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -26,14 +27,14 @@ instance FromJSON User where
 pluginName :: Text
 pluginName = "battle.net"
 
-oAuth2BattleNet
+oauth2BattleNet
     :: YesodAuth m
-    => Text -- ^ Client ID
-    -> Text -- ^ Client Secret
+    => WidgetT m IO () -- ^ Login widget
     -> Text -- ^ User region (e.g. "eu", "cn", "us")
-    -> WidgetT m IO () -- ^ Login widget
+    -> Text -- ^ Client ID
+    -> Text -- ^ Client Secret
     -> AuthPlugin m
-oAuth2BattleNet clientId clientSecret region widget =
+oauth2BattleNet widget region clientId clientSecret =
     authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
         (User userId, userResponse) <-
             authGetProfile pluginName manager token
@@ -62,3 +63,7 @@ apiHost region = Host $ encodeUtf8 $ region <> ".api.battle.net"
 wwwHost :: Text -> Host
 wwwHost "cn" = "www.battlenet.com.cn"
 wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"
+
+oAuth2BattleNet :: YesodAuth m => Text -> Text -> Text -> WidgetT m IO () -> AuthPlugin m
+oAuth2BattleNet i s r w = oauth2BattleNet w r i s
+{-# DEPRECATED oAuth2BattleNet "Use oauth2BattleNet" #-}
