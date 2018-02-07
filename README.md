@@ -44,16 +44,17 @@ authenticate creds = do
         eGitHubUser :: Either String GitHubUser
         eGitHubUser = getUserResponseJSON creds
 
-        -- Avert your eyes
+        -- Avert your eyes, simplified example
+        Just accessToken = getAccessToken creds
         Right githubUser = eGitHubUser
 
     -- Or make followup requests using our access token
-    runGitHub (getAccessToken creds) $ userRepositories githubUser
+    runGitHub accessToken $ userRepositories githubUser
 
     -- Or store it for later
     insert User
         { userIdent = credsIdent creds
-        , userAccessToken = getAccessToken creds
+        , userAccessToken = accessToken
         }
 ```
 
