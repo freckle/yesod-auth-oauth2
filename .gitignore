@@ -1,4 +1,12 @@
 *.cabal
-.env*
 .stack-work
+
+# OAuth keys configuration for the example
+.env*
+!.env.example
+
+# Created when running the example
+client_session_key.aes
+
+# Used by stack test --rerun
 TESTREPORT
