@@ -5,7 +5,7 @@
 --
 -- Generic OAuth2 plugin for Yesod
 --
--- See "Yesod.Auth.OAuth2.GitHub" for example usage.
+-- See @"Yesod.Auth.OAuth2.GitHub"@ for example usage.
 --
 module Yesod.Auth.OAuth2
     ( OAuth2(..)
@@ -40,7 +40,7 @@ oauth2Url name = PluginR name ["forward"]
 
 -- | Create an @'AuthPlugin'@ for the given OAuth2 provider
 --
--- Presents a generic @"Login via name"@ link
+-- Presents a generic @"Login via #{name}"@ link
 --
 authOAuth2 :: YesodAuth m => Text -> OAuth2 -> FetchCreds m -> AuthPlugin m
 authOAuth2 name = authOAuth2Widget [whamlet|Login via #{name}|] name
