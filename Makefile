@@ -8,7 +8,9 @@ setup:
 
 .PHONY: build
 build:
-	stack build $(STACK_ARGUMENTS) --pedantic --test --no-run-tests
+	stack build $(STACK_ARGUMENTS) \
+	  --flag yesod-auth-oauth2:example \
+	  --pedantic --test --no-run-tests
 
 .PHONY: test
 test:
