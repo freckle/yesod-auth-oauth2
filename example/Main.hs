@@ -3,6 +3,7 @@
 {-# LANGUAGE QuasiQuotes #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 
 -- |
@@ -20,9 +21,15 @@
 --
 module Main where
 
+import Data.Aeson
+import Data.Aeson.Encode.Pretty
+import Data.ByteString.Lazy (fromStrict, toStrict)
+import qualified Data.Map as M
+import Data.Maybe (fromJust)
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
+import Data.Text.Encoding (decodeUtf8)
 import LoadEnv
 import Network.HTTP.Conduit
 import Network.Wai.Handler.Warp (runEnv)
@@ -81,13 +88,37 @@ getRootR :: Handler Html
 getRootR = do
     sess <- getSession
 
+    let
+        prettify
+            = decodeUtf8
+            . toStrict
+            . encodePretty
+            . fromJust
+            . decode @Value
+            . fromStrict
+
+        mCredsIdent = decodeUtf8 <$> M.lookup "credsIdent" sess
+        mCredsPlugin = decodeUtf8 <$> M.lookup "credsPlugin" sess
+        mAccessToken = decodeUtf8 <$> M.lookup "accessToken" sess
+        mUserResponse = prettify <$> M.lookup "userResponse" sess
+
     defaultLayout [whamlet|
         <h1>Yesod Auth OAuth2 Example
         <h2>
             <a href=@{AuthR LoginR}>Log in
-        <h2>Session Information
-        <pre style="word-wrap: break-word;">
-            #{show sess}
+
+        <h2>Credentials
+
+        <h3>Plugin / Ident
+        <p>#{show mCredsPlugin} / #{show mCredsIdent}
+
+        <h3>Access Token
+        <p>#{show mAccessToken}
+
+        <h3>User Response
+        <pre>
+            $maybe userResponse <- mUserResponse
+                #{userResponse}
     |]
 
 mkFoundation :: IO App
