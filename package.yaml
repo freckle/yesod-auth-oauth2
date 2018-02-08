@@ -44,6 +44,9 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - yesod-auth-oauth2
+      - aeson
+      - aeson-pretty
+      - bytestring
       - containers
       - http-conduit
       - load-env
