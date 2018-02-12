@@ -62,7 +62,7 @@ oauth2GoogleScoped scopes clientId clientSecret =
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
         , oauthOAuthorizeEndpoint = "https://accounts.google.com/o/oauth2/auth" `withQuery`
-            [ scopeParam "+" scopes
+            [ scopeParam " " scopes
             ]
         , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
         , oauthCallback = Nothing
