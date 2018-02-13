@@ -51,7 +51,7 @@ jobs:
     environment:
       # FIXME: https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/115
       LINT: "0"
-      STACK_ARGUMENTS: --resolver lts-9.21
+      STACK_ARGUMENTS: --stack-yaml stack-lts-9.21.yaml
   build_8.2.2:
     <<: *stack_build
     environment:
