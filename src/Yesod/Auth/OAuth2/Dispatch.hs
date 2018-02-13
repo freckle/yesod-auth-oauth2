@@ -8,7 +8,7 @@ module Yesod.Auth.OAuth2.Dispatch
     , dispatchAuthRequest
     ) where
 
-import Control.Exception.Safe (tryIO)
+import Control.Exception.Safe (throwString, tryIO)
 import Control.Monad (unless)
 import Data.Monoid ((<>))
 import Data.Text (Text)
@@ -79,9 +79,17 @@ withCallbackAndState :: Text -> OAuth2 -> Text -> AuthHandler m OAuth2
 withCallbackAndState name oauth2 csrf = do
     let url = PluginR name ["callback"]
     render <- getParentUrlRender
-    return oauth2
-        -- FIXME: an invalid AppRoot can blow this up
-        { oauthCallback = Just $ unsafeFromText $ render url
+    let callbackText = render url
+
+    callback <- maybe
+        (throwString
+            $ "Invalid callback URI: "
+            <> T.unpack callbackText
+            <> ". Not using an absolute Approot?"
+        ) pure $ fromText callbackText
+
+    pure oauth2
+        { oauthCallback = Just callback
         , oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth2
             `withQuery` [("state", encodeUtf8 csrf)]
         }
