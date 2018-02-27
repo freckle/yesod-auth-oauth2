@@ -1,7 +1,22 @@
 ## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.1...master)
 
+
+- COMPATIBILITY: Dropped a lot of information from `credsExtra`:
+
+  **TL;DR**: you'll no longer find things like `username` or `email` as keys in
+  the `credsExtra` map. Instead, you'll find the encoded profile response we
+  received and the OAuth access token. You can/should do your own decoding or
+  make your own follow-up requests to get extra data about your users.
+
+  This reduced a lot of complexity, likely duplication between our decoding and
+  yours, and (I think) makes the library easier to use.
+
+  - [Issue](https://github.com/thoughtbot/yesod-auth-oauth2/issues/71)
+  - [PR](https://github.com/thoughtbot/yesod-auth-oauth2/pull/100)
+
 - COMPATIBILITY: Support GHC-8.2
 - COMPATIBILITY: Drop support for GHC-7.8
+- LICENSE: fixed vague licensing (MIT now)
 
 ## [v0.3.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.0...v0.3.1)
 
