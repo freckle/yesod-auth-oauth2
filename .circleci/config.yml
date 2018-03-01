@@ -42,10 +42,6 @@ references:
             fi
 
 jobs:
-  build_7.10.3:
-    <<: *stack_build
-    environment:
-      STACK_ARGUMENTS: --resolver lts-6.35
   build_8.0.2:
     <<: *stack_build
     environment:
@@ -67,8 +63,6 @@ workflows:
   version: 2
   builds:
     jobs:
-      # FIXME: https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/113
-      # - build_7.10.3
       - build_8.0.2
       - build_8.2.2
       - build
