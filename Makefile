@@ -14,7 +14,9 @@ build:
 
 .PHONY: test
 test:
-	stack build $(STACK_ARGUMENTS) --test
+	stack build $(STACK_ARGUMENTS) \
+	  --flag yesod-auth-oauth2:example \
+	  --pedantic --test
 
 
 .PHONY: lint
