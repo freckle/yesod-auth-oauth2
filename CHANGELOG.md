@@ -15,7 +15,7 @@
   - [PR](https://github.com/thoughtbot/yesod-auth-oauth2/pull/100)
 
 - COMPATIBILITY: Support GHC-8.2
-- COMPATIBILITY: Drop support for GHC-7.8
+- COMPATIBILITY: Drop (claimed, but never tested) support for GHC-7.8 & 7.10
 - LICENSE: fixed vague licensing (MIT now)
 
 ## [v0.3.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.0...v0.3.1)
