@@ -56,6 +56,8 @@ jobs:
     <<: *stack_build
     environment:
       STACK_ARGUMENTS: --resolver lts-10.3
+  build:
+    <<: *stack_build
   build_nightly:
     <<: *stack_build
     environment:
@@ -69,4 +71,5 @@ workflows:
       # - build_7.10.3
       - build_8.0.2
       - build_8.2.2
+      - build
       - build_nightly
