@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.1...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.0...master)
 
+None
 
+## [v0.4.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.1...v0.4.0.0)
+
+- COMPATIBILITY: Allow `aeson-1.3`
 - COMPATIBILITY: Dropped a lot of information from `credsExtra`:
 
   **TL;DR**: you'll no longer find things like `username` or `email` as keys in
