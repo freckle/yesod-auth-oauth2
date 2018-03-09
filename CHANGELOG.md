@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.1...master)
 
 None
+
+## [v0.4.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.0...v0.4.0.1)
+
+- COMPATIBILITY: Allow `http-types-0.12`
 
 ## [v0.4.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.3.1...v0.4.0.0)
 
