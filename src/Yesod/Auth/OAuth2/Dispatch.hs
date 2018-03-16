@@ -19,6 +19,7 @@ import Network.OAuth.OAuth2
 import System.Random (newStdGen, randomRs)
 import URI.ByteString.Extension
 import Yesod.Auth
+import Yesod.Auth.OAuth2.ErrorResponse (onErrorResponse)
 import Yesod.Core
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
@@ -56,6 +57,7 @@ dispatchForward name oauth2 = do
 dispatchCallback :: Text -> OAuth2 -> FetchCreds m -> AuthHandler m TypedContent
 dispatchCallback name oauth2 getCreds = do
     csrf <- verifySessionCSRF $ tokenSessionKey name
+    onErrorResponse errInvalidOAuth
     code <- requireGetParam "code"
     manager <- lift $ getsYesod authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
