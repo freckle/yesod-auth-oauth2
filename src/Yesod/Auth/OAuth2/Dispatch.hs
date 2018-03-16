@@ -9,7 +9,7 @@ module Yesod.Auth.OAuth2.Dispatch
     ) where
 
 import Control.Exception.Safe (throwString, tryIO)
-import Control.Monad (unless)
+import Control.Monad (unless, (<=<))
 import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -65,15 +65,12 @@ dispatchCallback name oauth2 getCreds = do
   where
     -- On a Left result, log it and return an opaque permission-denied
     denyLeft :: (MonadHandler m, MonadLogger m, Show e) => IO (Either e a) -> m a
-    denyLeft act = do
-        result <- liftIO act
-        either
-            (\err -> do
-                $(logError) $ T.pack $ "OAuth2 error: " <> show err
-                permissionDenied "Invalid OAuth2 authentication attempt"
-            )
-            return
-            result
+    denyLeft = either errInvalidOAuth pure <=< liftIO
+
+    errInvalidOAuth :: (MonadHandler m, MonadLogger m, Show e) => e -> m a
+    errInvalidOAuth err = do
+        $(logError) $ T.pack $ "OAuth2 error: " <> show err
+        permissionDenied "Invalid OAuth2 authentication attempt"
 
 withCallbackAndState :: Text -> OAuth2 -> Text -> AuthHandler m OAuth2
 withCallbackAndState name oauth2 csrf = do
