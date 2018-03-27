@@ -2,7 +2,12 @@
 
 None
 
-## [v0.4.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.0...v0.4.0.1)
+## [v0.4.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.1...v0.4.1.0)
+
+- Check for `error`s in callback query params, as described in the
+  [spec](https://tools.ietf.org/html/rfc6749#section-4.1.2.1)
+
+## [v0.4.0.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.0...v0.4.0.1)
 
 - COMPATIBILITY: Allow `http-types-0.12`
 
