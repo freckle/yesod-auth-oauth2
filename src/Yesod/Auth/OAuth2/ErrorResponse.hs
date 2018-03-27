@@ -5,8 +5,10 @@
 --
 module Yesod.Auth.OAuth2.ErrorResponse
     ( ErrorResponse(..)
+    , erUserMessage
     , ErrorName(..)
     , onErrorResponse
+    , unknownError
     ) where
 
 import Data.Foldable (traverse_)
@@ -31,6 +33,25 @@ data ErrorResponse = ErrorResponse
     , erURI :: Maybe Text
     }
     deriving Show
+
+-- | Textual value suitable for display to a User
+erUserMessage :: ErrorResponse -> Text
+erUserMessage err = case erName err of
+    InvalidRequest -> "Invalid request"
+    UnauthorizedClient -> "Unauthorized client"
+    AccessDenied -> "Access denied"
+    UnsupportedResponseType -> "Unsupported response type"
+    InvalidScope -> "Invalid scope"
+    ServerError -> "Server error"
+    TemporarilyUnavailable -> "Temporarily unavailable"
+    Unknown _ -> "Unknown error"
+
+unknownError :: Text -> ErrorResponse
+unknownError x = ErrorResponse
+    { erName = Unknown x
+    , erDescription = Nothing
+    , erURI = Nothing
+    }
 
 -- | Check query parameters for an error, if found run the given action
 --
