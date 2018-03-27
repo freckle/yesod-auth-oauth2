@@ -25,3 +25,7 @@ test:
 lint:
 	hlint src test
 	weeder .
+
+.PHONY: clean
+clean:
+	stack clean
