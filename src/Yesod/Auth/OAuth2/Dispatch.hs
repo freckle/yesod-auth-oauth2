@@ -1,4 +1,5 @@
 {-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE RecordWildCards #-}
@@ -19,9 +20,9 @@ import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2
 import System.Random (newStdGen, randomRs)
 import URI.ByteString.Extension
-import Yesod.Auth
-import Yesod.Auth.OAuth2.ErrorResponse (onErrorResponse)
-import Yesod.Core
+import Yesod.Auth hiding (ServerError)
+import Yesod.Auth.OAuth2.ErrorResponse
+import Yesod.Core hiding (ErrorResponse)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
 type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
@@ -64,18 +65,23 @@ dispatchCallback name oauth2 getCreds = do
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
-    token <- denyLeft $ fetchAccessToken manager oauth2' $ ExchangeToken code
-    creds <- denyLeft $ tryIO $ getCreds manager token
+    token <- errLeft $ fetchAccessToken manager oauth2' $ ExchangeToken code
+    creds <- errLeft $ tryIO $ getCreds manager token
     setCredsRedirect creds
   where
-    -- On a Left result, log it and return an opaque permission-denied
-    denyLeft :: (MonadHandler m, MonadLogger m, Show e) => IO (Either e a) -> m a
-    denyLeft = either errInvalidOAuth pure <=< liftIO
+    errLeft :: Show e => IO (Either e a) -> AuthHandler m a
+    errLeft = either (errInvalidOAuth . unknownError . tshow) pure <=< liftIO
 
-    errInvalidOAuth :: (MonadHandler m, MonadLogger m, Show e) => e -> m a
+    errInvalidOAuth :: ErrorResponse -> AuthHandler m a
     errInvalidOAuth err = do
-        $(logError) $ T.pack $ "OAuth2 error: " <> show err
-        permissionDenied "Invalid OAuth2 authentication attempt"
+        $(logError) $ "OAuth2 error (" <> name <> "): " <> tshow err
+        redirectMessage $ "Unable to log in with OAuth2: " <> erUserMessage err
+
+redirectMessage :: Text -> AuthHandler m a
+redirectMessage msg = do
+    toParent <- getRouteToParent
+    setMessage $ toHtml msg
+    redirect $ toParent LoginR
 
 withCallbackAndState :: Text -> OAuth2 -> Text -> AuthHandler m OAuth2
 withCallbackAndState name oauth2 csrf = do
@@ -132,3 +138,6 @@ requireGetParam key = do
 
 tokenSessionKey :: Text -> Text
 tokenSessionKey name = "_yesod_oauth2_" <> name
+
+tshow :: Show a => a -> Text
+tshow = T.pack . show
