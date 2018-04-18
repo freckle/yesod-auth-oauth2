@@ -29,7 +29,7 @@ pluginName = "battle.net"
 
 oauth2BattleNet
     :: YesodAuth m
-    => WidgetT m IO () -- ^ Login widget
+    => WidgetFor m () -- ^ Login widget
     -> Text -- ^ User region (e.g. "eu", "cn", "us")
     -> Text -- ^ Client ID
     -> Text -- ^ Client Secret
@@ -64,6 +64,6 @@ wwwHost :: Text -> Host
 wwwHost "cn" = "www.battlenet.com.cn"
 wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"
 
-oAuth2BattleNet :: YesodAuth m => Text -> Text -> Text -> WidgetT m IO () -> AuthPlugin m
+oAuth2BattleNet :: YesodAuth m => Text -> Text -> Text -> WidgetFor m () -> AuthPlugin m
 oAuth2BattleNet i s r w = oauth2BattleNet w r i s
 {-# DEPRECATED oAuth2BattleNet "Use oauth2BattleNet" #-}

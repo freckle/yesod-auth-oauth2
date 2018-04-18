@@ -3,6 +3,7 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeFamilies #-}
 module Yesod.Auth.OAuth2.Dispatch
     ( FetchCreds
     , dispatchAuthRequest
@@ -46,7 +47,7 @@ dispatchForward :: Text -> OAuth2 -> AuthHandler m TypedContent
 dispatchForward name oauth2 = do
     csrf <- setSessionCSRF $ tokenSessionKey name
     oauth2' <- withCallbackAndState name oauth2 csrf
-    lift $ redirect $ toText $ authorizationUrl oauth2'
+    redirect $ toText $ authorizationUrl oauth2'
 
 -- | Handle @GET \/callback@
 --
@@ -59,11 +60,11 @@ dispatchCallback name oauth2 getCreds = do
     csrf <- verifySessionCSRF $ tokenSessionKey name
     onErrorResponse errInvalidOAuth
     code <- requireGetParam "code"
-    manager <- lift $ getsYesod authHttpManager
+    manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
     token <- denyLeft $ fetchAccessToken manager oauth2' $ ExchangeToken code
     creds <- denyLeft $ tryIO $ getCreds manager token
-    lift $ setCredsRedirect creds
+    setCredsRedirect creds
   where
     -- On a Left result, log it and return an opaque permission-denied
     denyLeft :: (MonadHandler m, MonadLogger m, Show e) => IO (Either e a) -> m a
@@ -81,7 +82,8 @@ withCallbackAndState name oauth2 csrf = do
     let callbackText = render url
 
     callback <- maybe
-        (throwString
+        (liftIO
+            $ throwString
             $ "Invalid callback URI: "
             <> T.unpack callbackText
             <> ". Not using an absolute Approot?"
@@ -93,9 +95,9 @@ withCallbackAndState name oauth2 csrf = do
             `withQuery` [("state", encodeUtf8 csrf)]
         }
 
-getParentUrlRender :: HandlerT child (HandlerT parent IO) (Route child -> Text)
+getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
 getParentUrlRender = (.)
-    <$> lift getUrlRender
+    <$> getUrlRender
     <*> getRouteToParent
 
 -- | Set a random, 30-character value in the session
