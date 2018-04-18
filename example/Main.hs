@@ -78,7 +78,6 @@ instance YesodAuth App where
 
         return $ Authenticated "1"
 
-    authHttpManager = appHttpManager
     authPlugins = appAuthPlugins
 
 instance RenderMessage App FormMessage where
