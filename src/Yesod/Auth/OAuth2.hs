@@ -52,7 +52,7 @@ authOAuth2 name = authOAuth2Widget [whamlet|Login via #{name}|] name
 --
 authOAuth2Widget
     :: YesodAuth m
-    => WidgetT m IO ()
+    => WidgetFor m ()
     -> Text
     -> OAuth2
     -> FetchCreds m

@@ -1,5 +1,6 @@
 ---
-resolver: lts-10.7
-
+resolver: lts-11.5
+extra-deps:
+  - hoauth2-1.7.1
 ghc-options:
-   "$locals": -fhide-source-paths
+  "$locals": -fhide-source-paths

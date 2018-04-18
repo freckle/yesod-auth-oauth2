@@ -30,9 +30,9 @@ data WidgetType m
     | SmallWhite
     | BigBlack
     | SmallBlack
-    | Custom (WidgetT m IO ())
+    | Custom (WidgetFor m ())
 
-asWidget :: YesodAuth m => WidgetType m -> WidgetT m IO ()
+asWidget :: YesodAuth m => WidgetType m -> WidgetFor m ()
 asWidget Plain = [whamlet|Login via eveonline|]
 asWidget BigWhite = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/4PTzeiAshqiM8osU2giO0Y/5cc4cb60bac52422da2e45db87b6819c/EVE_SSO_Login_Buttons_Large_White.png?w=270&h=45">|]
 asWidget BigBlack = [whamlet|<img src="https://images.contentful.com/idjq7aai9ylm/4fSjj56uD6CYwYyus4KmES/4f6385c91e6de56274d99496e6adebab/EVE_SSO_Login_Buttons_Large_Black.png?w=270&h=45">|]
