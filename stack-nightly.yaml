@@ -1,0 +1,4 @@
+---
+resolver: nightly
+extra-deps:
+  - hoauth2-1.7.1

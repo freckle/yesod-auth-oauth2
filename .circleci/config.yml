@@ -57,7 +57,7 @@ jobs:
   build_nightly:
     <<: *stack_build
     environment:
-      STACK_ARGUMENTS: --resolver nightly
+      STACK_ARGUMENTS: --stack-yaml stack-nightly.yaml
 
 workflows:
   version: 2
@@ -66,4 +66,4 @@ workflows:
       # - build_8.0.2
       - build_8.2.2
       - build
-      # - build_nightly  # hoauth2
+      - build_nightly
