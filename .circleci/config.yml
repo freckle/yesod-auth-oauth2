@@ -63,7 +63,7 @@ workflows:
   version: 2
   builds:
     jobs:
-      - build_8.0.2
+      # - build_8.0.2
       - build_8.2.2
       - build
       # - build_nightly  # hoauth2
