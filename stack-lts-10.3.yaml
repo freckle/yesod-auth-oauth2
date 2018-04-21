@@ -1,6 +1,0 @@
----
-resolver: lts-10.3
-extra-deps:
-  - http-types-0.12.1
-  - yesod-auth-1.6.3
-  - yesod-core-1.6.3
