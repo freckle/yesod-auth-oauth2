@@ -1,4 +1,7 @@
 ---
-resolver: nightly
+# You can't use "nightly" here, only "nightly-<date>", apparently. But you
+# can't leave it blank either, so here's a value that we'll override by
+# --resolver nightly.
+resolver: lts-11.5
 extra-deps:
   - hoauth2-1.7.1
