@@ -57,7 +57,7 @@ jobs:
   build_nightly:
     <<: *stack_build
     environment:
-      STACK_ARGUMENTS: --stack-yaml stack-nightly.yaml
+      STACK_ARGUMENTS: --resolver nightly --stack-yaml stack-nightly.yaml
 
 workflows:
   version: 2
