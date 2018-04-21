@@ -1,0 +1,4 @@
+---
+resolver: lts-11.5
+extra-deps:
+  - hoauth2-1.7.1
