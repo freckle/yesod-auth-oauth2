@@ -1,6 +1,11 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.1...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.0.0...master)
 
 None
+
+## [v0.5.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.1.0...v0.5.0.0)
+
+- COMPATIBILITY: Allow and require yesod-1.6
+- COMPATIBILITY: Stop testing GHC 8.0 on CI
 
 ## [v0.4.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.0.1...v0.4.1.0)
 
