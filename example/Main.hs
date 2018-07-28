@@ -39,7 +39,7 @@ import Yesod.Auth
 import Yesod.Auth.OAuth2.BattleNet
 import Yesod.Auth.OAuth2.Bitbucket
 import Yesod.Auth.OAuth2.EveOnline
-import Yesod.Auth.OAuth2.Github
+import Yesod.Auth.OAuth2.GitHub
 import Yesod.Auth.OAuth2.GitLab
 import Yesod.Auth.OAuth2.Google
 import Yesod.Auth.OAuth2.Nylas
@@ -135,7 +135,7 @@ mkFoundation = do
         [ loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
         , loadPlugin oauth2Bitbucket "BITBUCKET"
         , loadPlugin (oauth2Eve Plain) "EVE_ONLINE"
-        , loadPlugin oauth2Github "GITHUB"
+        , loadPlugin oauth2GitHub "GITHUB"
         , loadPlugin oauth2GitLab "GITLAB"
         , loadPlugin oauth2Google "GOOGLE"
         , loadPlugin oauth2Nylas "NYLAS"

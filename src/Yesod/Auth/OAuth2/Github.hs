@@ -1,4 +1,5 @@
 module Yesod.Auth.OAuth2.Github
+    {-# DEPRECATED "Please use Yesod.Auth.OAuth2.GitHub (GitHub, not Github)" #-}
     ( oauth2Github
     , oauth2GithubScoped
     ) where
