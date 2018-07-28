@@ -41,6 +41,10 @@ jobs:
     <<: *stack_build
     environment:
       STACK_ARGUMENTS: --stack-yaml stack-lts-11.18.yaml
+  build_8.4.3:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --stack-yaml stack-lts-12.2.yaml
   build:
     <<: *stack_build
   build_nightly:
@@ -53,5 +57,6 @@ workflows:
   builds:
     jobs:
       - build_8.2.2
+      - build_8.4.3
       - build
       - build_nightly
