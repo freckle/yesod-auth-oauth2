@@ -23,8 +23,8 @@ test:
 
 .PHONY: lint
 lint:
-	stack exec hlint src test
-	stack exec weeder .
+	stack exec $(STACK_ARGUMENTS) hlint src test
+	stack exec $(STACK_ARGUMENTS) weeder .
 
 .PHONY: clean
 clean:
