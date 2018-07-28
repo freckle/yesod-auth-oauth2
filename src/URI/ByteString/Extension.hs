@@ -49,5 +49,8 @@ withHost u h = u & authorityL %~ maybe
     (Just $ Authority Nothing h Nothing)
     (\a -> Just $ a & authorityHostL .~ h)
 
+withPath :: URIRef a -> ByteString -> URIRef a
+withPath u p = u & pathL .~ p
+
 withQuery :: URIRef a -> [(ByteString, ByteString)] -> URIRef a
 withQuery u q = u & (queryL . queryPairsL) %~ (++ q)
