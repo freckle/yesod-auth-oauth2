@@ -40,7 +40,9 @@ jobs:
   build_8.2.2:
     <<: *stack_build
     environment:
-      STACK_ARGUMENTS: --stack-yaml stack-lts-11.18.yaml
+      # Set this one via ENV var so that weeder respects it too. See
+      # https://github.com/ndmitchell/weeder/issues/41.
+      STACK_YAML: stack-lts-11.18.yaml
   build_8.4.3:
     <<: *stack_build
     environment:
