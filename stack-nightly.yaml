@@ -3,6 +3,7 @@
 # can't leave it blank either, so here's a value that we'll override by
 # --resolver nightly.
 resolver: lts-11.5
+allow-newer: true
 extra-deps:
-  - hoauth2-1.7.1
+  - hoauth2-1.7.2
   - uri-bytestring-aeson-0.1.0.6
