@@ -54,9 +54,19 @@ jobs:
 
 workflows:
   version: 2
-  builds:
+  commit:
     jobs:
       - build_8.2.2
       - build_8.4.3
       - build
+      - build_nightly
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
       - build_nightly
