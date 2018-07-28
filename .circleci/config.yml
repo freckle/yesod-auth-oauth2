@@ -34,20 +34,9 @@ references:
           command: make test
       - run:
           name: Lint
-          command: |
-            if [ "${LINT:-1}" -eq 0 ]; then
-              echo "[LINT=0] Lint step skipped." >&2
-            else
-              make lint
-            fi
+          command: make lint
 
 jobs:
-  build_8.0.2:
-    <<: *stack_build
-    environment:
-      # FIXME: https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/115
-      LINT: "0"
-      STACK_ARGUMENTS: --stack-yaml stack-lts-9.21.yaml
   build_8.2.2:
     <<: *stack_build
     environment:
@@ -63,7 +52,6 @@ workflows:
   version: 2
   builds:
     jobs:
-      # - build_8.0.2
       - build_8.2.2
       - build
       - build_nightly

@@ -1,6 +1,0 @@
----
-resolver: lts-9.21
-extra-deps:
-  - load-env-0.1.2
-  - yesod-auth-1.6.1
-  - yesod-core-1.6.1
