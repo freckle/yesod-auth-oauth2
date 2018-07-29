@@ -62,21 +62,17 @@ authOAuth2Widget widget name oauth getCreds =
   where
     login tm = [whamlet|<a href=@{tm $ oauth2Url name}>^{widget}|]
 
--- | Read from the values set via @'setExtra'@
+-- | Read the @'AccessToken'@ from the values set via @'setExtra'@
 getAccessToken :: Creds m -> Maybe AccessToken
 getAccessToken =
     (AccessToken <$>) . lookup "accessToken" . credsExtra
 
--- | Read from the values set via @'setExtra'@
+-- | Read the original profile response from the values set via @'setExtra'@
 getUserResponse :: Creds m -> Maybe ByteString
 getUserResponse =
     (fromStrict . encodeUtf8 <$>) . lookup "userResponse" . credsExtra
 
--- | Read from the values set via @'setExtra'@, decode as JSON
---
--- This is unsafe if the key is missing, but safe with respect to parsing
--- errors.
---
+-- | @'getUserResponse'@, and decode as JSON
 getUserResponseJSON :: FromJSON a => Creds m -> Either String a
 getUserResponseJSON =
     eitherDecode <=< note "userResponse key not present" . getUserResponse
