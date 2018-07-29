@@ -114,13 +114,18 @@ scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
 
 -- | Construct part of @'credsExtra'@
 --
--- Sets the following keys:
+-- Always the following keys:
 --
 -- - @accessToken@: to support follow-up requests
 -- - @userResponse@: to support getting additional information
+--
+-- May set the following keys:
+--
+-- - @refreshToken@: if the provider supports refreshing the @accessToken@
 --
 setExtra :: OAuth2Token -> BL.ByteString -> [(Text, Text)]
 setExtra token userResponse =
     [ ("accessToken", atoken $ accessToken token)
     , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)
     ]
+    <> maybe [] (pure . ("refreshToken",) . rtoken) (refreshToken token)
