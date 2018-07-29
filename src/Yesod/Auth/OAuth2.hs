@@ -19,6 +19,7 @@ module Yesod.Auth.OAuth2
 
     -- * Reading our @'credsExtra'@ keys
     , getAccessToken
+    , getRefreshToken
     , getUserResponse
     , getUserResponseJSON
     ) where
@@ -66,6 +67,14 @@ authOAuth2Widget widget name oauth getCreds =
 getAccessToken :: Creds m -> Maybe AccessToken
 getAccessToken =
     (AccessToken <$>) . lookup "accessToken" . credsExtra
+
+-- | Read the @'RefreshToken'@ from the values set via @'setExtra'@
+--
+-- N.B. not all providers supply this value.
+--
+getRefreshToken :: Creds m -> Maybe RefreshToken
+getRefreshToken =
+    (RefreshToken <$>) . lookup "refreshToken" . credsExtra
 
 -- | Read the original profile response from the values set via @'setExtra'@
 getUserResponse :: Creds m -> Maybe ByteString
