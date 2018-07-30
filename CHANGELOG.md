@@ -1,6 +1,12 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.0.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.1.0...master)
 
 None
+
+## [v0.5.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.0.0...v0.5.1.0)
+
+- Added GitLab provider
+- Added properly-named `GitHub` module, deprecated `Github`
+- Store `refreshToken` in `credsExtra`
 
 ## [v0.5.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.4.1.0...v0.5.0.0)
 
