@@ -39,7 +39,10 @@ references:
           command: make test
       - run:
           name: Lint
-          command: make lint
+          command: |
+            if [ "${LINT:-1}" = 1 ]; then
+              make lint
+            fi
 
 jobs:
   build_8.2.2:
@@ -57,6 +60,9 @@ jobs:
   build_nightly:
     <<: *stack_build
     environment:
+      # weeder is not happy, again
+      # https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/375
+      LINT: 0
       STACK_ARGUMENTS: --resolver nightly --no-terminal
       STACK_YAML: stack-nightly.yaml
 
