@@ -3,6 +3,8 @@ all: setup build test lint
 .PHONY: setup
 setup:
 	stack setup $(STACK_ARGUMENTS)
+	# Avoid ExitFailure (-9) (THIS MAY INDICATE OUT OF MEMORY)
+	stack build $(STACK_ARGUMENTS) -j 1 haskell-src-exts
 	stack build $(STACK_ARGUMENTS) \
 	  --flag yesod-auth-oauth2:example \
 	  --dependencies-only --test --no-run-tests
