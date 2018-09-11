@@ -4,7 +4,8 @@ version: 2.0
 references:
   stack_build: &stack_build
     docker:
-      - image: fpco/stack-build:lts
+      # https://github.com/haskell-works/stack-build/blob/master/minimal/Dockerfile
+      - image: quay.io/haskell_works/stack-build-minimal
     steps:
       - checkout
       - run:
@@ -14,10 +15,10 @@ references:
             git ls-files | xargs md5sum > sdigest
       - restore_cache:
           keys:
-            - 1-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
-            - 1-{{ .Branch }}-{{ checksum "rdigest" }}-
-            - 1-{{ .Branch }}-
-            - 1-master-
+            - v2-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
+            - v2-{{ .Branch }}-{{ checksum "rdigest" }}-
+            - v2-{{ .Branch }}-
+            - v2-master-
       - run:
           name: Dependencies
           command: make setup
@@ -25,7 +26,8 @@ references:
           name: Build
           command: make build
       - save_cache:
-          key: 1-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
+          # yamllint disable-line rule:line-length
+          key: v2-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
           paths:
             - ~/.stack
             - ./.stack-work
