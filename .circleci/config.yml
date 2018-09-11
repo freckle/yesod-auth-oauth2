@@ -40,19 +40,20 @@ jobs:
   build_8.2.2:
     <<: *stack_build
     environment:
-      # Set this one via ENV var so that weeder respects it too. See
-      # https://github.com/ndmitchell/weeder/issues/41.
+      STACK_ARGUMENTS: --no-terminal
       STACK_YAML: stack-lts-11.18.yaml
   build_8.4.3:
     <<: *stack_build
     environment:
-      STACK_ARGUMENTS: --stack-yaml stack-lts-12.2.yaml
+      STACK_ARGUMENTS: --no-terminal
+      STACK_YAML: stack-lts-12.2.yaml
   build:
     <<: *stack_build
   build_nightly:
     <<: *stack_build
     environment:
-      STACK_ARGUMENTS: --resolver nightly --stack-yaml stack-nightly.yaml
+      STACK_ARGUMENTS: --resolver nightly --no-terminal
+      STACK_YAML: stack-nightly.yaml
 
 workflows:
   version: 2
