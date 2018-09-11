@@ -14,7 +14,10 @@ references:
       - run:
           name: Digest
           command: |
-            echo -- "$STACK_ARGUMENTS" > rdigest
+            {
+              stack --version
+              echo -- "$STACK_YAML/$STACK_ARGUMENTS"
+            } > rdigest
             git ls-files | xargs md5sum > sdigest
       - restore_cache:
           keys:
