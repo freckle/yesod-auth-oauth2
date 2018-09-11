@@ -9,6 +9,9 @@ references:
     steps:
       - checkout
       - run:
+          name: Upgrade Stack
+          command: stack upgrade
+      - run:
           name: Digest
           command: |
             echo -- "$STACK_ARGUMENTS" > rdigest
