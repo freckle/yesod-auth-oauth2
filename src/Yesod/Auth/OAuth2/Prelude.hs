@@ -52,7 +52,6 @@ module Yesod.Auth.OAuth2.Prelude
     , module URI.ByteString.Extension
 
     -- * Temporary, until I finish re-structuring modules
-    , YesodOAuth2Exception(..)
     , authOAuth2
     , authOAuth2Widget
     ) where
@@ -61,7 +60,6 @@ import Control.Exception.Safe
 import Data.Aeson
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
-import qualified Data.ByteString.Lazy.Char8 as BL8
 import Data.Semigroup ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -72,7 +70,7 @@ import URI.ByteString
 import URI.ByteString.Extension
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-import Yesod.Auth.OAuth2.Exception
+import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 -- | Retrieve a user's profile as JSON
 --
@@ -92,18 +90,17 @@ authGetProfile name manager token url = do
     decoded <- fromAuthJSON name resp
     pure (decoded, resp)
 
--- | Throws a @Left@ result as an @'InvalidProfileResponse'@
+-- | Throws a @Left@ result as an @'YesodOAuth2Exception'@
 fromAuthGet
     :: Text -> Either (OAuth2Error Value) BL.ByteString -> IO BL.ByteString
 fromAuthGet _ (Right bs) = pure bs -- nice
 fromAuthGet name (Left err) =
-    throwIO $ InvalidProfileResponse name $ encode err
+    throwIO $ YesodOAuth2Exception.OAuth2Error name $ encode err
 
--- | Throws a decoding error as an @'InvalidProfileResponse'@
+-- | Throws a decoding error as an @'YesodOAuth2Exception'@
 fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a
 fromAuthJSON name =
-    -- FIXME: unique exception constructors
-    either (throwIO . InvalidProfileResponse name . BL8.pack) pure
+    either (throwIO . YesodOAuth2Exception.JSONDecodingError name) pure
         . eitherDecode
 
 -- | A tuple of @\"scope\"@ and the given scopes separated by a delimiter

@@ -15,6 +15,7 @@ import Yesod.Auth.OAuth2.Prelude
 
 import Network.HTTP.Client
     (httpLbs, parseUrlThrow, responseBody, setQueryString)
+import Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 data SlackScope
     = SlackBasicScope
@@ -53,21 +54,20 @@ oauth2SlackScoped scopes clientId clientSecret =
         userResponse <- responseBody <$> httpLbs req manager
 
         either
-            (const $ throwIO $ InvalidProfileResponse pluginName userResponse)
-            (\(User userId) -> pure Creds
-                { credsPlugin = pluginName
-                , credsIdent = userId
-                , credsExtra = setExtra token userResponse
-                }
-            )
+                (throwIO . YesodOAuth2Exception.JSONDecodingError pluginName)
+                (\(User userId) -> pure Creds
+                    { credsPlugin = pluginName
+                    , credsIdent = userId
+                    , credsExtra = setExtra token userResponse
+                    }
+                )
             $ eitherDecode userResponse
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = "https://slack.com/oauth/authorize" `withQuery`
-            [ scopeParam "," $ map scopeText scopes
-            ]
+        , oauthOAuthorizeEndpoint = "https://slack.com/oauth/authorize"
+            `withQuery` [scopeParam "," $ map scopeText scopes]
         , oauthAccessTokenEndpoint = "https://slack.com/api/oauth.access"
         , oauthCallback = Nothing
         }
