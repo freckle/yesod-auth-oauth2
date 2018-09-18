@@ -91,26 +91,37 @@ instance Exception YesodOAuth2Exception
 -- @'credsIdent'@. Additional information should either be re-parsed by or
 -- fetched via additional requests by consumers.
 --
-authGetProfile :: FromJSON a => Text -> Manager -> OAuth2Token -> URI -> IO (a, BL.ByteString)
+authGetProfile
+    :: FromJSON a
+    => Text
+    -> Manager
+    -> OAuth2Token
+    -> URI
+    -> IO (a, BL.ByteString)
 authGetProfile name manager token url = do
     resp <- fromAuthGet name =<< authGetBS manager (accessToken token) url
     decoded <- fromAuthJSON name resp
     pure (decoded, resp)
 
 -- | Throws a @Left@ result as an @'InvalidProfileResponse'@
-fromAuthGet :: Text -> Either (OAuth2Error Value) BL.ByteString -> IO BL.ByteString
+fromAuthGet
+    :: Text -> Either (OAuth2Error Value) BL.ByteString -> IO BL.ByteString
 fromAuthGet _ (Right bs) = pure bs -- nice
-fromAuthGet name (Left err) = throwIO $ InvalidProfileResponse name $ encode err
+fromAuthGet name (Left err) =
+    throwIO $ InvalidProfileResponse name $ encode err
 
 -- | Throws a decoding error as an @'InvalidProfileResponse'@
 fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a
 fromAuthJSON name =
     -- FIXME: unique exception constructors
-    either (throwIO . InvalidProfileResponse name . BL8.pack) pure . eitherDecode
+    either (throwIO . InvalidProfileResponse name . BL8.pack) pure
+        . eitherDecode
 
 -- | A tuple of @\"scope\"@ and the given scopes separated by a delimiter
 scopeParam :: Text -> [Text] -> (ByteString, ByteString)
-scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
+scopeParam d = ("scope", ) . encodeUtf8 . T.intercalate d
+
+-- brittany-disable-next-binding
 
 -- | Construct part of @'credsExtra'@
 --
@@ -128,4 +139,4 @@ setExtra token userResponse =
     [ ("accessToken", atoken $ accessToken token)
     , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)
     ]
-    <> maybe [] (pure . ("refreshToken",) . rtoken) (refreshToken token)
+    <> maybe [] (pure . ("refreshToken", ) . rtoken) (refreshToken token)
