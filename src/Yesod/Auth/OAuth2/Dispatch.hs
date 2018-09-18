@@ -34,8 +34,10 @@ dispatchAuthRequest
     -> Text             -- ^ Method
     -> [Text]           -- ^ Path pieces
     -> AuthHandler m TypedContent
-dispatchAuthRequest name oauth2 _ "GET" ["forward"] = dispatchForward name oauth2
-dispatchAuthRequest name oauth2 getCreds "GET" ["callback"] = dispatchCallback name oauth2 getCreds
+dispatchAuthRequest name oauth2 _ "GET" ["forward"] =
+    dispatchForward name oauth2
+dispatchAuthRequest name oauth2 getCreds "GET" ["callback"] =
+    dispatchCallback name oauth2 getCreds
 dispatchAuthRequest _ _ _ _ _ = notFound
 
 -- | Handle @GET \/forward@
@@ -81,32 +83,33 @@ withCallbackAndState name oauth2 csrf = do
     render <- getParentUrlRender
     let callbackText = render url
 
-    callback <- maybe
-        (liftIO
-            $ throwString
-            $ "Invalid callback URI: "
-            <> T.unpack callbackText
-            <> ". Not using an absolute Approot?"
-        ) pure $ fromText callbackText
+    callback <-
+        maybe
+                (liftIO
+                $ throwString
+                $ "Invalid callback URI: "
+                <> T.unpack callbackText
+                <> ". Not using an absolute Approot?"
+                )
+                pure
+            $ fromText callbackText
 
     pure oauth2
         { oauthCallback = Just callback
-        , oauthOAuthorizeEndpoint = oauthOAuthorizeEndpoint oauth2
-            `withQuery` [("state", encodeUtf8 csrf)]
+        , oauthOAuthorizeEndpoint =
+            oauthOAuthorizeEndpoint oauth2
+                `withQuery` [("state", encodeUtf8 csrf)]
         }
 
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
-getParentUrlRender = (.)
-    <$> getUrlRender
-    <*> getRouteToParent
+getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
 
 -- | Set a random, 30-character value in the session
 setSessionCSRF :: MonadHandler m => Text -> m Text
 setSessionCSRF sessionKey = do
     csrfToken <- liftIO randomToken
     csrfToken <$ setSession sessionKey csrfToken
-  where
-    randomToken = T.pack . take 30 . randomRs ('a', 'z') <$> newStdGen
+    where randomToken = T.pack . take 30 . randomRs ('a', 'z') <$> newStdGen
 
 -- | Verify the callback provided the same CSRF token as in our session
 verifySessionCSRF :: MonadHandler m => Text -> m Text
