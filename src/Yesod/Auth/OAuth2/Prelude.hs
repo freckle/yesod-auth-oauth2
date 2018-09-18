@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-{-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
 -- |
@@ -8,10 +6,9 @@
 -- implementations. May also be useful for writing local providers.
 --
 module Yesod.Auth.OAuth2.Prelude
-    ( YesodOAuth2Exception(..)
-
-    -- * Provider helpers
-    , authGetProfile
+    (
+      -- * Provider helpers
+      authGetProfile
     , scopeParam
     , setExtra
 
@@ -55,6 +52,7 @@ module Yesod.Auth.OAuth2.Prelude
     , module URI.ByteString.Extension
 
     -- * Temporary, until I finish re-structuring modules
+    , YesodOAuth2Exception(..)
     , authOAuth2
     , authOAuth2Widget
     ) where
@@ -74,16 +72,7 @@ import URI.ByteString
 import URI.ByteString.Extension
 import Yesod.Auth
 import Yesod.Auth.OAuth2
-
--- | Provider name and error
---
--- The error is a lazy bytestring because it's most often encoded JSON.
---
--- Deprecated. Eventually, we'll return @Either@s all the way up.
---
-data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
-    deriving (Show, Typeable)
-instance Exception YesodOAuth2Exception
+import Yesod.Auth.OAuth2.Exception
 
 -- | Retrieve a user's profile as JSON
 --
