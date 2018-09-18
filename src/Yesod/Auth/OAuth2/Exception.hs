@@ -5,15 +5,25 @@ module Yesod.Auth.OAuth2.Exception
     ) where
 
 import Control.Exception.Safe
-import qualified Data.ByteString.Lazy as BL
+import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
 
--- | Provider name and error
---
--- The error is a lazy bytestring because it's most often encoded JSON.
---
--- Deprecated. Eventually, we'll return @Either@s all the way up.
---
-data YesodOAuth2Exception = InvalidProfileResponse Text BL.ByteString
+data YesodOAuth2Exception
+    = OAuth2Error Text ByteString
+    -- ^ HTTP error during OAuth2 handshake
+    --
+    -- Plugin name and JSON-encoded @OAuth2Error@ from @hoauth2@.
+    --
+    | JSONDecodingError Text String
+    -- ^ User profile was not as expected
+    --
+    -- Plugin name and Aeson parse error message.
+    --
+    | GenericError Text String
+    -- ^ Other error conditions
+    --
+    -- Plugin name and error message.
+    --
     deriving (Show, Typeable)
+
 instance Exception YesodOAuth2Exception
