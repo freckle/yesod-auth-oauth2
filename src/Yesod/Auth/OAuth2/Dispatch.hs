@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE TypeFamilies #-}
 module Yesod.Auth.OAuth2.Dispatch
@@ -10,7 +11,7 @@ module Yesod.Auth.OAuth2.Dispatch
     , dispatchAuthRequest
     ) where
 
-import Control.Exception.Safe (throwString, tryIO)
+import Control.Exception.Safe
 import Control.Monad (unless, (<=<))
 import Data.Monoid ((<>))
 import Data.Text (Text)
@@ -22,6 +23,7 @@ import System.Random (newStdGen, randomRs)
 import URI.ByteString.Extension
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.ErrorResponse
+import Yesod.Auth.OAuth2.Exception
 import Yesod.Core hiding (ErrorResponse)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
@@ -66,7 +68,7 @@ dispatchCallback name oauth2 getCreds = do
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
     token <- errLeft $ fetchAccessToken manager oauth2' $ ExchangeToken code
-    creds <- errLeft $ tryIO $ getCreds manager token
+    creds <- errLeft $ tryFetchCreds $ getCreds manager token
     setCredsRedirect creds
   where
     errLeft :: Show e => IO (Either e a) -> AuthHandler m a
@@ -82,6 +84,12 @@ redirectMessage msg = do
     toParent <- getRouteToParent
     setMessage $ toHtml msg
     redirect $ toParent LoginR
+
+tryFetchCreds :: IO a -> IO (Either SomeException a)
+tryFetchCreds f =
+    (Right <$> f)
+        `catch` (\(ex :: IOException) -> pure $ Left $ toException ex)
+        `catch` (\(ex :: YesodOAuth2Exception) -> pure $ Left $ toException ex)
 
 withCallbackAndState :: Text -> OAuth2 -> Text -> AuthHandler m OAuth2
 withCallbackAndState name oauth2 csrf = do
