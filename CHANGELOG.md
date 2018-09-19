@@ -1,6 +1,15 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.1.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.2.0...master)
 
 None
+
+## [v0.5.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.1.0...v0.5.2.0)
+
+- `InvalidProfileResponse` was replaced with different, situation-specific
+  constructors; the exception type is considered internal API, but end-users may
+  see them in logs, or if they (unexpectedly) escape our error-handling
+- Errors during log-in no longer result in 4XX or 5XX responses; they now
+  redirect to `LoginR` with the exception details logged and something
+  user-appropriate displayed via `setMessage`
 
 ## [v0.5.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.0.0...v0.5.1.0)
 
