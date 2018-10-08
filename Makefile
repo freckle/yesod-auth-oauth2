@@ -8,7 +8,7 @@ setup:
 	stack build $(STACK_ARGUMENTS) \
 	  --flag yesod-auth-oauth2:example \
 	  --dependencies-only --test --no-run-tests
-	stack install $(STACK_ARGUMENTS) --copy-compiler-tool hlint weeder
+	#stack install $(STACK_ARGUMENTS) --copy-compiler-tool hlint weeder
 
 .PHONY: build
 build:

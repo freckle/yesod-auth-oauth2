@@ -27,7 +27,13 @@ references:
             - v2-master-
       - run:
           name: Dependencies
-          command: make setup
+          command: |
+            make setup
+
+            if [ "${LINT:-1}" = 1 ]; then
+              stack install $STACK_ARGUMENTS \
+                --copy-compiler-tool hlint weeder
+            fi
       - run:
           name: Build
           command: make build

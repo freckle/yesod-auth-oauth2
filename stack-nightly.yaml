@@ -1,9 +1,38 @@
----
-# You can't use "nightly" here, only "nightly-<date>", apparently. But you
-# can't leave it blank either, so here's a value that we'll override by
-# --resolver nightly.
-resolver: lts-11.5
-allow-newer: true
+# Overridden by --resolver on CI
+resolver: nightly-2018-10-06
 extra-deps:
+  - asn1-encoding-0.9.5
+  - asn1-parse-0.9.4
+  - asn1-types-0.3.2
+  - authenticate-1.3.4
+  - byteable-0.1.1
+  - cipher-aes-0.2.11
+  - clientsession-0.9.1.2
+  - connection-0.2.8
+  - cprng-aes-0.6.1
+  - crypto-cipher-types-0.0.9
+  - crypto-random-0.0.9
+  - email-validate-2.3.2.7
+  - haskell-src-meta-0.8.0.3
   - hoauth2-1.7.2
+  - http-client-tls-0.3.5.3
+  - http-conduit-2.3.2
+  - pem-0.2.4
+  - persistent-2.8.2
+  - persistent-template-2.5.4
+  - securemem-0.1.10
+  - skein-1.0.9.4
+  - tls-1.4.1
+  - uri-bytestring-0.3.2.0
   - uri-bytestring-aeson-0.1.0.6
+  - x509-1.7.4
+  - x509-store-1.6.6
+  - x509-system-1.6.6
+  - x509-validation-1.6.10
+  - yesod-1.6.0
+  - yesod-auth-1.6.4.1
+  - yesod-core-1.6.6
+  - yesod-form-1.6.2
+  - yesod-persistent-1.6.0
+
+allow-newer: true
