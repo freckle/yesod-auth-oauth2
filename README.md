@@ -6,12 +6,12 @@ OAuth2 `AuthPlugin`s for Yesod.
 
 ```hs
 import Yesod.Auth
-import Yesod.Auth.OAuth2.Github
+import Yesod.Auth.OAuth2.GitHub
 
 instance YesodAuth App where
     -- ...
 
-    authPlugins _ = [oauth2Github clientId clientSecret]
+    authPlugins _ = [oauth2GitHub clientId clientSecret]
 
 clientId :: Text
 clientId = "..."
