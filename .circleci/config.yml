@@ -26,14 +26,16 @@ references:
             - v2-{{ .Branch }}-
             - v2-master-
       - run:
-          name: Dependencies
+          name: Setup
           command: |
-            make setup
-
             if [ "${LINT:-1}" = 1 ]; then
-              stack install $STACK_ARGUMENTS \
-                --copy-compiler-tool hlint weeder
+              make setup setup.lint
+            else
+              make setup
             fi
+      - run:
+          name: Dependencies
+          command: make dependencies
       - run:
           name: Build
           command: make build
@@ -45,15 +47,16 @@ references:
             - ./.stack-work
       - run:
           name: Test
-          command: make test
-      - run:
-          name: Lint
           command: |
             if [ "${LINT:-1}" = 1 ]; then
-              make lint
+              make test lint
+            else
+              make test
             fi
 
 jobs:
+  build:
+    <<: *stack_build
   build_8.2.2:
     <<: *stack_build
     environment:
@@ -64,8 +67,6 @@ jobs:
     environment:
       STACK_ARGUMENTS: --no-terminal
       STACK_YAML: stack-lts-12.2.yaml
-  build:
-    <<: *stack_build
   build_nightly:
     <<: *stack_build
     environment:
@@ -79,9 +80,9 @@ workflows:
   version: 2
   commit:
     jobs:
+      - build
       - build_8.2.2
       - build_8.4.3
-      - build
       - build_nightly
   nightly:
     triggers:
