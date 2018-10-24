@@ -34,13 +34,13 @@ to support you parsing or fetching additional data yourself.
 
 For example, if you work with GitHub and GitHub user profiles, you likely
 already have a model and a way to parse the `/user` response. Rather than
-duplicate all that in our own library, we try to make it easy for you to re-use
-that code yourself:
+duplicate all that in our library, we try to make it easy for you to re-use that
+code yourself:
 
 ```hs
 authenticate creds = do
     let
-        -- You can run your own FromJSON parser on the respose we already have
+        -- You can run your own FromJSON parser on the response we already have
         eGitHubUser :: Either String GitHubUser
         eGitHubUser = getUserResponseJSON creds
 
@@ -64,8 +64,8 @@ API.
 
 ## Local Providers
 
-If we don't supply a "Provider" (e.g. GitHub, Google, etc) you need. You can
-write your own within your codebase:
+If we don't supply a "Provider" (e.g. GitHub, Google, etc) you need, you can
+write your own using our provided `Prelude`:
 
 ```haskell
 import Yesod.Auth.OAuth2.Prelude
