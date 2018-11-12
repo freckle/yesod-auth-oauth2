@@ -7,7 +7,7 @@ category: Web
 author: Tom Streller
 maintainer: Pat Brisbin <pbrisbin@gmail.com>
 license: MIT
-github: thoughtbot/yesod-auth-oauth2.git
+github: thoughtbot/yesod-auth-oauth2
 homepage: http://github.com/thoughtbot/yesod-auth-oauth2
 
 ghc-options: -Wall
