@@ -1,8 +1,5 @@
 # Overridden by --resolver on CI
-resolver: nightly-2018-10-24
+resolver: nightly-2018-11-24
 extra-deps:
-  - hoauth2-1.7.2
-  - uri-bytestring-0.3.2.0
-  - uri-bytestring-aeson-0.1.0.6
-
-allow-newer: true
+  # should be in nightly in a day
+  - hoauth2-1.8.3
