@@ -1,6 +1,14 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.2.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.0.0...master)
 
 None
+
+## [v0.6.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.3.0...v0.6.0.0)
+
+- Remove deprecated Github module
+
+## [v0.5.3.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.2.0...v0.5.3.0)
+
+- Allow aeson-1.4 and hoauth2-1.8
 
 ## [v0.5.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.1.0...v0.5.2.0)
 
