@@ -1,6 +1,6 @@
 ---
 name: yesod-auth-oauth2
-version: '0.5.3.0'  # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
+version: '0.6.0.0'  # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
 synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
@@ -9,6 +9,10 @@ maintainer: Pat Brisbin <pbrisbin@gmail.com>
 license: MIT
 github: thoughtbot/yesod-auth-oauth2
 homepage: http://github.com/thoughtbot/yesod-auth-oauth2
+
+extra-source-files:
+  - README.md
+  - CHANGELOG.md
 
 ghc-options: -Wall
 
