@@ -57,16 +57,16 @@ references:
 jobs:
   build:
     <<: *stack_build
-  build_8.2.2:
-    <<: *stack_build
-    environment:
-      STACK_ARGUMENTS: --no-terminal
-      STACK_YAML: stack-lts-11.18.yaml
   build_8.4.3:
     <<: *stack_build
     environment:
       STACK_ARGUMENTS: --no-terminal
       STACK_YAML: stack-lts-12.2.yaml
+  build_8.6.3:
+    <<: *stack_build
+    environment:
+      STACK_ARGUMENTS: --no-terminal
+      STACK_YAML: stack-lts-13.2.yaml
   build_nightly:
     <<: *stack_build
     environment:
@@ -81,8 +81,8 @@ workflows:
   commit:
     jobs:
       - build
-      - build_8.2.2
       - build_8.4.3
+      - build_8.6.3
       - build_nightly
   nightly:
     triggers:
