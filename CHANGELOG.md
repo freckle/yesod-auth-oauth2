@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.0.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.0...master)
 
 None
+
+## [v0.6.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.0.0...v0.6.1.0)
+
+- Allow http-client-0.6
 
 ## [v0.6.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.5.3.0...v0.6.0.0)
 
