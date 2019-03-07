@@ -1,7 +1,7 @@
 ---
 resolver: lts-12.2
 extra-deps:
-  - hoauth2-1.7.2
+  - hoauth2-1.8.1
   - uri-bytestring-aeson-0.1.0.6
 
 # needed so resourcet can get exceptions-0.10 even though hoauth dislikes it
