@@ -1,6 +1,8 @@
 ## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.0...master)
 
 - Test with GHC 8.6.3, and not 8.2
+- Added AzureAD provider
+- COMPATIBILITY: Use `hoauth2-1.8.1`
 
 ## [v0.6.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.0.0...v0.6.1.0)
 
