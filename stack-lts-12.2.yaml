@@ -4,5 +4,11 @@ extra-deps:
   - hoauth2-1.8.1
   - uri-bytestring-aeson-0.1.0.6
 
+# Fix for weeder with stack-2
+ghc-options:
+  "$locals":
+    -ddump-to-file
+    -ddump-hi
+
 # needed so resourcet can get exceptions-0.10 even though hoauth dislikes it
 allow-newer: true

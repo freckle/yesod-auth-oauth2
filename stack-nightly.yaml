@@ -3,3 +3,9 @@ resolver: nightly-2018-11-24
 extra-deps:
   # should be in nightly in a day
   - hoauth2-1.8.3
+
+# Fix for weeder with stack-2
+ghc-options:
+  "$locals":
+    -ddump-to-file
+    -ddump-hi
