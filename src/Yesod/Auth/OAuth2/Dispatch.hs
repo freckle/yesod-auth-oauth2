@@ -9,7 +9,8 @@
 module Yesod.Auth.OAuth2.Dispatch
     ( FetchCreds
     , dispatchAuthRequest
-    ) where
+    )
+where
 
 import Control.Exception.Safe
 import Control.Monad (unless, (<=<))
@@ -63,7 +64,7 @@ dispatchForward name oauth2 = do
 dispatchCallback :: Text -> OAuth2 -> FetchCreds m -> AuthHandler m TypedContent
 dispatchCallback name oauth2 getCreds = do
     csrf <- verifySessionCSRF $ tokenSessionKey name
-    onErrorResponse errInvalidOAuth
+    onErrorResponse $ oauth2HandshakeError name
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
@@ -72,12 +73,30 @@ dispatchCallback name oauth2 getCreds = do
     setCredsRedirect creds
   where
     errLeft :: Show e => IO (Either e a) -> AuthHandler m a
-    errLeft = either (errInvalidOAuth . unknownError . tshow) pure <=< liftIO
+    errLeft = either (unexpectedError name) pure <=< liftIO
 
-    errInvalidOAuth :: ErrorResponse -> AuthHandler m a
-    errInvalidOAuth err = do
-        $(logError) $ "OAuth2 error (" <> name <> "): " <> tshow err
-        redirectMessage $ "Unable to log in with OAuth2: " <> erUserMessage err
+-- | Handle an OAuth2 @'ErrorResponse'@
+--
+-- These are things coming from the OAuth2 provider such an Invalid Grant or
+-- Invalid Scope and /may/ be user-actionable. We've coded them to have an
+-- @'erUserMessage'@ that we are comfortable displaying to the user as part of
+-- the redirect, just in case.
+--
+oauth2HandshakeError :: Text -> ErrorResponse -> AuthHandler m a
+oauth2HandshakeError name err = do
+    $(logError) $ "Handshake failure in " <> name <> " plugin: " <> tshow err
+    redirectMessage $ "OAuth2 handshake failure: " <> erUserMessage err
+
+-- | Handle an unexpected error
+--
+-- This would be some unexpected exception while processing the callback.
+-- Therefore, the user should see an opaque message and the details go only to
+-- the server logs.
+--
+unexpectedError :: Show e => Text -> e -> AuthHandler m a
+unexpectedError name err = do
+    $(logError) $ "Error in " <> name <> " OAuth2 plugin: " <> tshow err
+    redirectMessage "Unexpected error logging in with OAuth2"
 
 redirectMessage :: Text -> AuthHandler m a
 redirectMessage msg = do
