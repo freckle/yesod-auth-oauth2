@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.1...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.2...master)
 
 None
+
+## [v0.6.1.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.1...v0.6.1.2)
+
+- Don't report our own errors like OAuth2 ErrorResponses
 
 ## [v0.6.1.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.0...v0.6.1.1)
 
