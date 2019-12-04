@@ -83,6 +83,8 @@ instance YesodAuth App where
 instance RenderMessage App FormMessage where
     renderMessage _ _ = defaultFormMessage
 
+-- brittany-disable-next-binding
+
 getRootR :: Handler Html
 getRootR = do
     sess <- getSession
@@ -144,7 +146,7 @@ mkFoundation = do
         , loadPlugin oauth2Upcase "UPCASE"
         ]
 
-    return App{..}
+    return App {..}
   where
     loadPlugin f prefix = do
         clientId <- getEnv $ prefix <> "_CLIENT_ID"

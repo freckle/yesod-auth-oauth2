@@ -54,7 +54,8 @@ module Yesod.Auth.OAuth2.Prelude
     -- * Temporary, until I finish re-structuring modules
     , authOAuth2
     , authOAuth2Widget
-    ) where
+    )
+where
 
 import Control.Exception.Safe
 import Data.Aeson
