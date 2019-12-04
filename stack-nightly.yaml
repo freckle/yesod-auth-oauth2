@@ -1,8 +1,8 @@
 # Overridden by --resolver on CI
-resolver: nightly-2018-11-24
+resolver: nightly-2019-11-29
 extra-deps:
-  # should be in nightly in a day
-  - hoauth2-1.8.3
+  - hoauth2-1.8.9@sha256:63929253f6cdeb096a369980d2acf0d7eedd0c98ac46f962f717c56b724069a4,5734
+allow-newer: true
 
 # Fix for weeder with stack-2
 ghc-options:

@@ -14,7 +14,6 @@ where
 
 import Control.Exception.Safe
 import Control.Monad (unless, (<=<))
-import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)

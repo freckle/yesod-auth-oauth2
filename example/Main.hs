@@ -26,7 +26,6 @@ import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy (fromStrict, toStrict)
 import qualified Data.Map as M
 import Data.Maybe (fromJust)
-import Data.Monoid ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8)

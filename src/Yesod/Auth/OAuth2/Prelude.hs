@@ -60,7 +60,6 @@ import Control.Exception.Safe
 import Data.Aeson
 import Data.ByteString (ByteString)
 import qualified Data.ByteString.Lazy as BL
-import Data.Semigroup ((<>))
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding
