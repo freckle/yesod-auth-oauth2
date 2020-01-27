@@ -10,7 +10,7 @@ setup.lint:
 
 .PHONY: dependencies
 dependencies:
-	stack build $(STACK_ARGUMENTS) -j 1 haskell-src-exts
+	stack build $(STACK_ARGUMENTS) -j 1 Cabal haskell-src-exts
 	stack build $(STACK_ARGUMENTS) \
 	  --flag yesod-auth-oauth2:example \
 	  --dependencies-only --test --no-run-tests
