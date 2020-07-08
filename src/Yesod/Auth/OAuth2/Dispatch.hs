@@ -67,7 +67,7 @@ dispatchCallback name oauth2 getCreds = do
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
-    token <- errLeft $ fetchAccessToken manager oauth2' $ ExchangeToken code
+    token <- errLeft $ fetchAccessToken2 manager oauth2' $ ExchangeToken code
     creds <- errLeft $ tryFetchCreds $ getCreds manager token
     setCredsRedirect creds
   where
