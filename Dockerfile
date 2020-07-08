@@ -16,8 +16,8 @@ RUN mkdir -p /etc/sudoers.d \
 ENV HOME /home/testuser
 WORKDIR /home/testuser
 USER testuser
-COPY --chown=testuser package.yaml app
-COPY --chown=testuser stack.yaml app
+COPY --chown=testuser package.yaml app/package.yaml
+COPY --chown=testuser stack.yaml app/stack.yaml
 
 # Update stack and cache dependencies and app in stages
 ENV PATH="/home/testuser/.local/bin:${PATH}"
