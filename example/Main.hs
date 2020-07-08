@@ -35,6 +35,7 @@ import Network.Wai.Handler.Warp (runEnv)
 import System.Environment (getEnv, lookupEnv)
 import Yesod
 import Yesod.Auth
+import Yesod.Auth.OAuth2.AzureAD
 import Yesod.Auth.OAuth2.BattleNet
 import Yesod.Auth.OAuth2.Bitbucket
 import Yesod.Auth.OAuth2.EveOnline
@@ -134,7 +135,8 @@ mkFoundation = do
         --
         -- FIXME: oauth2BattleNet is quite annoying!
         --
-        [ loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
+        [ loadPlugin oauth2AzureAD "AZURE_AD"
+        , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
         , loadPlugin oauth2Bitbucket "BITBUCKET"
         , loadPlugin (oauth2Eve Plain) "EVE_ONLINE"
         , loadPlugin oauth2GitHub "GITHUB"
