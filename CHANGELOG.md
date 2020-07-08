@@ -1,6 +1,6 @@
 ## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.2...master)
 
-None
+- Add WordPress.com provider
 
 ## [v0.6.1.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.1...v0.6.1.2)
 
