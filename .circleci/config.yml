@@ -1,89 +1,29 @@
----
-version: 2.0
+version: 2.1
 
-references:
-  stack_build: &stack_build
-    docker:
-      # https://github.com/haskell-works/stack-build/blob/master/minimal/Dockerfile
-      - image: quay.io/haskell_works/stack-build-minimal
-    steps:
-      - checkout
-      - run:
-          name: Upgrade Stack
-          command: stack upgrade
-      - run:
-          name: Digest
-          command: |
-            {
-              stack --version
-              echo -- "$STACK_YAML/$STACK_ARGUMENTS"
-            } > rdigest
-            git ls-files | xargs md5sum > sdigest
-      - restore_cache:
-          keys:
-            - v2-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
-            - v2-{{ .Branch }}-{{ checksum "rdigest" }}-
-            - v2-{{ .Branch }}-
-            - v2-master-
-      - run:
-          name: Setup
-          command: |
-            if [ "${LINT:-1}" = 1 ]; then
-              make setup setup.lint
-            else
-              make setup
-            fi
-      - run:
-          name: Dependencies
-          command: make dependencies
-      - run:
-          name: Build
-          command: make build
-      - save_cache:
-          # yamllint disable-line rule:line-length
-          key: v2-{{ .Branch }}-{{ checksum "rdigest" }}-{{ checksum "sdigest" }}
-          paths:
-            - ~/.stack
-            - ./.stack-work
-      - run:
-          name: Test
-          command: |
-            if [ "${LINT:-1}" = 1 ]; then
-              make test lint
-            else
-              make test
-            fi
+orbs:
+  stack-build: pbrisbin/stack-build@2.0.0
 
-jobs:
-  build:
-    <<: *stack_build
-  build_8.4.3:
-    <<: *stack_build
-    environment:
-      STACK_ARGUMENTS: --no-terminal
-      STACK_YAML: stack-lts-12.2.yaml
-  build_8.6.3:
-    <<: *stack_build
-    environment:
-      STACK_ARGUMENTS: --no-terminal
-      STACK_YAML: stack-lts-13.2.yaml
-  build_nightly:
-    <<: *stack_build
-    environment:
-      # weeder is not happy, again
-      # https://circleci.com/gh/thoughtbot/yesod-auth-oauth2/375
-      LINT: 0
-      STACK_ARGUMENTS: --resolver nightly --no-terminal
-      STACK_YAML: stack-nightly.yaml
+defaults: &defaults
+  hlint-yaml-url:
+    https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
 
 workflows:
-  version: 2
   commit:
     jobs:
-      - build
-      - build_8.4.3
-      - build_8.6.3
-      - build_nightly
+      - stack-build/build-test-lint:
+          <<: *defaults
+          name: "default"
+      - stack-build/build-test-lint:
+          <<: *defaults
+          name: "ghc-8.4.3 / lts-12.2"
+          stack-yaml: stack-lts-12.2.yaml
+      - stack-build/build-test-lint:
+          <<: *defaults
+          name: "ghc-8.6.3 / lts-13.2"
+          stack-yaml: stack-lts-13.2.yaml
+      - stack-build/build-test-nightly:
+          name: "nightly"
+
   nightly:
     triggers:
       - schedule:
@@ -93,4 +33,5 @@ workflows:
               only:
                 - master
     jobs:
-      - build_nightly
+      - stack-build/build-test-nightly:
+          name: "nightly"
