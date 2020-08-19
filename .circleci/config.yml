@@ -23,6 +23,7 @@ workflows:
           stack-yaml: stack-lts-13.2.yaml
       - stack-build/build-test-nightly:
           name: "nightly"
+          stack-yaml: stack-nightly.yaml
 
   nightly:
     triggers:
@@ -35,3 +36,4 @@ workflows:
     jobs:
       - stack-build/build-test-nightly:
           name: "nightly"
+          stack-yaml: stack-nightly.yaml
