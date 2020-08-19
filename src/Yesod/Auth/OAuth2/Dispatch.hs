@@ -5,6 +5,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 module Yesod.Auth.OAuth2.Dispatch
     ( FetchCreds
@@ -14,12 +15,14 @@ where
 
 import Control.Exception.Safe
 import Control.Monad (unless, (<=<))
+import Crypto.Random (getRandomBytes)
+import Data.ByteArray.Encoding (Base(Base64), convertToBase)
+import Data.ByteString (ByteString)
 import Data.Text (Text)
 import qualified Data.Text as T
-import Data.Text.Encoding (encodeUtf8)
+import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2
-import System.Random (newStdGen, randomRs)
 import URI.ByteString.Extension
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.ErrorResponse
@@ -141,7 +144,9 @@ setSessionCSRF :: MonadHandler m => Text -> m Text
 setSessionCSRF sessionKey = do
     csrfToken <- liftIO randomToken
     csrfToken <$ setSession sessionKey csrfToken
-    where randomToken = T.pack . take 30 . randomRs ('a', 'z') <$> newStdGen
+  where
+    randomToken =
+        decodeUtf8 . convertToBase @ByteString Base64 <$> getRandomBytes 64
 
 -- | Verify the callback provided the same CSRF token as in our session
 verifySessionCSRF :: MonadHandler m => Text -> m Text

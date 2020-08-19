@@ -24,13 +24,14 @@ library:
   dependencies:
     - aeson >=0.6 && <1.6
     - bytestring >=0.9.1.4
+    - cryptonite
     - errors
     - hoauth2 >=1.7.0 && <1.15
     - http-client >=0.4.0 && <0.7
     - http-conduit >=2.0 && <3.0
     - http-types >=0.8 && <0.13
+    - memory
     - microlens
-    - random
     - safe-exceptions
     - text >=0.7 && <2.0
     - uri-bytestring
