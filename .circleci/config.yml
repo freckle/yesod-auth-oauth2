@@ -6,6 +6,7 @@ orbs:
 defaults: &defaults
   hlint-yaml-url:
     https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
+  stack-arguments: --flag yesod-auth-oauth2:example
 
 workflows:
   commit:
