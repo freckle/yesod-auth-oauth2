@@ -1,11 +1,14 @@
 # Overridden by --resolver on CI
-resolver: nightly-2019-11-29
+resolver: nightly-2020-08-19
 extra-deps:
-  - hoauth2-1.8.9@sha256:63929253f6cdeb096a369980d2acf0d7eedd0c98ac46f962f717c56b724069a4,5734
-allow-newer: true
+  - yesod-auth-1.6.10@sha256:c1d923621306c6a625553fd02ab805619de405707f22eb09c9b0c0f3c9e7bd0c,3038
 
-# Fix for weeder with stack-2
-ghc-options:
-  "$locals":
-    -ddump-to-file
-    -ddump-hi
+  # for yesod-auth
+  - yesod-form-1.6.7@sha256:b216bb4eb0575d4fcc497b1d7f47edf25fc9035ab3ae8b77bf7fcbedc15dd2ea,3350
+  - yesod-persistent-1.6.0.4@sha256:4e8d00ca5e347bb8efa246ec272200f71597c62369dbbf66bb50216968b8f926,1692
+
+  # for yesod-persistent
+  - persistent-template-2.8.3.1@sha256:83ea6047a52ad0379ad958e6126ff289021238ed0ae4f9cf8edb8e094524f2a3,2774
+
+# Because persistent-template requires persistent >= 2.11, which does not exist
+allow-newer: true
