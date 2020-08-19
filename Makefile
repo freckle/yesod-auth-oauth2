@@ -2,36 +2,35 @@ all: setup setup.lint dependencies build test lint
 
 .PHONY: setup
 setup:
-	stack setup $(STACK_ARGUMENTS)
+	stack setup
 
 .PHONY: setup.lint
 setup.lint:
-	stack install $(STACK_ARGUMENTS) --copy-compiler-tool hlint weeder
+	stack install --copy-compiler-tool hlint weeder
 
 .PHONY: dependencies
 dependencies:
-	stack build $(STACK_ARGUMENTS) -j 1 Cabal haskell-src-exts
-	stack build $(STACK_ARGUMENTS) \
+	stack build \
 	  --flag yesod-auth-oauth2:example \
 	  --dependencies-only --test --no-run-tests
 
 .PHONY: build
 build:
-	stack build $(STACK_ARGUMENTS) \
+	stack build \
 	  --flag yesod-auth-oauth2:example \
 	  --pedantic --test --no-run-tests
 
 .PHONY: test
 test:
-	stack build $(STACK_ARGUMENTS) \
+	stack build \
 	  --flag yesod-auth-oauth2:example \
 	  --pedantic --test
 
 
 .PHONY: lint
 lint:
-	stack exec $(STACK_ARGUMENTS) hlint src test
-	stack exec $(STACK_ARGUMENTS) weeder .
+	stack exec hlint src test
+	stack exec weeder .
 
 .PHONY: clean
 clean:
