@@ -32,6 +32,16 @@ lint:
 	stack exec hlint src test
 	stack exec weeder .
 
+.PHONY: nightly
+nightly:
+	stack setup --stack-yaml stack-nightly.yaml --resolver nightly
+	stack build --stack-yaml stack-nightly.yaml --resolver nightly \
+	  --test --no-run-tests --bench --no-run-benchmarks \
+	  --dependencies-only
+	stack build --stack-yaml stack-nightly.yaml --resolver nightly \
+	  --test --no-run-tests --bench --no-run-benchmarks \
+	  --fast --pedantic
+
 .PHONY: clean
 clean:
 	stack clean
