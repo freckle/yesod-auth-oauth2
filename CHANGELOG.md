@@ -3,6 +3,7 @@
 - Add WordPress.com provider
   [@nbloomf](https://github.com/thoughtbot/yesod-auth-oauth2/pull/130)
 - Allow aeson-1.5 and hoauth2-1.14
+- Replace `System.Random` state token generation with `cryptonite`
 
 ## [v0.6.1.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.1...v0.6.1.2)
 
