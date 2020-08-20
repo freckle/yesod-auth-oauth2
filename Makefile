@@ -18,13 +18,13 @@ dependencies:
 build:
 	stack build \
 	  --flag yesod-auth-oauth2:example \
-	  --pedantic --test --no-run-tests
+	  --fast --pedantic --test --no-run-tests
 
 .PHONY: test
 test:
 	stack build \
 	  --flag yesod-auth-oauth2:example \
-	  --pedantic --test
+	  --fast --pedantic --test
 
 
 .PHONY: lint
