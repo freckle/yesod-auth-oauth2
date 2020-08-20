@@ -42,6 +42,10 @@ nightly:
 	  --test --no-run-tests --bench --no-run-benchmarks \
 	  --fast --pedantic
 
+.PHONY: example
+example: build
+	stack exec yesod-auth-oauth2-example
+
 .PHONY: clean
 clean:
 	stack clean
