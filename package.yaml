@@ -1,6 +1,6 @@
 ---
 name: yesod-auth-oauth2
-version: '0.6.1.2'  # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
+version: '0.6.1.3'  # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
 synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
