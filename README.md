@@ -92,7 +92,7 @@ oauth2MySite clientId clientSecret =
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
+        , oauthClientSecret = Just clientSecret
         , oauthOAuthorizeEndpoint = "https://mysite.com/oauth/authorize"
         , oauthAccessTokenEndpoint = "https://mysite.com/oauth/token"
         , oauthCallback = Nothing

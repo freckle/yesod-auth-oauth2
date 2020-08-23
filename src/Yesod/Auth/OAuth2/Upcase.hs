@@ -42,7 +42,7 @@ oauth2Upcase clientId clientSecret =
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
+        , oauthClientSecret = Just clientSecret
         , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
         , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
         , oauthCallback = Nothing

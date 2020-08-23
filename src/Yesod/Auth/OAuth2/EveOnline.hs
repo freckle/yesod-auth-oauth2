@@ -73,7 +73,7 @@ oauth2EveScoped scopes widgetType clientId clientSecret =
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
+        , oauthClientSecret = Just clientSecret
         , oauthOAuthorizeEndpoint =
             "https://login.eveonline.com/oauth/authorize"
                 `withQuery` [("response_type", "code"), scopeParam " " scopes]
