@@ -26,6 +26,12 @@ test:
 	  --flag yesod-auth-oauth2:example \
 	  --fast --pedantic --test
 
+.PHONY: watch
+watch:
+	stack build \
+	  --flag yesod-auth-oauth2:example \
+	  --fast --pedantic --test --file-watch
+
 
 .PHONY: lint
 lint:
