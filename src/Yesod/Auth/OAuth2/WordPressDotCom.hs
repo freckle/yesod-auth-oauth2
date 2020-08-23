@@ -38,7 +38,7 @@ oauth2WordPressDotCom clientId clientSecret =
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
+        , oauthClientSecret = Just clientSecret
         , oauthOAuthorizeEndpoint =
             "https://public-api.wordpress.com/oauth2/authorize"
                 `withQuery` [scopeParam "," ["auth"]]

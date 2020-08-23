@@ -91,11 +91,10 @@ authGetProfile name manager token url = do
     pure (decoded, resp)
 
 -- | Throws a @Left@ result as an @'YesodOAuth2Exception'@
-fromAuthGet
-    :: Text -> Either (OAuth2Error Value) BL.ByteString -> IO BL.ByteString
+fromAuthGet :: Text -> Either BL.ByteString BL.ByteString -> IO BL.ByteString
 fromAuthGet _ (Right bs) = pure bs -- nice
 fromAuthGet name (Left err) =
-    throwIO $ YesodOAuth2Exception.OAuth2Error name $ encode err
+    throwIO $ YesodOAuth2Exception.OAuth2Error name err
 
 -- | Throws a decoding error as an @'YesodOAuth2Exception'@
 fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a

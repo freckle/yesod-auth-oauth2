@@ -54,7 +54,7 @@ oauth2GitLabHostScopes host scopes clientId clientSecret =
   where
     oauth2 = OAuth2
         { oauthClientId = clientId
-        , oauthClientSecret = clientSecret
+        , oauthClientSecret = Just clientSecret
         , oauthOAuthorizeEndpoint =
             host
             `withPath` "/oauth/authorize"
