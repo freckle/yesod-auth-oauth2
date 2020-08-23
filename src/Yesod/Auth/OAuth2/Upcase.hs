@@ -8,7 +8,8 @@
 --
 module Yesod.Auth.OAuth2.Upcase
     ( oauth2Upcase
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -27,8 +28,11 @@ pluginName = "upcase"
 oauth2Upcase :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2Upcase clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <-
-            authGetProfile pluginName manager token "http://upcase.com/api/v1/me.json"
+        (User userId, userResponse) <- authGetProfile
+            pluginName
+            manager
+            token
+            "http://upcase.com/api/v1/me.json"
 
         pure Creds
             { credsPlugin = pluginName

@@ -2,7 +2,8 @@
 
 module Yesod.Auth.OAuth2.Nylas
     ( oauth2Nylas
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -15,8 +16,7 @@ import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 newtype User = User Text
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
-        <$> o .: "id"
+    parseJSON = withObject "User" $ \o -> User <$> o .: "id"
 
 pluginName :: Text
 pluginName = "nylas"
@@ -53,16 +53,17 @@ oauth2Nylas clientId clientSecret =
     oauth = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = "https://api.nylas.com/oauth/authorize"
-            `withQuery` [ ("response_type", "code")
-                        , ( "client_id"
-                          , encodeUtf8 clientId
-                          )
+        , oauthOAuthorizeEndpoint =
+            "https://api.nylas.com/oauth/authorize"
+                `withQuery` [ ("response_type", "code")
+                            , ( "client_id"
+                              , encodeUtf8 clientId
+                              )
             -- N.B. The scopes delimeter is unknown/untested. Verify that before
             -- extracting this to an argument and offering a Scoped function. In
             -- its current state, it doesn't matter because it's only one scope.
-                        , scopeParam "," defaultScopes
-                        ]
+                            , scopeParam "," defaultScopes
+                            ]
         , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
         , oauthCallback = Nothing
         }
