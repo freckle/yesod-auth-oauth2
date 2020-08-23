@@ -9,7 +9,8 @@
 module Yesod.Auth.OAuth2.GitHub
     ( oauth2GitHub
     , oauth2GitHubScoped
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -18,8 +19,7 @@ import qualified Data.Text as T
 newtype User = User Int
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
-        <$> o .: "id"
+    parseJSON = withObject "User" $ \o -> User <$> o .: "id"
 
 pluginName :: Text
 pluginName = "github"
@@ -33,8 +33,11 @@ oauth2GitHub = oauth2GitHubScoped defaultScopes
 oauth2GitHubScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2GitHubScoped scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <-
-            authGetProfile pluginName manager token "https://api.github.com/user"
+        (User userId, userResponse) <- authGetProfile
+            pluginName
+            manager
+            token
+            "https://api.github.com/user"
 
         pure Creds
             { credsPlugin = pluginName
@@ -45,9 +48,10 @@ oauth2GitHubScoped scopes clientId clientSecret =
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = "https://github.com/login/oauth/authorize" `withQuery`
-            [ scopeParam "," scopes
-            ]
-        , oauthAccessTokenEndpoint = "https://github.com/login/oauth/access_token"
+        , oauthOAuthorizeEndpoint =
+            "https://github.com/login/oauth/authorize"
+                `withQuery` [scopeParam "," scopes]
+        , oauthAccessTokenEndpoint =
+            "https://github.com/login/oauth/access_token"
         , oauthCallback = Nothing
         }

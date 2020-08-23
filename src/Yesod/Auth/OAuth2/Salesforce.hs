@@ -11,15 +11,15 @@ module Yesod.Auth.OAuth2.Salesforce
     , oauth2SalesforceScoped
     , oauth2SalesforceSandbox
     , oauth2SalesforceSandboxScoped
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
 newtype User = User Text
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
-        <$> o .: "user_id"
+    parseJSON = withObject "User" $ \o -> User <$> o .: "user_id"
 
 pluginName :: Text
 pluginName = "salesforce"
@@ -31,7 +31,8 @@ oauth2Salesforce :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2Salesforce = oauth2SalesforceScoped defaultScopes
 
 oauth2SalesforceScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
-oauth2SalesforceScoped = salesforceHelper pluginName
+oauth2SalesforceScoped = salesforceHelper
+    pluginName
     "https://login.salesforce.com/services/oauth2/userinfo"
     "https://login.salesforce.com/services/oauth2/authorize"
     "https://login.salesforce.com/services/oauth2/token"
@@ -39,8 +40,10 @@ oauth2SalesforceScoped = salesforceHelper pluginName
 oauth2SalesforceSandbox :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2SalesforceSandbox = oauth2SalesforceSandboxScoped defaultScopes
 
-oauth2SalesforceSandboxScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
-oauth2SalesforceSandboxScoped = salesforceHelper (pluginName <> "-sandbox")
+oauth2SalesforceSandboxScoped
+    :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
+oauth2SalesforceSandboxScoped = salesforceHelper
+    (pluginName <> "-sandbox")
     "https://test.salesforce.com/services/oauth2/userinfo"
     "https://test.salesforce.com/services/oauth2/authorize"
     "https://test.salesforce.com/services/oauth2/token"
@@ -55,9 +58,13 @@ salesforceHelper
     -> Text
     -> Text
     -> AuthPlugin m
-salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSecret =
-    authOAuth2 name oauth2 $ \manager token -> do
-        (User userId, userResponse) <- authGetProfile name manager token profileUri
+salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSecret
+    = authOAuth2 name oauth2 $ \manager token -> do
+        (User userId, userResponse) <- authGetProfile
+            name
+            manager
+            token
+            profileUri
 
         pure Creds
             { credsPlugin = pluginName
@@ -68,7 +75,8 @@ salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSec
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = authorizeUri `withQuery` [scopeParam " " scopes]
+        , oauthOAuthorizeEndpoint =
+            authorizeUri `withQuery` [scopeParam " " scopes]
         , oauthAccessTokenEndpoint = tokenUri
         , oauthCallback = Nothing
         }

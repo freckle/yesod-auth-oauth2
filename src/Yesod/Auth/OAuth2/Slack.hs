@@ -9,7 +9,8 @@ module Yesod.Auth.OAuth2.Slack
     ( SlackScope(..)
     , oauth2Slack
     , oauth2SlackScoped
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -66,8 +67,9 @@ oauth2SlackScoped scopes clientId clientSecret =
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = "https://slack.com/oauth/authorize"
-            `withQuery` [scopeParam "," $ map scopeText scopes]
+        , oauthOAuthorizeEndpoint =
+            "https://slack.com/oauth/authorize"
+                `withQuery` [scopeParam "," $ map scopeText scopes]
         , oauthAccessTokenEndpoint = "https://slack.com/api/oauth.access"
         , oauthCallback = Nothing
         }

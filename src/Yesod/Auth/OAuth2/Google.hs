@@ -26,16 +26,18 @@
 module Yesod.Auth.OAuth2.Google
     ( oauth2Google
     , oauth2GoogleScoped
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
 newtype User = User Text
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
+    parseJSON =
+        withObject "User" $ \o -> User
         -- Required for data backwards-compatibility
-        <$> (("google-uid:" <>) <$> o .: "sub")
+                                       <$> (("google-uid:" <>) <$> o .: "sub")
 
 pluginName :: Text
 pluginName = "google"
@@ -49,8 +51,11 @@ oauth2Google = oauth2GoogleScoped defaultScopes
 oauth2GoogleScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2GoogleScoped scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <-
-            authGetProfile pluginName manager token "https://www.googleapis.com/oauth2/v3/userinfo"
+        (User userId, userResponse) <- authGetProfile
+            pluginName
+            manager
+            token
+            "https://www.googleapis.com/oauth2/v3/userinfo"
 
         pure Creds
             { credsPlugin = pluginName
@@ -61,9 +66,10 @@ oauth2GoogleScoped scopes clientId clientSecret =
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = "https://accounts.google.com/o/oauth2/auth" `withQuery`
-            [ scopeParam " " scopes
-            ]
-        , oauthAccessTokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
+        , oauthOAuthorizeEndpoint =
+            "https://accounts.google.com/o/oauth2/auth"
+                `withQuery` [scopeParam " " scopes]
+        , oauthAccessTokenEndpoint =
+            "https://www.googleapis.com/oauth2/v3/token"
         , oauthCallback = Nothing
         }

@@ -11,7 +11,8 @@
 module Yesod.Auth.OAuth2.BattleNet
     ( oauth2BattleNet
     , oAuth2BattleNet
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -21,8 +22,7 @@ import Yesod.Core.Widget
 newtype User = User Int
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
-        <$> o .: "id"
+    parseJSON = withObject "User" $ \o -> User <$> o .: "id"
 
 pluginName :: Text
 pluginName = "battle.net"
@@ -38,7 +38,10 @@ oauth2BattleNet widget region clientId clientSecret =
     authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
         (User userId, userResponse) <-
             authGetProfile pluginName manager token
-                $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
+                $ fromRelative
+                      "https"
+                      (apiHost $ T.toLower region)
+                      "/account/user"
 
         pure Creds
             { credsPlugin = pluginName
@@ -64,6 +67,7 @@ wwwHost :: Text -> Host
 wwwHost "cn" = "www.battlenet.com.cn"
 wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"
 
-oAuth2BattleNet :: YesodAuth m => Text -> Text -> Text -> WidgetFor m () -> AuthPlugin m
+oAuth2BattleNet
+    :: YesodAuth m => Text -> Text -> Text -> WidgetFor m () -> AuthPlugin m
 oAuth2BattleNet i s r w = oauth2BattleNet w r i s
 {-# DEPRECATED oAuth2BattleNet "Use oauth2BattleNet" #-}

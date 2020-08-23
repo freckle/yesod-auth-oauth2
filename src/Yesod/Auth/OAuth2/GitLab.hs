@@ -4,7 +4,8 @@ module Yesod.Auth.OAuth2.GitLab
     , oauth2GitLabHostScopes
     , defaultHost
     , defaultScopes
-    ) where
+    )
+where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -13,8 +14,7 @@ import qualified Data.Text as T
 newtype User = User Int
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User
-        <$> o .: "id"
+    parseJSON = withObject "User" $ \o -> User <$> o .: "id"
 
 pluginName :: Text
 pluginName = "gitlab"
@@ -37,11 +37,14 @@ defaultScopes = ["read_user"]
 oauth2GitLab :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2GitLab = oauth2GitLabHostScopes defaultHost defaultScopes
 
-oauth2GitLabHostScopes :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
+oauth2GitLabHostScopes
+    :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
 oauth2GitLabHostScopes host scopes clientId clientSecret =
     authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <- authGetProfile pluginName manager token
-            $ host `withPath` "/api/v4/user"
+        (User userId, userResponse) <-
+            authGetProfile pluginName manager token
+            $ host
+            `withPath` "/api/v4/user"
 
         pure Creds
             { credsPlugin = pluginName
@@ -52,9 +55,10 @@ oauth2GitLabHostScopes host scopes clientId clientSecret =
     oauth2 = OAuth2
         { oauthClientId = clientId
         , oauthClientSecret = clientSecret
-        , oauthOAuthorizeEndpoint = host
+        , oauthOAuthorizeEndpoint =
+            host
             `withPath` "/oauth/authorize"
-            `withQuery` [ scopeParam " " scopes ]
+            `withQuery` [scopeParam " " scopes]
         , oauthAccessTokenEndpoint = host `withPath` "/oauth/token"
         , oauthCallback = Nothing
         }
