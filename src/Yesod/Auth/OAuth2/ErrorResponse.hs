@@ -9,7 +9,8 @@ module Yesod.Auth.OAuth2.ErrorResponse
     , ErrorName(..)
     , onErrorResponse
     , unknownError
-    ) where
+    )
+where
 
 import Data.Foldable (traverse_)
 import Data.Text (Text)
