@@ -8,6 +8,10 @@ setup:
 setup.lint:
 	stack install --copy-compiler-tool hlint weeder
 
+.PHONY: setup.tools
+setup.tools:
+	stack install --copy-compiler-tool brittany stylish-haskell fast-tags
+
 .PHONY: dependencies
 dependencies:
 	stack build \
