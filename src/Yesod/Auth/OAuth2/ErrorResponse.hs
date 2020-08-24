@@ -66,10 +66,10 @@ checkErrorResponse :: MonadHandler m => m (Maybe ErrorResponse)
 checkErrorResponse = do
     merror <- lookupGetParam "error"
 
-    for merror $ \err -> ErrorResponse
-        <$> pure (readErrorName err)
-        <*> lookupGetParam "error_description"
-        <*> lookupGetParam "error_uri"
+    for merror $ \err ->
+        ErrorResponse (readErrorName err)
+            <$> lookupGetParam "error_description"
+            <*> lookupGetParam "error_uri"
 
 readErrorName :: Text -> ErrorName
 readErrorName "invalid_request" = InvalidRequest
