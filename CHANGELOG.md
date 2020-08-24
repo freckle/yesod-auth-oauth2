@@ -1,6 +1,7 @@
 ## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.3...master)
 
-None
+- Update to GHC-8.8, and hoauth2-1.14
+- Drop CI-backed support for GHC-8.4
 
 ## [v0.6.1.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.2...v0.6.1.3)
 
