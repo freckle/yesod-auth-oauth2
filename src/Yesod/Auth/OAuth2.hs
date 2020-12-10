@@ -22,7 +22,8 @@ module Yesod.Auth.OAuth2
     , getRefreshToken
     , getUserResponse
     , getUserResponseJSON
-    ) where
+    )
+where
 
 import Control.Error.Util (note)
 import Control.Monad ((<=<))
@@ -65,16 +66,14 @@ authOAuth2Widget widget name oauth getCreds =
 
 -- | Read the @'AccessToken'@ from the values set via @'setExtra'@
 getAccessToken :: Creds m -> Maybe AccessToken
-getAccessToken =
-    (AccessToken <$>) . lookup "accessToken" . credsExtra
+getAccessToken = (AccessToken <$>) . lookup "accessToken" . credsExtra
 
 -- | Read the @'RefreshToken'@ from the values set via @'setExtra'@
 --
 -- N.B. not all providers supply this value.
 --
 getRefreshToken :: Creds m -> Maybe RefreshToken
-getRefreshToken =
-    (RefreshToken <$>) . lookup "refreshToken" . credsExtra
+getRefreshToken = (RefreshToken <$>) . lookup "refreshToken" . credsExtra
 
 -- | Read the original profile response from the values set via @'setExtra'@
 getUserResponse :: Creds m -> Maybe ByteString
