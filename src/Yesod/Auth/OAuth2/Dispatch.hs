@@ -63,7 +63,11 @@ dispatchForward name oauth2 = do
 -- 2. Use the code parameter to fetch an AccessToken for the Provider
 -- 3. Use the AccessToken to construct a @'Creds'@ value for the Provider
 --
-dispatchCallback :: Text -> OAuth2 -> FetchCreds m -> AuthHandler m TypedContent
+dispatchCallback
+    :: Text
+    -> OAuth2
+    -> FetchCreds m
+    -> AuthHandler m TypedContent
 dispatchCallback name oauth2 getCreds = do
     csrf <- verifySessionCSRF $ tokenSessionKey name
     onErrorResponse $ oauth2HandshakeError name
