@@ -1,6 +1,11 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.5...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.6...master)
 
 None
+
+## [v0.6.1.6](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.5...v0.6.1.6)
+
+- Revert back to Authorization-header-only `fetchAccessToken` function
+- Add `authOAuth2'` and `authOAuth2Widget'`, which use `fetchAccessToken2`
 
 ## [v0.6.1.5](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.4...v0.6.1.5)
 
