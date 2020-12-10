@@ -8,7 +8,10 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 module Yesod.Auth.OAuth2.Dispatch
-    ( FetchCreds
+    ( FetchToken
+    , fetchAccessToken
+    , fetchAccessToken2
+    , FetchCreds
     , dispatchAuthRequest
     )
 where
@@ -23,11 +26,19 @@ import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2
+import Network.OAuth.OAuth2.TokenRequest (Errors)
 import URI.ByteString.Extension
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.ErrorResponse
 import Yesod.Auth.OAuth2.Exception
 import Yesod.Core hiding (ErrorResponse)
+
+-- | How to fetch an @'OAuth2Token'@
+--
+-- This will be 'fetchAccessToken' or 'fetchAccessToken2'
+--
+type FetchToken
+    = Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result Errors OAuth2Token)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
 type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
@@ -36,15 +47,16 @@ type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
 dispatchAuthRequest
     :: Text             -- ^ Name
     -> OAuth2           -- ^ Service details
+    -> FetchToken       -- ^ How to get a token
     -> FetchCreds m     -- ^ How to get credentials
     -> Text             -- ^ Method
     -> [Text]           -- ^ Path pieces
     -> AuthHandler m TypedContent
-dispatchAuthRequest name oauth2 _ "GET" ["forward"] =
+dispatchAuthRequest name oauth2 _ _ "GET" ["forward"] =
     dispatchForward name oauth2
-dispatchAuthRequest name oauth2 getCreds "GET" ["callback"] =
-    dispatchCallback name oauth2 getCreds
-dispatchAuthRequest _ _ _ _ _ = notFound
+dispatchAuthRequest name oauth2 getToken getCreds "GET" ["callback"] =
+    dispatchCallback name oauth2 getToken getCreds
+dispatchAuthRequest _ _ _ _ _ _ = notFound
 
 -- | Handle @GET \/forward@
 --
@@ -66,15 +78,16 @@ dispatchForward name oauth2 = do
 dispatchCallback
     :: Text
     -> OAuth2
+    -> FetchToken
     -> FetchCreds m
     -> AuthHandler m TypedContent
-dispatchCallback name oauth2 getCreds = do
+dispatchCallback name oauth2 getToken getCreds = do
     csrf <- verifySessionCSRF $ tokenSessionKey name
     onErrorResponse $ oauth2HandshakeError name
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
-    token <- errLeft $ fetchAccessToken2 manager oauth2' $ ExchangeToken code
+    token <- errLeft $ getToken manager oauth2' $ ExchangeToken code
     creds <- errLeft $ tryFetchCreds $ getCreds manager token
     setCredsRedirect creds
   where
