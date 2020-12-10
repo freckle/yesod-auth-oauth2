@@ -6,7 +6,7 @@ setup:
 
 .PHONY: setup.lint
 setup.lint:
-	stack install --copy-compiler-tool hlint weeder
+	stack install --copy-compiler-tool hlint
 
 .PHONY: setup.tools
 setup.tools:
@@ -40,7 +40,6 @@ watch:
 .PHONY: lint
 lint:
 	stack exec hlint src test
-	stack exec weeder .
 
 .PHONY: nightly
 nightly:
