@@ -23,23 +23,17 @@ workflows:
           <<: *defaults
           name: "ghc-8.8.3 / lts-16.10"
           stack-yaml: stack-lts-16.10.yaml
+      - stack-build/build-test-nightly:
+          name: "nightly"
 
-  # nightly is broken due to persistent/persistent-template situation
-  # https://app.circleci.com/pipelines/github/thoughtbot/yesod-auth-oauth2/172/workflows/1b5d2999-369d-411b-837d-9ccae4f4cede/jobs/1273
-
-      # - stack-build/build-test-nightly:
-      #     name: "nightly"
-      #     stack-yaml: stack-nightly.yaml
-
-  # nightly:
-  #   triggers:
-  #     - schedule:
-  #         cron: "0 0 * * *"
-  #         filters:
-  #           branches:
-  #             only:
-  #               - master
-  #   jobs:
-  #     - stack-build/build-test-nightly:
-  #         name: "nightly"
-  #         stack-yaml: stack-nightly.yaml
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - stack-build/build-test-nightly:
+          name: "nightly"
