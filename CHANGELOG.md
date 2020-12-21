@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.6...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.7...master)
 
 None
+
+## [v0.6.1.7](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.6...v0.6.1.7)
+
+- Relax upper bounds on `hoauth2` and `http-client`
 
 ## [v0.6.1.6](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.5...v0.6.1.6)
 
