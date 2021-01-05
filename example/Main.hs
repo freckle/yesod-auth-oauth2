@@ -46,8 +46,8 @@ import Yesod.Auth.OAuth2.Nylas
 import Yesod.Auth.OAuth2.Salesforce
 import Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Spotify
-import Yesod.Auth.OAuth2.WordPressDotCom
 import Yesod.Auth.OAuth2.Upcase
+import Yesod.Auth.OAuth2.WordPressDotCom
 
 data App = App
     { appHttpManager :: Manager
@@ -73,10 +73,9 @@ instance YesodAuth App where
 
     -- Copy the Creds response into the session for viewing after
     authenticate c = do
-        mapM_ (uncurry setSession) $
-            [ ("credsIdent", credsIdent c)
-            , ("credsPlugin", credsPlugin c)
-            ] ++ credsExtra c
+        mapM_ (uncurry setSession)
+            $ [("credsIdent", credsIdent c), ("credsPlugin", credsPlugin c)]
+            ++ credsExtra c
 
         return $ Authenticated "1"
 
@@ -150,7 +149,7 @@ mkFoundation = do
         , loadPlugin oauth2Upcase "UPCASE"
         ]
 
-    return App {..}
+    return App { .. }
   where
     loadPlugin f prefix = do
         clientId <- getEnv $ prefix <> "_CLIENT_ID"
