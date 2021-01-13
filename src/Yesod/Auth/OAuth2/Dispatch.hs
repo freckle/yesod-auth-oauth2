@@ -156,14 +156,25 @@ withCallbackAndState name oauth2 csrf = do
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
 getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
 
--- | Set a random, 30-character value in the session
+-- | Set a random, ~30-character value in the session
+--
+-- Some (but not all) providers decode a @+@ in the state token as a space when
+-- sending it back to us. We don't expect this and fail. And if we did code for
+-- it, we'd then fail on the providers that /don't/ do that.
+--
+-- Therefore, we just exclude @+@ in our tokens, which means this function may
+-- return slightly less than 30 characters.
+--
 setSessionCSRF :: MonadHandler m => Text -> m Text
 setSessionCSRF sessionKey = do
     csrfToken <- liftIO randomToken
     csrfToken <$ setSession sessionKey csrfToken
   where
     randomToken =
-        decodeUtf8 . convertToBase @ByteString Base64 <$> getRandomBytes 64
+        T.filter (/= '+')
+            . decodeUtf8
+            . convertToBase @ByteString Base64
+            <$> getRandomBytes 64
 
 -- | Verify the callback provided the same CSRF token as in our session
 verifySessionCSRF :: MonadHandler m => Text -> m Text
@@ -172,8 +183,14 @@ verifySessionCSRF sessionKey = do
     sessionToken <- lookupSession sessionKey
     deleteSession sessionKey
 
-    unless (sessionToken == Just token)
-        $ permissionDenied "Invalid OAuth2 state token"
+    unless (sessionToken == Just token) $ do
+        $(logError)
+            $ "state token does not match. "
+            <> "Param: "
+            <> tshow token
+            <> "State: "
+            <> tshow sessionToken
+        permissionDenied "Invalid OAuth2 state token"
 
     return token
 
