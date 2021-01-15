@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.0...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.1...master)
 
 None
+
+## [v0.6.2.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.0...v0.6.2.1)
+
+- Adjust lower bounds on cryptonite
 
 ## [v0.6.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.7...v0.6.2.0)
 
