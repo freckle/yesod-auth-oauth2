@@ -1,6 +1,17 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.7...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.0...master)
 
 None
+
+## [v0.6.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.7...v0.6.2.0)
+
+- Filter `+` from `state` tokens
+
+  This decreases entropy in the token slightly, but ensures that providers
+  performing unexpected +/space/%20 encoding (e.g. ClassLink) still function.
+
+  See [#140](https://github.com/thoughtbot/yesod-auth-oauth2/pull/140).
+
+- Add ClassLink provider
 
 ## [v0.6.1.7](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.1.6...v0.6.1.7)
 
