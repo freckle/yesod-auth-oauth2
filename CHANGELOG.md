@@ -1,6 +1,10 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.1...master)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.2...main)
 
 None
+
+## [v0.6.2.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.1...v0.6.2.2)
+
+- Consistent dependencies bounds in all targets
 
 ## [v0.6.2.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.0...v0.6.2.1)
 
