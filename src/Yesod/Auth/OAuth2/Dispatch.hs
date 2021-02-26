@@ -149,10 +149,8 @@ verifySessionCSRF sessionKey = do
 
 requireGetParam
     :: (MonadError DispatchError m, MonadHandler m) => Text -> m Text
-requireGetParam key = do
-    m <- lookupGetParam key
-    maybe err return m
-    where err = throwError $ MissingParameter key
+requireGetParam key =
+    maybe (throwError $ MissingParameter key) pure =<< lookupGetParam key
 
 tokenSessionKey :: Text -> Text
 tokenSessionKey name = "_yesod_oauth2_" <> name
