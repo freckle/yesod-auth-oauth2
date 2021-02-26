@@ -81,8 +81,8 @@ dispatchCallback
     -> FetchCreds site
     -> m TypedContent
 dispatchCallback name oauth2 getToken getCreds = do
-    csrf <- verifySessionCSRF $ tokenSessionKey name
     onErrorResponse $ throwError . OAuth2HandshakeError
+    csrf <- verifySessionCSRF $ tokenSessionKey name
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
