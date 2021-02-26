@@ -140,12 +140,9 @@ verifySessionCSRF sessionKey = do
     token <- requireGetParam "state"
     sessionToken <- lookupSession sessionKey
     deleteSession sessionKey
-
-    unless (sessionToken == Just token) $ throwError $ InvalidStateToken
-        sessionToken
-        token
-
-    pure token
+    token <$ unless
+        (sessionToken == Just token)
+        (throwError $ InvalidStateToken sessionToken token)
 
 requireGetParam
     :: (MonadError DispatchError m, MonadHandler m) => Text -> m Text
