@@ -86,18 +86,13 @@ dispatchCallback name oauth2 getToken getCreds = do
     code <- requireGetParam "code"
     manager <- authHttpManager
     oauth2' <- withCallbackAndState name oauth2 csrf
-    token <-
-        errLeft OAuth2ResultError $ getToken manager oauth2' $ ExchangeToken
-            code
+    token <- either (throwError . OAuth2ResultError) pure
+        =<< liftIO (getToken manager oauth2' $ ExchangeToken code)
     creds <-
         liftIO (getCreds manager token)
         `catch` (throwError . FetchCredsIOException)
         `catch` (throwError . FetchCredsYesodOAuth2Exception)
     setCredsRedirect creds
-  where
-    errLeft
-        :: (MonadIO m, MonadError e m) => (e' -> e) -> IO (Either e' a) -> m a
-    errLeft f = either (throwError . f) pure <=< liftIO
 
 withCallbackAndState
     :: (MonadError DispatchError m, MonadAuthHandler site m)
