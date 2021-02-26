@@ -1,0 +1,35 @@
+on:
+  pull_request:
+  push:
+    branches: main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        stack-yaml:
+          - stack.yaml
+          - stack-lts-16.10.yaml
+          - stack-lts-13.2.yaml
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.stack
+          ./.stack-work
+        key: ${{ runner.os }}-${{ hashFiles(matrix.stack-yaml) }}-${{ hashFiles('*.cabal') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ hashFiles(matrix.stack-yaml) }}-
+          ${{ runner.os }}-
+    - run:
+        curl --output .hlint.yaml https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
+    - uses: freckle/stack-action@main
+      with:
+        stack-yaml: ${{ matrix.stack-yaml }}
+        stack-arguments: --flag yesod-auth-oauth2:example
+        weeder: false
