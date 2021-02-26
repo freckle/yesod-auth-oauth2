@@ -32,11 +32,13 @@ library:
     - http-types >=0.8 && <0.13
     - memory
     - microlens
+    - mtl
     - safe-exceptions
     - text >=0.7 && <2.0
     - uri-bytestring
     - yesod-auth >=1.6.0 && <1.7
     - yesod-core >=1.6.0 && <1.7
+    - unliftio
 
 executables:
   yesod-auth-oauth2-example:
