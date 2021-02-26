@@ -89,18 +89,15 @@ dispatchCallback name oauth2 getToken getCreds = do
     token <-
         errLeft OAuth2ResultError $ getToken manager oauth2' $ ExchangeToken
             code
-    creds <- errLeft id $ tryFetchCreds $ getCreds manager token
+    creds <-
+        liftIO (getCreds manager token)
+        `catch` (throwError . FetchCredsIOException)
+        `catch` (throwError . FetchCredsYesodOAuth2Exception)
     setCredsRedirect creds
   where
     errLeft
         :: (MonadIO m, MonadError e m) => (e' -> e) -> IO (Either e' a) -> m a
     errLeft f = either (throwError . f) pure <=< liftIO
-
-tryFetchCreds :: IO a -> IO (Either DispatchError a)
-tryFetchCreds f =
-    (Right <$> f)
-        `catch` (pure . Left . FetchCredsIOException)
-        `catch` (pure . Left . FetchCredsYesodOAuth2Exception)
 
 withCallbackAndState
     :: (MonadError DispatchError m, MonadAuthHandler site m)
