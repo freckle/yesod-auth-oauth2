@@ -101,13 +101,8 @@ withCallbackAndState
     -> Text
     -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
-    let url = PluginR name ["callback"]
-    render <- getParentUrlRender
-    let callbackText = render url
-
-    callback <- maybe (throwError $ InvalidCallbackUri callbackText) pure
-        $ fromText callbackText
-
+    uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+    callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
     pure oauth2
         { oauthCallback = Just callback
         , oauthOAuthorizeEndpoint =
