@@ -19,8 +19,8 @@ import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2
 import Network.OAuth.OAuth2.TokenRequest (Errors)
-import UnliftIO.Exception
 import URI.ByteString.Extension
+import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.DispatchError
 import Yesod.Auth.OAuth2.ErrorResponse
