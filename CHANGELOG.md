@@ -1,6 +1,11 @@
-## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.2...main)
+## [*Unreleased*](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...main)
 
 None
+
+## [v0.6.2.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.2...v0.6.2.3)
+
+- Allow bytestring-0.11 and cryptonite 0.28
+- Test with GHC 8.10 on CI
 
 ## [v0.6.2.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.1...v0.6.2.2)
 
