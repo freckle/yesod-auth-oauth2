@@ -26,8 +26,8 @@ library:
   source-dirs: src
   dependencies:
     - aeson >=0.6 && <1.6
-    - bytestring >=0.9.1.4
-    - cryptonite >=0.25 && <0.28
+    - bytestring >=0.9.1.4 && < 0.12
+    - cryptonite >=0.25 && <0.29
     - errors
     - hoauth2 >=1.11.0 && <1.17
     - http-client >=0.4.0 && <0.8
@@ -53,7 +53,7 @@ executables:
       - yesod-auth-oauth2
       - aeson >=0.6 && <1.6
       - aeson-pretty
-      - bytestring >=0.9.1.4
+      - bytestring >=0.9.1.4 && < 0.12
       - containers
       - http-conduit >=2.0 && <3.0
       - load-env
