@@ -1,0 +1,120 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: a48bcec60db26dacb925a1706d7ce16291553c16ca0a4370ed20445d461d9c2a
+
+name:           yesod-auth-oauth2
+version:        0.6.2.2
+synopsis:       OAuth 2.0 authentication plugins
+description:    Library to authenticate with OAuth 2.0 for Yesod web applications.
+category:       Web
+homepage:       http://github.com/freckle/yesod-auth-oauth2
+bug-reports:    https://github.com/freckle/yesod-auth-oauth2/issues
+author:         Tom Streller,
+                Patrick Brisbin,
+                Freckle Engineering
+maintainer:     engineering@freckle.com
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/freckle/yesod-auth-oauth2
+
+flag example
+  description: Build the example application
+  manual: False
+  default: False
+
+library
+  exposed-modules:
+      URI.ByteString.Extension
+      Yesod.Auth.OAuth2
+      Yesod.Auth.OAuth2.AzureAD
+      Yesod.Auth.OAuth2.BattleNet
+      Yesod.Auth.OAuth2.Bitbucket
+      Yesod.Auth.OAuth2.ClassLink
+      Yesod.Auth.OAuth2.Dispatch
+      Yesod.Auth.OAuth2.ErrorResponse
+      Yesod.Auth.OAuth2.EveOnline
+      Yesod.Auth.OAuth2.Exception
+      Yesod.Auth.OAuth2.GitHub
+      Yesod.Auth.OAuth2.GitLab
+      Yesod.Auth.OAuth2.Google
+      Yesod.Auth.OAuth2.Nylas
+      Yesod.Auth.OAuth2.Prelude
+      Yesod.Auth.OAuth2.Salesforce
+      Yesod.Auth.OAuth2.Slack
+      Yesod.Auth.OAuth2.Spotify
+      Yesod.Auth.OAuth2.Upcase
+      Yesod.Auth.OAuth2.WordPressDotCom
+  other-modules:
+      Paths_yesod_auth_oauth2
+  hs-source-dirs:
+      src
+  ghc-options: -Wall
+  build-depends:
+      aeson >=0.6 && <1.6
+    , base >=4.9.0.0 && <5
+    , bytestring >=0.9.1.4
+    , cryptonite >=0.25 && <0.28
+    , errors
+    , hoauth2 >=1.11.0 && <1.17
+    , http-client >=0.4.0 && <0.8
+    , http-conduit >=2.0 && <3.0
+    , http-types >=0.8 && <0.13
+    , memory
+    , microlens
+    , safe-exceptions
+    , text >=0.7 && <2.0
+    , uri-bytestring
+    , yesod-auth >=1.6.0 && <1.7
+    , yesod-core >=1.6.0 && <1.7
+  default-language: Haskell2010
+
+executable yesod-auth-oauth2-example
+  main-is: Main.hs
+  other-modules:
+      Paths_yesod_auth_oauth2
+  hs-source-dirs:
+      example
+  ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      aeson >=0.6 && <1.6
+    , aeson-pretty
+    , base >=4.9.0.0 && <5
+    , bytestring >=0.9.1.4
+    , containers
+    , http-conduit >=2.0 && <3.0
+    , load-env
+    , text >=0.7 && <2.0
+    , warp
+    , yesod
+    , yesod-auth >=1.6.0 && <1.7
+    , yesod-auth-oauth2
+  if !(flag(example))
+    buildable: False
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      URI.ByteString.ExtensionSpec
+      Paths_yesod_auth_oauth2
+  hs-source-dirs:
+      test
+  ghc-options: -Wall
+  build-depends:
+      base >=4.9.0.0 && <5
+    , hspec
+    , uri-bytestring
+    , yesod-auth-oauth2
+  default-language: Haskell2010

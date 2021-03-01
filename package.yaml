@@ -4,11 +4,14 @@ version: '0.6.2.2'  # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
 synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
-author: Tom Streller
-maintainer: Pat Brisbin <pbrisbin@gmail.com>
+author:
+  - Tom Streller
+  - Patrick Brisbin
+  - Freckle Engineering
 license: MIT
-github: thoughtbot/yesod-auth-oauth2
-homepage: http://github.com/thoughtbot/yesod-auth-oauth2
+maintainer: engineering@freckle.com
+github: freckle/yesod-auth-oauth2
+homepage: http://github.com/freckle/yesod-auth-oauth2
 
 extra-source-files:
   - README.md

@@ -1,4 +1,3 @@
-*.cabal
 .stack-work
 
 # OAuth keys configuration for the example
