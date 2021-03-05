@@ -1,6 +1,7 @@
 ## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...main)
 
-None
+- Don't throw exceptions; handle all errors through the set-message-redirect path
+- Respect `onErrorHtml` for said error-handling
 
 ## [v0.6.2.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.2...v0.6.2.3)
 
