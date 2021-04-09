@@ -1,5 +1,6 @@
 ## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...main)
 
+- Expose `onDispatchError` and generic `OtherDispatchError` for passthrough log
 - Don't throw exceptions; handle all errors through the set-message-redirect path
 - Respect `onErrorHtml` for said error-handling
 - Support custom widget in Google plugin

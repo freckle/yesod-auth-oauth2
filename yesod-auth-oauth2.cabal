@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 24b7f34906d427e1cdd3a015f9b67c7d1e69b9ecab88ab0ad8e8cba65777a003
+-- hash: 11915a2e835dfb554a1ddca65479329c5ca6358094659e94899dcdacb8d5295b
 
 name:           yesod-auth-oauth2
 version:        0.6.2.3
@@ -35,6 +35,7 @@ flag example
 
 library
   exposed-modules:
+      UnliftIO.Except
       URI.ByteString.Extension
       Yesod.Auth.OAuth2
       Yesod.Auth.OAuth2.AzureAD
@@ -42,6 +43,7 @@ library
       Yesod.Auth.OAuth2.Bitbucket
       Yesod.Auth.OAuth2.ClassLink
       Yesod.Auth.OAuth2.Dispatch
+      Yesod.Auth.OAuth2.DispatchError
       Yesod.Auth.OAuth2.ErrorResponse
       Yesod.Auth.OAuth2.EveOnline
       Yesod.Auth.OAuth2.Exception
@@ -50,6 +52,7 @@ library
       Yesod.Auth.OAuth2.Google
       Yesod.Auth.OAuth2.Nylas
       Yesod.Auth.OAuth2.Prelude
+      Yesod.Auth.OAuth2.Random
       Yesod.Auth.OAuth2.Salesforce
       Yesod.Auth.OAuth2.Slack
       Yesod.Auth.OAuth2.Spotify
@@ -72,8 +75,10 @@ library
     , http-types >=0.8 && <0.13
     , memory
     , microlens
+    , mtl
     , safe-exceptions
     , text >=0.7 && <2.0
+    , unliftio
     , uri-bytestring
     , yesod-auth >=1.6.0 && <1.7
     , yesod-core >=1.6.0 && <1.7
