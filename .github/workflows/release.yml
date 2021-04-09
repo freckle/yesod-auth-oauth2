@@ -1,0 +1,17 @@
+name: Release to Hackage
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      HACKAGE_API_KEY: ${{ secrets.HACKAGE_API_KEY }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: freckle/stack-upload-action@main
+        with:
+          pvp-bounds: both
