@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.0...main)
+
+None
+
+## [v0.6.3.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...v0.6.3.0)
 
 - Expose `onDispatchError` and generic `OtherDispatchError` for passthrough log
 - Don't throw exceptions; handle all errors through the set-message-redirect path
