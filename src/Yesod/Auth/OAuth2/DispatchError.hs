@@ -11,6 +11,7 @@
 module Yesod.Auth.OAuth2.DispatchError
     ( DispatchError(..)
     , handleDispatchError
+    , onDispatchError
     ) where
 
 import Control.Monad.Except
@@ -33,6 +34,7 @@ data DispatchError
     | OAuth2ResultError (OAuth2Error Errors)
     | FetchCredsIOException IOException
     | FetchCredsYesodOAuth2Exception YesodOAuth2Exception
+    | OtherDispatchError Text
     deriving stock Show
     deriving anyclass Exception
 
@@ -52,6 +54,7 @@ dispatchErrorMessage = \case
     OAuth2ResultError{} -> "Login failed, please try again"
     FetchCredsIOException{} -> "Login failed, please try again"
     FetchCredsYesodOAuth2Exception{} -> "Login failed, please try again"
+    OtherDispatchError{} -> "Login failed, please try again"
 
 handleDispatchError
     :: MonadAuthHandler site m
