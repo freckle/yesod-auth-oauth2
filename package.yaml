@@ -1,6 +1,6 @@
 ---
 name: yesod-auth-oauth2
-version: "0.6.3.0" # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
+version: 0.6.3.1 # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
 synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
@@ -27,13 +27,13 @@ library:
   dependencies:
     - aeson >=0.6 && <1.6
     - bytestring >=0.9.1.4 && < 0.12
-    - cryptonite >=0.25 && <0.29
+    - cryptonite >=0.25 && <0.30
     - errors
     - hoauth2 >=1.11.0 && <1.17
     - http-client >=0.4.0 && <0.8
     - http-conduit >=2.0 && <3.0
     - http-types >=0.8 && <0.13
-    - memory
+    - memory < 0.17
     - microlens
     - mtl
     - safe-exceptions

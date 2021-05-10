@@ -1,6 +1,10 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.0...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.1...main)
 
 None
+
+## [v0.6.3.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.0...v0.6.3.1)
+
+- Relax dependencies bounds
 
 ## [v0.6.3.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.2.3...v0.6.3.0)
 
