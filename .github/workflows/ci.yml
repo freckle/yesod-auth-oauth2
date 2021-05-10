@@ -20,15 +20,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/cache@v2
+    - uses: freckle/stack-cache-action@v1.0.1
       with:
-        path: |
-          ~/.stack
-          ./.stack-work
-        key: ${{ runner.os }}-${{ hashFiles(matrix.stack-yaml) }}-${{ hashFiles('*.cabal') }}
-        restore-keys: |
-          ${{ runner.os }}-${{ hashFiles(matrix.stack-yaml) }}-
-          ${{ runner.os }}-
+        stack-yaml: ${{ matrix.stack-yaml }}
     - run:
         curl --output .hlint.yaml https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
     - uses: freckle/stack-action@main
