@@ -9,7 +9,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      HACKAGE_API_KEY: ${{ secrets.HACKAGE_API_KEY }}
+      HACKAGE_API_KEY: ${{ secrets.HACKAGE_UPLOAD_API_KEY }}
     steps:
       - uses: actions/checkout@v2
       - uses: freckle/stack-upload-action@main
