@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - id: tag
-        uses: freckle/haskell-tag-action@v1
+        uses: freckle/haskell-tag-action@main
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
