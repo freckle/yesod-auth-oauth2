@@ -1,6 +1,10 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.2...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.3...main)
 
 None
+
+## [v0.6.3.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.2...v0.6.3.3)
+
+No changes, released to test release automation.
 
 ## [v0.6.3.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.1...v0.6.3.2)
 
