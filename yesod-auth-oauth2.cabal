@@ -4,10 +4,10 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6a490bb862e9336f14b079e2d9d0dee02bbf978e4cfb3e1c0c2d0daac3bd68a3
+-- hash: 559101339cff93d29a5ea1439df2fa4e9d34133db852862ad86977d109053cd0
 
 name:           yesod-auth-oauth2
-version:        0.6.3.1
+version:        0.6.3.2
 synopsis:       OAuth 2.0 authentication plugins
 description:    Library to authenticate with OAuth 2.0 for Yesod web applications.
 category:       Web
@@ -64,24 +64,24 @@ library
       src
   ghc-options: -Wall
   build-depends:
-      aeson >=0.6 && <1.6
+      aeson >=0.6
     , base >=4.9.0.0 && <5
-    , bytestring >=0.9.1.4 && <0.12
-    , cryptonite >=0.25 && <0.30
+    , bytestring >=0.9.1.4
+    , cryptonite >=0.25
     , errors
-    , hoauth2 >=1.11.0 && <1.17
-    , http-client >=0.4.0 && <0.8
-    , http-conduit >=2.0 && <3.0
-    , http-types >=0.8 && <0.13
-    , memory <0.17
+    , hoauth2 >=1.11.0
+    , http-client >=0.4.0
+    , http-conduit >=2.0
+    , http-types >=0.8
+    , memory
     , microlens
     , mtl
     , safe-exceptions
-    , text >=0.7 && <2.0
+    , text >=0.7
     , unliftio
     , uri-bytestring
-    , yesod-auth >=1.6.0 && <1.7
-    , yesod-core >=1.6.0 && <1.7
+    , yesod-auth >=1.6.0
+    , yesod-core >=1.6.0
   default-language: Haskell2010
 
 executable yesod-auth-oauth2-example
@@ -92,17 +92,17 @@ executable yesod-auth-oauth2-example
       example
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      aeson >=0.6 && <1.6
+      aeson >=0.6
     , aeson-pretty
     , base >=4.9.0.0 && <5
-    , bytestring >=0.9.1.4 && <0.12
+    , bytestring >=0.9.1.4
     , containers
-    , http-conduit >=2.0 && <3.0
+    , http-conduit >=2.0
     , load-env
-    , text >=0.7 && <2.0
+    , text >=0.7
     , warp
     , yesod
-    , yesod-auth >=1.6.0 && <1.7
+    , yesod-auth >=1.6.0
     , yesod-auth-oauth2
   if !(flag(example))
     buildable: False

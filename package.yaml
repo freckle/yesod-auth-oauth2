@@ -1,6 +1,6 @@
 ---
 name: yesod-auth-oauth2
-version: 0.6.3.1 # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
+version: 0.6.3.2 # N.B. PVP-compliant Semver: 0.MAJOR.MINOR.PATCH
 synopsis: OAuth 2.0 authentication plugins
 description: Library to authenticate with OAuth 2.0 for Yesod web applications.
 category: Web
@@ -25,22 +25,22 @@ dependencies:
 library:
   source-dirs: src
   dependencies:
-    - aeson >=0.6 && <1.6
-    - bytestring >=0.9.1.4 && < 0.12
-    - cryptonite >=0.25 && <0.30
+    - aeson >=0.6
+    - bytestring >=0.9.1.4
+    - cryptonite >=0.25
     - errors
-    - hoauth2 >=1.11.0 && <1.17
-    - http-client >=0.4.0 && <0.8
-    - http-conduit >=2.0 && <3.0
-    - http-types >=0.8 && <0.13
-    - memory < 0.17
+    - hoauth2 >=1.11.0
+    - http-client >=0.4.0
+    - http-conduit >=2.0
+    - http-types >=0.8
+    - memory
     - microlens
     - mtl
     - safe-exceptions
-    - text >=0.7 && <2.0
+    - text >=0.7
     - uri-bytestring
-    - yesod-auth >=1.6.0 && <1.7
-    - yesod-core >=1.6.0 && <1.7
+    - yesod-auth >=1.6.0
+    - yesod-core >=1.6.0
     - unliftio
 
 executables:
@@ -53,16 +53,16 @@ executables:
       - -with-rtsopts=-N
     dependencies:
       - yesod-auth-oauth2
-      - aeson >=0.6 && <1.6
+      - aeson >=0.6
       - aeson-pretty
-      - bytestring >=0.9.1.4 && < 0.12
+      - bytestring >=0.9.1.4
       - containers
-      - http-conduit >=2.0 && <3.0
+      - http-conduit >=2.0
       - load-env
-      - text >=0.7 && <2.0
+      - text >=0.7
       - warp
       - yesod
-      - yesod-auth >=1.6.0 && <1.7
+      - yesod-auth >=1.6.0
     when:
       - condition: ! "!(flag(example))"
         buildable: false
