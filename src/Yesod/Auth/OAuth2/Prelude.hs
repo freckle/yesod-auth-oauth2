@@ -54,8 +54,7 @@ module Yesod.Auth.OAuth2.Prelude
     -- * Temporary, until I finish re-structuring modules
     , authOAuth2
     , authOAuth2Widget
-    )
-where
+    ) where
 
 import Control.Exception.Safe
 import Data.Aeson
@@ -65,7 +64,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding
 import Network.HTTP.Conduit
-import Network.OAuth.OAuth2
+import Network.OAuth.OAuth2.Compat
 import URI.ByteString
 import URI.ByteString.Extension
 import Yesod.Auth

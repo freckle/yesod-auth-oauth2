@@ -52,12 +52,12 @@ oauth2BitbucketScoped scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://bitbucket.com/site/oauth2/authorize"
                 `withQuery` [scopeParam "," scopes]
-        , oauthAccessTokenEndpoint =
+        , oauth2TokenEndpoint =
             "https://bitbucket.com/site/oauth2/access_token"
-        , oauthCallback = Nothing
+        , oauth2RedirectUri = Nothing
         }

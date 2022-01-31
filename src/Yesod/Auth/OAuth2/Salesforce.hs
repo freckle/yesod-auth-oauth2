@@ -73,10 +73,10 @@ salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSec
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             authorizeUri `withQuery` [scopeParam " " scopes]
-        , oauthAccessTokenEndpoint = tokenUri
-        , oauthCallback = Nothing
+        , oauth2TokenEndpoint = tokenUri
+        , oauth2RedirectUri = Nothing
         }

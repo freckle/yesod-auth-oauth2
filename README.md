@@ -91,11 +91,11 @@ oauth2MySite clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint = "https://mysite.com/oauth/authorize"
-        , oauthAccessTokenEndpoint = "https://mysite.com/oauth/token"
-        , oauthCallback = Nothing
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint = "https://mysite.com/oauth/authorize"
+        , oauth2TokenEndpoint = "https://mysite.com/oauth/token"
+        , oauth2RedirectUri = Nothing
         }
 ```
 

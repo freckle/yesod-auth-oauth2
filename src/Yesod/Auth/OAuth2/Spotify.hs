@@ -34,11 +34,11 @@ oauth2Spotify scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://accounts.spotify.com/authorize"
                 `withQuery` [scopeParam " " scopes]
-        , oauthAccessTokenEndpoint = "https://accounts.spotify.com/api/token"
-        , oauthCallback = Nothing
+        , oauth2TokenEndpoint = "https://accounts.spotify.com/api/token"
+        , oauth2RedirectUri = Nothing
         }

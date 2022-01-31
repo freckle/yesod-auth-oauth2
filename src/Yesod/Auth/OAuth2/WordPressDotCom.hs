@@ -37,12 +37,12 @@ oauth2WordPressDotCom clientId clientSecret =
 
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://public-api.wordpress.com/oauth2/authorize"
                 `withQuery` [scopeParam "," ["auth"]]
-        , oauthAccessTokenEndpoint =
+        , oauth2TokenEndpoint =
             "https://public-api.wordpress.com/oauth2/token"
-        , oauthCallback = Nothing
+        , oauth2RedirectUri = Nothing
         }

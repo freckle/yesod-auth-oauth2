@@ -41,9 +41,9 @@ oauth2Upcase clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint = "http://upcase.com/oauth/authorize"
-        , oauthAccessTokenEndpoint = "http://upcase.com/oauth/token"
-        , oauthCallback = Nothing
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint = "http://upcase.com/oauth/authorize"
+        , oauth2TokenEndpoint = "http://upcase.com/oauth/token"
+        , oauth2RedirectUri = Nothing
         }

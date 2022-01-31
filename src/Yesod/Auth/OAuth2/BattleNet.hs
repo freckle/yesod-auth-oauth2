@@ -51,11 +51,11 @@ oauth2BattleNet widget region clientId clientSecret =
   where
     host = wwwHost $ T.toLower region
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
-        , oauthAccessTokenEndpoint = fromRelative "https" host "/oauth/token"
-        , oauthCallback = Nothing
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
+        , oauth2TokenEndpoint = fromRelative "https" host "/oauth/token"
+        , oauth2RedirectUri = Nothing
         }
 
 
