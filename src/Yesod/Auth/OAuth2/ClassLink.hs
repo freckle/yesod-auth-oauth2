@@ -40,12 +40,12 @@ oauth2ClassLinkScoped scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://launchpad.classlink.com/oauth2/v2/auth"
                 `withQuery` [scopeParam "," scopes]
-        , oauthAccessTokenEndpoint =
+        , oauth2TokenEndpoint =
             "https://launchpad.classlink.com/oauth2/v2/token"
-        , oauthCallback = Nothing
+        , oauth2RedirectUri = Nothing
         }

@@ -53,12 +53,12 @@ oauth2GitLabHostScopes host scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             host
             `withPath` "/oauth/authorize"
             `withQuery` [scopeParam " " scopes]
-        , oauthAccessTokenEndpoint = host `withPath` "/oauth/token"
-        , oauthCallback = Nothing
+        , oauth2TokenEndpoint = host `withPath` "/oauth/token"
+        , oauth2RedirectUri = Nothing
         }
