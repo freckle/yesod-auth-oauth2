@@ -74,12 +74,12 @@ oauth2GoogleScopedWidget widget scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://accounts.google.com/o/oauth2/auth"
                 `withQuery` [scopeParam " " scopes]
-        , oauthAccessTokenEndpoint =
+        , oauth2TokenEndpoint =
             "https://www.googleapis.com/oauth2/v3/token"
-        , oauthCallback = Nothing
+        , oauth2RedirectUri = Nothing
         }

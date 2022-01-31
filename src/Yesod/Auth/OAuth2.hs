@@ -26,8 +26,7 @@ module Yesod.Auth.OAuth2
     , getRefreshToken
     , getUserResponse
     , getUserResponseJSON
-    )
-where
+    ) where
 
 import Control.Error.Util (note)
 import Control.Monad ((<=<))
@@ -36,7 +35,7 @@ import Data.ByteString.Lazy (ByteString, fromStrict)
 import Data.Text (Text)
 import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
-import Network.OAuth.OAuth2
+import Network.OAuth.OAuth2.Compat
 import Yesod.Auth
 import Yesod.Auth.OAuth2.Dispatch
 import Yesod.Core.Widget

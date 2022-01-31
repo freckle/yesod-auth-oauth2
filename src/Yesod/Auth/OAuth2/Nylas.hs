@@ -51,9 +51,9 @@ oauth2Nylas clientId clientSecret =
             $ eitherDecode userResponse
   where
     oauth = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://api.nylas.com/oauth/authorize"
                 `withQuery` [ ("response_type", "code")
                             , ( "client_id"
@@ -64,6 +64,6 @@ oauth2Nylas clientId clientSecret =
             -- its current state, it doesn't matter because it's only one scope.
                             , scopeParam "," defaultScopes
                             ]
-        , oauthAccessTokenEndpoint = "https://api.nylas.com/oauth/token"
-        , oauthCallback = Nothing
+        , oauth2TokenEndpoint = "https://api.nylas.com/oauth/token"
+        , oauth2RedirectUri = Nothing
         }

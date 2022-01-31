@@ -45,14 +45,14 @@ oauth2AzureADScoped scopes clientId clientSecret =
             }
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://login.windows.net/common/oauth2/authorize"
                 `withQuery` [ scopeParam "," scopes
                             , ("resource", "https://graph.microsoft.com")
                             ]
-        , oauthAccessTokenEndpoint =
+        , oauth2TokenEndpoint =
             "https://login.windows.net/common/oauth2/token"
-        , oauthCallback = Nothing
+        , oauth2RedirectUri = Nothing
         }

@@ -65,11 +65,11 @@ oauth2SlackScoped scopes clientId clientSecret =
             $ eitherDecode userResponse
   where
     oauth2 = OAuth2
-        { oauthClientId = clientId
-        , oauthClientSecret = Just clientSecret
-        , oauthOAuthorizeEndpoint =
+        { oauth2ClientId = clientId
+        , oauth2ClientSecret = Just clientSecret
+        , oauth2AuthorizeEndpoint =
             "https://slack.com/oauth/authorize"
                 `withQuery` [scopeParam "," $ map scopeText scopes]
-        , oauthAccessTokenEndpoint = "https://slack.com/api/oauth.access"
-        , oauthCallback = Nothing
+        , oauth2TokenEndpoint = "https://slack.com/api/oauth.access"
+        , oauth2RedirectUri = Nothing
         }

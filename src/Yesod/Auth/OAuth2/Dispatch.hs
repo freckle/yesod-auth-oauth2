@@ -17,7 +17,7 @@ import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
-import Network.OAuth.OAuth2
+import Network.OAuth.OAuth2.Compat
 import Network.OAuth.OAuth2.TokenRequest (Errors)
 import URI.ByteString.Extension
 import UnliftIO.Exception
@@ -104,9 +104,9 @@ withCallbackAndState name oauth2 csrf = do
     uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
     callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
     pure oauth2
-        { oauthCallback = Just callback
-        , oauthOAuthorizeEndpoint =
-            oauthOAuthorizeEndpoint oauth2
+        { oauth2RedirectUri = Just callback
+        , oauth2AuthorizeEndpoint =
+            oauth2AuthorizeEndpoint oauth2
                 `withQuery` [("state", encodeUtf8 csrf)]
         }
 

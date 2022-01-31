@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 1c0ae94778ce803bde4726d2be1e60cd5dcb94f8e34b7cefbbae7dafb30d1dea
+-- hash: 5f7443ec90d4a2884d1d8816ec553f50fe303c51a6d8ee956fc8d62b49333e60
 
 name:           yesod-auth-oauth2
 version:        0.6.3.4
@@ -35,6 +35,7 @@ flag example
 
 library
   exposed-modules:
+      Network.OAuth.OAuth2.Compat
       UnliftIO.Except
       URI.ByteString.Extension
       Yesod.Auth.OAuth2
