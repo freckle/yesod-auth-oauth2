@@ -6,55 +6,55 @@
 -- implementations. May also be useful for writing local providers.
 --
 module Yesod.Auth.OAuth2.Prelude
-    (
+  (
       -- * Provider helpers
-      authGetProfile
-    , scopeParam
-    , setExtra
+    authGetProfile
+  , scopeParam
+  , setExtra
 
     -- * Text
-    , Text
-    , decodeUtf8
-    , encodeUtf8
+  , Text
+  , decodeUtf8
+  , encodeUtf8
 
     -- * JSON
-    , (.:)
-    , (.:?)
-    , (.=)
-    , (<>)
-    , FromJSON(..)
-    , ToJSON(..)
-    , eitherDecode
-    , withObject
+  , (.:)
+  , (.:?)
+  , (.=)
+  , (<>)
+  , FromJSON(..)
+  , ToJSON(..)
+  , eitherDecode
+  , withObject
 
     -- * Exceptions
-    , throwIO
+  , throwIO
 
     -- * OAuth2
-    , OAuth2(..)
-    , OAuth2Token(..)
-    , AccessToken(..)
-    , RefreshToken(..)
+  , OAuth2(..)
+  , OAuth2Token(..)
+  , AccessToken(..)
+  , RefreshToken(..)
 
     -- * HTTP
-    , Manager
+  , Manager
 
     -- * Yesod
-    , YesodAuth(..)
-    , AuthPlugin(..)
-    , Creds(..)
+  , YesodAuth(..)
+  , AuthPlugin(..)
+  , Creds(..)
 
     -- * Bytestring URI types
-    , URI
-    , Host(..)
+  , URI
+  , Host(..)
 
     -- * Bytestring URI extensions
-    , module URI.ByteString.Extension
+  , module URI.ByteString.Extension
 
     -- * Temporary, until I finish re-structuring modules
-    , authOAuth2
-    , authOAuth2Widget
-    ) where
+  , authOAuth2
+  , authOAuth2Widget
+  ) where
 
 import Control.Exception.Safe
 import Data.Aeson
@@ -78,28 +78,28 @@ import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 -- fetched via additional requests by consumers.
 --
 authGetProfile
-    :: FromJSON a
-    => Text
-    -> Manager
-    -> OAuth2Token
-    -> URI
-    -> IO (a, BL.ByteString)
+  :: FromJSON a
+  => Text
+  -> Manager
+  -> OAuth2Token
+  -> URI
+  -> IO (a, BL.ByteString)
 authGetProfile name manager token url = do
-    resp <- fromAuthGet name =<< authGetBS manager (accessToken token) url
-    decoded <- fromAuthJSON name resp
-    pure (decoded, resp)
+  resp    <- fromAuthGet name =<< authGetBS manager (accessToken token) url
+  decoded <- fromAuthJSON name resp
+  pure (decoded, resp)
 
 -- | Throws a @Left@ result as an @'YesodOAuth2Exception'@
 fromAuthGet :: Text -> Either BL.ByteString BL.ByteString -> IO BL.ByteString
 fromAuthGet _ (Right bs) = pure bs -- nice
 fromAuthGet name (Left err) =
-    throwIO $ YesodOAuth2Exception.OAuth2Error name err
+  throwIO $ YesodOAuth2Exception.OAuth2Error name err
 
 -- | Throws a decoding error as an @'YesodOAuth2Exception'@
 fromAuthJSON :: FromJSON a => Text -> BL.ByteString -> IO a
 fromAuthJSON name =
-    either (throwIO . YesodOAuth2Exception.JSONDecodingError name) pure
-        . eitherDecode
+  either (throwIO . YesodOAuth2Exception.JSONDecodingError name) pure
+    . eitherDecode
 
 -- | A tuple of @\"scope\"@ and the given scopes separated by a delimiter
 scopeParam :: Text -> [Text] -> (ByteString, ByteString)

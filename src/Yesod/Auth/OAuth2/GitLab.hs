@@ -1,11 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Yesod.Auth.OAuth2.GitLab
-    ( oauth2GitLab
-    , oauth2GitLabHostScopes
-    , defaultHost
-    , defaultScopes
-    )
-where
+  ( oauth2GitLab
+  , oauth2GitLabHostScopes
+  , defaultHost
+  , defaultScopes
+  ) where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -14,7 +13,7 @@ import qualified Data.Text as T
 newtype User = User Int
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User <$> o .: "id"
+  parseJSON = withObject "User" $ \o -> User <$> o .: "id"
 
 pluginName :: Text
 pluginName = "gitlab"
@@ -38,27 +37,23 @@ oauth2GitLab :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2GitLab = oauth2GitLabHostScopes defaultHost defaultScopes
 
 oauth2GitLabHostScopes
-    :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
+  :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
 oauth2GitLabHostScopes host scopes clientId clientSecret =
-    authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <-
-            authGetProfile pluginName manager token
-            $ host
-            `withPath` "/api/v4/user"
+  authOAuth2 pluginName oauth2 $ \manager token -> do
+    (User userId, userResponse) <-
+      authGetProfile pluginName manager token $ host `withPath` "/api/v4/user"
 
-        pure Creds
-            { credsPlugin = pluginName
-            , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponse
-            }
-  where
-    oauth2 = OAuth2
-        { oauth2ClientId = clientId
-        , oauth2ClientSecret = Just clientSecret
-        , oauth2AuthorizeEndpoint =
-            host
-            `withPath` "/oauth/authorize"
-            `withQuery` [scopeParam " " scopes]
-        , oauth2TokenEndpoint = host `withPath` "/oauth/token"
-        , oauth2RedirectUri = Nothing
-        }
+    pure Creds { credsPlugin = pluginName
+               , credsIdent  = T.pack $ show userId
+               , credsExtra  = setExtra token userResponse
+               }
+ where
+  oauth2 = OAuth2
+    { oauth2ClientId          = clientId
+    , oauth2ClientSecret      = Just clientSecret
+    , oauth2AuthorizeEndpoint = host
+                                `withPath`  "/oauth/authorize"
+                                `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint     = host `withPath` "/oauth/token"
+    , oauth2RedirectUri       = Nothing
+    }

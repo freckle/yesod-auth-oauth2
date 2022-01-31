@@ -7,10 +7,9 @@
 -- * Uses bitbucket uuid as credentials identifier
 --
 module Yesod.Auth.OAuth2.Bitbucket
-    ( oauth2Bitbucket
-    , oauth2BitbucketScoped
-    )
-where
+  ( oauth2Bitbucket
+  , oauth2BitbucketScoped
+  ) where
 
 import Yesod.Auth.OAuth2.Prelude
 
@@ -19,7 +18,7 @@ import qualified Data.Text as T
 newtype User = User Text
 
 instance FromJSON User where
-    parseJSON = withObject "User" $ \o -> User <$> o .: "uuid"
+  parseJSON = withObject "User" $ \o -> User <$> o .: "uuid"
 
 pluginName :: Text
 pluginName = "bitbucket"
@@ -32,32 +31,29 @@ oauth2Bitbucket = oauth2BitbucketScoped defaultScopes
 
 oauth2BitbucketScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
 oauth2BitbucketScoped scopes clientId clientSecret =
-    authOAuth2 pluginName oauth2 $ \manager token -> do
-        (User userId, userResponse) <- authGetProfile
-            pluginName
-            manager
-            token
-            "https://api.bitbucket.com/2.0/user"
+  authOAuth2 pluginName oauth2 $ \manager token -> do
+    (User userId, userResponse) <- authGetProfile
+      pluginName
+      manager
+      token
+      "https://api.bitbucket.com/2.0/user"
 
-        pure Creds
-            { credsPlugin = pluginName
-            -- FIXME: Preserved bug. This should just be userId (it's already
-            -- a Text), but because this code was shipped, folks likely have
-            -- Idents in their database like @"\"...\""@, and if we fixed this
-            -- they would need migrating. We're keeping it for now as it's a
-            -- minor wart. Breaking typed APIs is one thing, causing data to go
-            -- invalid is another.
-            , credsIdent = T.pack $ show userId
-            , credsExtra = setExtra token userResponse
-            }
-  where
-    oauth2 = OAuth2
-        { oauth2ClientId = clientId
-        , oauth2ClientSecret = Just clientSecret
-        , oauth2AuthorizeEndpoint =
-            "https://bitbucket.com/site/oauth2/authorize"
-                `withQuery` [scopeParam "," scopes]
-        , oauth2TokenEndpoint =
-            "https://bitbucket.com/site/oauth2/access_token"
-        , oauth2RedirectUri = Nothing
-        }
+    pure Creds { credsPlugin = pluginName
+        -- FIXME: Preserved bug. This should just be userId (it's already
+        -- a Text), but because this code was shipped, folks likely have
+        -- Idents in their database like @"\"...\""@, and if we fixed this
+        -- they would need migrating. We're keeping it for now as it's a
+        -- minor wart. Breaking typed APIs is one thing, causing data to go
+        -- invalid is another.
+               , credsIdent  = T.pack $ show userId
+               , credsExtra  = setExtra token userResponse
+               }
+ where
+  oauth2 = OAuth2
+    { oauth2ClientId          = clientId
+    , oauth2ClientSecret      = Just clientSecret
+    , oauth2AuthorizeEndpoint = "https://bitbucket.com/site/oauth2/authorize"
+                                  `withQuery` [scopeParam "," scopes]
+    , oauth2TokenEndpoint     = "https://bitbucket.com/site/oauth2/access_token"
+    , oauth2RedirectUri       = Nothing
+    }
