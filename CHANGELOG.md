@@ -1,6 +1,17 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.4...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.0...main)
 
 None
+
+## [v0.7.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.4...v0.7.0.0)
+
+- Support `hoauth2-2.0`
+
+  The `OAuth2` type's fields have changed. If you are not defining your own
+  Local Providers (i.e. you're not constructing any `OAuth2` values) you should
+  not be affected by this change. If you are, you should update to the [new
+  field names][oauth2].
+
+  [oauth2]: https://hackage.haskell.org/package/hoauth2-2.0.0/docs/Network-OAuth-OAuth2-Internal.html#t:OAuth2
 
 ## [v0.6.3.4](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.6.3.1...v0.6.3.4)
 
