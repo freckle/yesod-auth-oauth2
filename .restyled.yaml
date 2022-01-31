@@ -1,0 +1,10 @@
+restylers:
+  - brittany:
+      include:
+        - "**/*.hs"
+        - "! src/Network/OAuth/OAuth2/Compat.hs" # CPP
+  - stylish-haskell:
+      include:
+        - "**/*.hs"
+        - "! src/Network/OAuth/OAuth2/Compat.hs" # CPP
+  - "*"
