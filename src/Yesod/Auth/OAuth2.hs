@@ -28,21 +28,17 @@ module Yesod.Auth.OAuth2
   , getUserResponseJSON
   ) where
 
-import           Control.Error.Util             ( note )
-import           Control.Monad                  ( (<=<) )
-import           Data.Aeson                     ( FromJSON
-                                                , eitherDecode
-                                                )
-import           Data.ByteString.Lazy           ( ByteString
-                                                , fromStrict
-                                                )
-import           Data.Text                      ( Text )
-import           Data.Text.Encoding             ( encodeUtf8 )
-import           Network.HTTP.Conduit           ( Manager )
-import           Network.OAuth.OAuth2.Compat
-import           Yesod.Auth
-import           Yesod.Auth.OAuth2.Dispatch
-import           Yesod.Core.Widget
+import Control.Error.Util (note)
+import Control.Monad ((<=<))
+import Data.Aeson (FromJSON, eitherDecode)
+import Data.ByteString.Lazy (ByteString, fromStrict)
+import Data.Text (Text)
+import Data.Text.Encoding (encodeUtf8)
+import Network.HTTP.Conduit (Manager)
+import Network.OAuth.OAuth2.Compat
+import Yesod.Auth
+import Yesod.Auth.OAuth2.Dispatch
+import Yesod.Core.Widget
 
 oauth2Url :: Text -> AuthRoute
 oauth2Url name = PluginR name ["forward"]

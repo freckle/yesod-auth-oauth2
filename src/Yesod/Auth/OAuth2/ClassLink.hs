@@ -5,9 +5,9 @@ module Yesod.Auth.OAuth2.ClassLink
   , oauth2ClassLinkScoped
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text                     as T
+import qualified Data.Text as T
 
 newtype User = User Int
 

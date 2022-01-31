@@ -11,9 +11,9 @@ module Yesod.Auth.OAuth2.Bitbucket
   , oauth2BitbucketScoped
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text                     as T
+import qualified Data.Text as T
 
 newtype User = User Text
 

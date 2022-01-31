@@ -56,20 +56,20 @@ module Yesod.Auth.OAuth2.Prelude
   , authOAuth2Widget
   ) where
 
-import           Control.Exception.Safe
-import           Data.Aeson
-import           Data.ByteString                ( ByteString )
-import qualified Data.ByteString.Lazy          as BL
-import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
-import           Data.Text.Encoding
-import           Network.HTTP.Conduit
-import           Network.OAuth.OAuth2.Compat
-import           URI.ByteString
-import           URI.ByteString.Extension
-import           Yesod.Auth
-import           Yesod.Auth.OAuth2
-import qualified Yesod.Auth.OAuth2.Exception   as YesodOAuth2Exception
+import Control.Exception.Safe
+import Data.Aeson
+import Data.ByteString (ByteString)
+import qualified Data.ByteString.Lazy as BL
+import Data.Text (Text)
+import qualified Data.Text as T
+import Data.Text.Encoding
+import Network.HTTP.Conduit
+import Network.OAuth.OAuth2.Compat
+import URI.ByteString
+import URI.ByteString.Extension
+import Yesod.Auth
+import Yesod.Auth.OAuth2
+import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 -- | Retrieve a user's profile as JSON
 --

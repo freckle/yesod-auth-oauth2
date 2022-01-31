@@ -7,7 +7,7 @@ module Yesod.Auth.OAuth2.Spotify
   ( oauth2Spotify
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
 newtype User = User Text
 

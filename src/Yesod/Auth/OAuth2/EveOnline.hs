@@ -13,10 +13,10 @@ module Yesod.Auth.OAuth2.EveOnline
   , WidgetType(..)
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text                     as T
-import           Yesod.Core.Widget
+import qualified Data.Text as T
+import Yesod.Core.Widget
 
 newtype User = User Text
 

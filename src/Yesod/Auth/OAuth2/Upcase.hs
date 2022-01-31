@@ -10,9 +10,9 @@ module Yesod.Auth.OAuth2.Upcase
   ( oauth2Upcase
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text                     as T
+import qualified Data.Text as T
 
 newtype User = User Int
 

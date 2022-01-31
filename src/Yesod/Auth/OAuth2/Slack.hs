@@ -11,14 +11,11 @@ module Yesod.Auth.OAuth2.Slack
   , oauth2SlackScoped
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import           Network.HTTP.Client            ( httpLbs
-                                                , parseUrlThrow
-                                                , responseBody
-                                                , setQueryString
-                                                )
-import           Yesod.Auth.OAuth2.Exception   as YesodOAuth2Exception
+import Network.HTTP.Client
+    (httpLbs, parseUrlThrow, responseBody, setQueryString)
+import Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 data SlackScope
     = SlackBasicScope

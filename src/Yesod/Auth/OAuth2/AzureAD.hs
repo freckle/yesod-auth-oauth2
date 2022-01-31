@@ -11,8 +11,8 @@ module Yesod.Auth.OAuth2.AzureAD
   , oauth2AzureADScoped
   ) where
 
-import           Prelude
-import           Yesod.Auth.OAuth2.Prelude
+import Prelude
+import Yesod.Auth.OAuth2.Prelude
 
 newtype User = User Text
 

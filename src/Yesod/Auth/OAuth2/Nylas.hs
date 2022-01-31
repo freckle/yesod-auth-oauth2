@@ -4,13 +4,13 @@ module Yesod.Auth.OAuth2.Nylas
   ( oauth2Nylas
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import           Control.Monad                  ( unless )
-import qualified Data.ByteString.Lazy.Char8    as BL8
-import           Network.HTTP.Client
-import qualified Network.HTTP.Types            as HT
-import qualified Yesod.Auth.OAuth2.Exception   as YesodOAuth2Exception
+import Control.Monad (unless)
+import qualified Data.ByteString.Lazy.Char8 as BL8
+import Network.HTTP.Client
+import qualified Network.HTTP.Types as HT
+import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 newtype User = User Text
 

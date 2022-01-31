@@ -13,13 +13,10 @@ module Yesod.Auth.OAuth2.BattleNet
   , oAuth2BattleNet
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text                     as T
-                                                ( pack
-                                                , toLower
-                                                )
-import           Yesod.Core.Widget
+import qualified Data.Text as T (pack, toLower)
+import Yesod.Core.Widget
 
 newtype User = User Int
 

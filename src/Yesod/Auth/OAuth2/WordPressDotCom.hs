@@ -4,8 +4,8 @@ module Yesod.Auth.OAuth2.WordPressDotCom
   ( oauth2WordPressDotCom
   ) where
 
-import qualified Data.Text                     as T
-import           Yesod.Auth.OAuth2.Prelude
+import qualified Data.Text as T
+import Yesod.Auth.OAuth2.Prelude
 
 pluginName :: Text
 pluginName = "WordPress.com"

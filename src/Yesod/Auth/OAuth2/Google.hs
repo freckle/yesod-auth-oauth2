@@ -31,10 +31,8 @@ module Yesod.Auth.OAuth2.Google
   , oauth2GoogleScopedWidget
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
-import           Yesod.Core                     ( WidgetFor
-                                                , whamlet
-                                                )
+import Yesod.Auth.OAuth2.Prelude
+import Yesod.Core (WidgetFor, whamlet)
 
 newtype User = User Text
 

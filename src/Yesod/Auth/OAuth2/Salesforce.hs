@@ -13,7 +13,7 @@ module Yesod.Auth.OAuth2.Salesforce
   , oauth2SalesforceSandboxScoped
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
 newtype User = User Text
 
