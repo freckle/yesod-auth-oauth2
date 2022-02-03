@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: e428bd6adf4ff13adcafddd69b8050d4272fa51d127d2c24d6f117dc874b6fc4
+-- hash: 8398e07d0350eca21c712113661776348b39af510ee4559e6e070215c0fe216f
 
 name:           yesod-auth-oauth2
 version:        0.7.0.0
@@ -97,7 +97,7 @@ executable yesod-auth-oauth2-example
     , aeson-pretty
     , base >=4.9.0.0 && <5
     , bytestring >=0.9.1.4
-    , containers >=0.6.4.1
+    , containers >=0.6.0.1
     , http-conduit >=2.0
     , load-env
     , text >=0.7
