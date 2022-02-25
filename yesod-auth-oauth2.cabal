@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 8398e07d0350eca21c712113661776348b39af510ee4559e6e070215c0fe216f
+-- hash: 7646b72bdcb5d287b18834964921442a91e35e844ec3b9e5daa4222cd06d6964
 
 name:           yesod-auth-oauth2
 version:        0.7.0.0
@@ -79,6 +79,7 @@ library
     , mtl
     , safe-exceptions
     , text >=0.7
+    , transformers
     , unliftio
     , uri-bytestring
     , yesod-auth >=1.6.0

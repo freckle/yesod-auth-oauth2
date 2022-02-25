@@ -38,6 +38,7 @@ library:
     - mtl
     - safe-exceptions
     - text >=0.7
+    - transformers
     - uri-bytestring
     - yesod-auth >=1.6.0
     - yesod-core >=1.6.0
