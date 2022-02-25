@@ -14,6 +14,8 @@ jobs:
         stack-yaml:
           - stack.yaml
           - stack-hoauth2-2.0.yaml
+          - stack-hoauth2-2.2.yaml
+          - stack-hoauth2-2.3.yaml
           - stack-lts-17.4.yaml
           - stack-lts-16.10.yaml
           - stack-lts-13.2.yaml
