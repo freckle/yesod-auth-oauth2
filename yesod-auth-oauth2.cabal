@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d3ba666a53fb63a2f059501ac04eca709a905d0dd1f806ea5a7cd64e06ef890d
+-- hash: 233909874fdbdbd71fa70c49f5a4223b4150b85d9415dbbed7fde2fff9e5ebcf
 
 name:           yesod-auth-oauth2
 version:        0.7.0.1
@@ -57,6 +57,7 @@ library
       Yesod.Auth.OAuth2.Salesforce
       Yesod.Auth.OAuth2.Slack
       Yesod.Auth.OAuth2.Spotify
+      Yesod.Auth.OAuth2.Twitch
       Yesod.Auth.OAuth2.Upcase
       Yesod.Auth.OAuth2.WordPressDotCom
   other-modules:
