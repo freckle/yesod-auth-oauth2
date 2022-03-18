@@ -11,9 +11,9 @@ module Yesod.Auth.OAuth2.Twitch
   , oauth2TwitchScoped
   ) where
 
-import Yesod.Auth.OAuth2.Prelude
+import           Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text.Encoding as T
+import qualified Data.Text.Encoding            as T
 
 newtype User = User Text
 
@@ -50,7 +50,9 @@ oauth2TwitchScoped scopes clientId clientSecret =
                                   `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint     = "https://id.twitch.tv/oauth2/token"
                                   `withQuery` [ ("client_id", T.encodeUtf8 clientId)
-                                              , ("client_secret", T.encodeUtf8 clientSecret)
+                                              , ( "client_secret"
+                                                , T.encodeUtf8 clientSecret
+                                                )
                                               ]
     , oauth2RedirectUri       = Nothing
     }
