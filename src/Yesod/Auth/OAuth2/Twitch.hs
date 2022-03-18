@@ -11,9 +11,9 @@ module Yesod.Auth.OAuth2.Twitch
   , oauth2TwitchScoped
   ) where
 
-import           Yesod.Auth.OAuth2.Prelude
+import Yesod.Auth.OAuth2.Prelude
 
-import qualified Data.Text.Encoding            as T
+import qualified Data.Text.Encoding as T
 
 newtype User = User Text
 
