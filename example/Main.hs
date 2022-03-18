@@ -47,6 +47,7 @@ import Yesod.Auth.OAuth2.Nylas
 import Yesod.Auth.OAuth2.Salesforce
 import Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Spotify
+import Yesod.Auth.OAuth2.Twitch
 import Yesod.Auth.OAuth2.Upcase
 import Yesod.Auth.OAuth2.WordPressDotCom
 
@@ -147,6 +148,7 @@ mkFoundation = do
         , loadPlugin oauth2Salesforce "SALES_FORCE"
         , loadPlugin oauth2Slack "SLACK"
         , loadPlugin (oauth2Spotify []) "SPOTIFY"
+        , loadPlugin oauth2Twitch "TWITCH"
         , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
         , loadPlugin oauth2Upcase "UPCASE"
         ]
