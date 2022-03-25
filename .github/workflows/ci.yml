@@ -41,3 +41,16 @@ jobs:
       - uses: rwe/actions-hlint-run@v2
         with:
           fail-on: warning
+
+  nightly:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: freckle/stack-cache-action@v2
+        with:
+          stack-yaml: stack-nightly.yaml
+      - uses: freckle/stack-action@v3
+        with:
+          stack-yaml: stack-nightly.yaml
+          stack-arguments: --resolver nightly
