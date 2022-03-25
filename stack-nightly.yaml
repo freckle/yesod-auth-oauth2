@@ -1,4 +1,4 @@
-resolver: 2022-03-25
+resolver: nightly-2022-03-25
 
 extra-deps:
   - hoauth2-2.3.0
