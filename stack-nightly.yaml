@@ -1,11 +1,8 @@
 resolver: nightly-2022-03-25
 
 extra-deps:
-  - hoauth2-2.3.0
+  - hoauth2-2.4.0
   - yesod-auth-1.6.11
   - yesod-core-1.6.22.0
   - yesod-form-1.7.0
   - yesod-persistent-1.6.0.7
-
-# binary-0.8.9.0 and bytestring-0.11.3.0 are too new for hoauth2-2.3.0
-allow-newer: true

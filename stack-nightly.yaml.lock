@@ -5,12 +5,12 @@
 
 packages:
 - completed:
-    hackage: hoauth2-2.3.0@sha256:213744356007a4686ff3bb72105843d478bc0ba6229659429cbe241a99f55095,2816
+    hackage: hoauth2-2.4.0@sha256:c2609ee4744dee10640b9d7d85d271bd8ef643d38b0bddd006cdbe2997582481,2814
     pantry-tree:
       size: 594
-      sha256: e559c811165a2e75cfe649b68396466b3bd0b6a5353a9d6476605e6a40e0eb37
+      sha256: 5e035c54476fbc89f11b8cd13dcd91f2cf2501d3b4276a1b39d1531d1487ade1
   original:
-    hackage: hoauth2-2.3.0
+    hackage: hoauth2-2.4.0
 - completed:
     hackage: yesod-auth-1.6.11@sha256:602c0db6cc85cb7b4ad82970379e77e3dee650ab6f05d8d955c6fec7934c5f31,3054
     pantry-tree:
