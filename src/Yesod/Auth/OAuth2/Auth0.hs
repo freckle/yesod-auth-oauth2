@@ -10,10 +10,10 @@ module Yesod.Auth.OAuth2.Auth0
   , defaultAuth0Scopes
   ) where
 
-import           Data.Aeson                    as Aeson
-import qualified Data.Text                     as T
-import           Prelude
-import           Yesod.Auth.OAuth2.Prelude
+import Data.Aeson as Aeson
+import qualified Data.Text as T
+import Prelude
+import Yesod.Auth.OAuth2.Prelude
 
 -- | https://auth0.com/docs/api/authentication#get-user-info
 newtype User = User T.Text
