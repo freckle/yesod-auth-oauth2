@@ -26,6 +26,7 @@ import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy (fromStrict, toStrict)
 import qualified Data.Map as M
 import Data.Maybe (fromJust)
+import Data.String ( IsString(fromString) )
 import Data.Text (Text)
 import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8)
@@ -35,6 +36,7 @@ import Network.Wai.Handler.Warp (runEnv)
 import System.Environment (getEnv)
 import Yesod
 import Yesod.Auth
+import Yesod.Auth.OAuth2.Auth0
 import Yesod.Auth.OAuth2.AzureAD
 import Yesod.Auth.OAuth2.BattleNet
 import Yesod.Auth.OAuth2.Bitbucket
@@ -129,6 +131,8 @@ mkFoundation :: IO App
 mkFoundation = do
     loadEnv
 
+    auth0Host <- getEnv "AUTH0_HOST"
+
     appHttpManager <- newManager tlsManagerSettings
     appAuthPlugins <- sequence
         -- When Providers are added, add them here and update .env.example.
@@ -137,6 +141,7 @@ mkFoundation = do
         -- FIXME: oauth2BattleNet is quite annoying!
         --
         [ loadPlugin oauth2AzureAD "AZURE_AD"
+        , loadPlugin (oauth2Auth0Host $ fromString auth0Host) "AUTH0"
         , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
         , loadPlugin oauth2Bitbucket "BITBUCKET"
         , loadPlugin oauth2ClassLink "CLASSLINK"
