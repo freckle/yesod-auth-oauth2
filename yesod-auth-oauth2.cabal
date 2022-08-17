@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 233909874fdbdbd71fa70c49f5a4223b4150b85d9415dbbed7fde2fff9e5ebcf
+-- hash: a1a4e1ae0e3bbc0c5aea847e950613465bc5361c9bd1a1beedb20d7259b0ad8f
 
 name:           yesod-auth-oauth2
 version:        0.7.0.1
@@ -39,6 +39,7 @@ library
       UnliftIO.Except
       URI.ByteString.Extension
       Yesod.Auth.OAuth2
+      Yesod.Auth.OAuth2.Auth0
       Yesod.Auth.OAuth2.AzureAD
       Yesod.Auth.OAuth2.BattleNet
       Yesod.Auth.OAuth2.Bitbucket
