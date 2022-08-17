@@ -21,39 +21,37 @@
 --
 module Main where
 
-import           Data.Aeson
-import           Data.Aeson.Encode.Pretty
-import           Data.ByteString.Lazy           ( fromStrict
-                                                , toStrict
-                                                )
-import qualified Data.Map                      as M
-import           Data.Maybe                     ( fromJust )
-import           Data.String                    ( IsString(fromString) )
-import           Data.Text                      ( Text )
-import qualified Data.Text                     as T
-import           Data.Text.Encoding             ( decodeUtf8 )
-import           LoadEnv
-import           Network.HTTP.Conduit
-import           Network.Wai.Handler.Warp       ( runEnv )
-import           System.Environment             ( getEnv )
-import           Yesod
-import           Yesod.Auth
-import           Yesod.Auth.OAuth2.Auth0
-import           Yesod.Auth.OAuth2.AzureAD
-import           Yesod.Auth.OAuth2.BattleNet
-import           Yesod.Auth.OAuth2.Bitbucket
-import           Yesod.Auth.OAuth2.ClassLink
-import           Yesod.Auth.OAuth2.EveOnline
-import           Yesod.Auth.OAuth2.GitHub
-import           Yesod.Auth.OAuth2.GitLab
-import           Yesod.Auth.OAuth2.Google
-import           Yesod.Auth.OAuth2.Nylas
-import           Yesod.Auth.OAuth2.Salesforce
-import           Yesod.Auth.OAuth2.Slack
-import           Yesod.Auth.OAuth2.Spotify
-import           Yesod.Auth.OAuth2.Twitch
-import           Yesod.Auth.OAuth2.Upcase
-import           Yesod.Auth.OAuth2.WordPressDotCom
+import Data.Aeson
+import Data.Aeson.Encode.Pretty
+import Data.ByteString.Lazy (fromStrict, toStrict)
+import qualified Data.Map as M
+import Data.Maybe (fromJust)
+import Data.String (IsString(fromString))
+import Data.Text (Text)
+import qualified Data.Text as T
+import Data.Text.Encoding (decodeUtf8)
+import LoadEnv
+import Network.HTTP.Conduit
+import Network.Wai.Handler.Warp (runEnv)
+import System.Environment (getEnv)
+import Yesod
+import Yesod.Auth
+import Yesod.Auth.OAuth2.Auth0
+import Yesod.Auth.OAuth2.AzureAD
+import Yesod.Auth.OAuth2.BattleNet
+import Yesod.Auth.OAuth2.Bitbucket
+import Yesod.Auth.OAuth2.ClassLink
+import Yesod.Auth.OAuth2.EveOnline
+import Yesod.Auth.OAuth2.GitHub
+import Yesod.Auth.OAuth2.GitLab
+import Yesod.Auth.OAuth2.Google
+import Yesod.Auth.OAuth2.Nylas
+import Yesod.Auth.OAuth2.Salesforce
+import Yesod.Auth.OAuth2.Slack
+import Yesod.Auth.OAuth2.Spotify
+import Yesod.Auth.OAuth2.Twitch
+import Yesod.Auth.OAuth2.Upcase
+import Yesod.Auth.OAuth2.WordPressDotCom
 
 data App = App
   { appHttpManager :: Manager
