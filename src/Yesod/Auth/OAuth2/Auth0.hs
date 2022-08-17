@@ -11,10 +11,10 @@ module Yesod.Auth.OAuth2.Auth0
   , defaultAuth0Scopes
   ) where
 
-import Data.Aeson as Aeson
-import qualified Data.Text as T
-import Prelude
-import Yesod.Auth.OAuth2.Prelude
+import           Data.Aeson                    as Aeson
+import qualified Data.Text                     as T
+import           Prelude
+import           Yesod.Auth.OAuth2.Prelude
 
 -- | https://auth0.com/docs/api/authentication#get-user-info
 newtype User = User T.Text
@@ -29,8 +29,7 @@ defaultAuth0Scopes = ["openid"]
 pluginName :: Text
 pluginName = "auth0"
 
-oauth2Auth0Host
-  :: YesodAuth m => URI -> Text -> Text -> AuthPlugin m
+oauth2Auth0Host :: YesodAuth m => URI -> Text -> Text -> AuthPlugin m
 oauth2Auth0Host host = oauth2Auth0HostScopes host defaultAuth0Scopes
 
 oauth2Auth0HostScopes
