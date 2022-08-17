@@ -7,6 +7,7 @@
 --
 module Yesod.Auth.OAuth2.Auth0
   ( oauth2Auth0HostScopes
+  , oauth2Auth0Host
   , defaultAuth0Scopes
   ) where
 
@@ -27,6 +28,10 @@ defaultAuth0Scopes = ["openid"]
 
 pluginName :: Text
 pluginName = "auth0"
+
+oauth2Auth0Host
+  :: YesodAuth m => URI -> Text -> Text -> AuthPlugin m
+oauth2Auth0Host host = oauth2Auth0HostScopes host defaultAuth0Scopes
 
 oauth2Auth0HostScopes
   :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
