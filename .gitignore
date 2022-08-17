@@ -1,4 +1,5 @@
 .stack-work
+TAGS
 
 # OAuth keys configuration for the example
 .env*
