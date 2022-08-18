@@ -12,17 +12,18 @@ jobs:
     strategy:
       matrix:
         stack-yaml:
+          - stack-nightly.yaml
           - stack.yaml
-          - stack-hoauth2-2.0.yaml
-          - stack-hoauth2-2.2.yaml
-          - stack-hoauth2-2.3.yaml
           - stack-lts-17.4.yaml
           - stack-lts-16.10.yaml
           - stack-lts-13.2.yaml
+          - stack-hoauth2-2.0.yaml
+          - stack-hoauth2-2.2.yaml
+          - stack-hoauth2-2.3.yaml
       fail-fast: false
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: freckle/stack-cache-action@v2
         with:
           stack-yaml: ${{ matrix.stack-yaml }}
@@ -34,23 +35,10 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run:
           curl --output .hlint.yaml https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
       - uses: rwe/actions-hlint-setup@v1
       - uses: rwe/actions-hlint-run@v2
         with:
           fail-on: warning
-
-  nightly:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v2
-      - uses: freckle/stack-cache-action@v2
-        with:
-          stack-yaml: stack-nightly.yaml
-      - uses: freckle/stack-action@v3
-        with:
-          stack-yaml: stack-nightly.yaml
-          stack-arguments: --resolver nightly
