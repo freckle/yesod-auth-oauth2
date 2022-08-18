@@ -1,6 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...main)
 
-None
+## [v0.7.0.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...v0.7.0.2)
+
+- Add Auth0 provider ([@hw202207](https://github.com/freckle/yesod-auth-oauth2/pull/162))
 
 ## [v0.7.0.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.0...v0.7.0.1)
 

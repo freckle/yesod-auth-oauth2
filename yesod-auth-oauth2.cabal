@@ -1,13 +1,13 @@
-cabal-version: 1.12
+cabal-version: 1.18
 
 -- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a1a4e1ae0e3bbc0c5aea847e950613465bc5361c9bd1a1beedb20d7259b0ad8f
+-- hash: d8816664cb0b39ecb9a3775f44bcd9b4787d0af5d0d3f8565786479461e5ae99
 
 name:           yesod-auth-oauth2
-version:        0.7.0.1
+version:        0.7.0.2
 synopsis:       OAuth 2.0 authentication plugins
 description:    Library to authenticate with OAuth 2.0 for Yesod web applications.
 category:       Web
@@ -20,7 +20,7 @@ maintainer:     engineering@freckle.com
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
-extra-source-files:
+extra-doc-files:
     README.md
     CHANGELOG.md
 
