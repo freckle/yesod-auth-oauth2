@@ -134,7 +134,9 @@ fetchAccessTokenBasic
     -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessTokenBasic m o e = runOAuth2 $ f m (getOAuth2 o) e
   where
-#if MIN_VERSION_hoauth2(2,3,0)
+#if MIN_VERSION_hoauth2(2,6,0)
+    f = OAuth2.fetchAccessTokenWithAuthMethod OAuth2.ClientSecretBasic
+#elif MIN_VERSION_hoauth2(2,3,0)
     f = OAuth2.fetchAccessTokenInternal OAuth2.ClientSecretBasic
 #else
     f = OAuth2.fetchAccessToken
@@ -147,7 +149,9 @@ fetchAccessTokenPost
     -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessTokenPost m o e = runOAuth2 $ f m (getOAuth2 o) e
   where
-#if MIN_VERSION_hoauth2(2,3,0)
+#if MIN_VERSION_hoauth2(2, 6, 0)
+    f = OAuth2.fetchAccessTokenWithAuthMethod OAuth2.ClientSecretPost
+#elif MIN_VERSION_hoauth2(2,3,0)
     f = OAuth2.fetchAccessTokenInternal OAuth2.ClientSecretPost
 #else
     f = OAuth2.fetchAccessToken2

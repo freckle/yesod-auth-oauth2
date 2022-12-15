@@ -1,10 +1,10 @@
 cabal-version: 1.18
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: d8816664cb0b39ecb9a3775f44bcd9b4787d0af5d0d3f8565786479461e5ae99
+-- hash: 6ff32214308580349bea075f2eb01f97fc72598ea3e9a23f77a3e678d9c2c23a
 
 name:           yesod-auth-oauth2
 version:        0.7.0.2
@@ -108,9 +108,9 @@ executable yesod-auth-oauth2-example
     , yesod
     , yesod-auth >=1.6.0
     , yesod-auth-oauth2
+  default-language: Haskell2010
   if !(flag(example))
     buildable: False
-  default-language: Haskell2010
 
 test-suite test
   type: exitcode-stdio-1.0

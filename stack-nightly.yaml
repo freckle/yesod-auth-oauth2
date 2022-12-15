@@ -1,8 +1,11 @@
-resolver: nightly-2022-03-25
+resolver: nightly-2022-12-09
 
 extra-deps:
-  - hoauth2-2.4.0
-  - yesod-auth-1.6.11
-  - yesod-core-1.6.22.0
-  - yesod-form-1.7.0
-  - yesod-persistent-1.6.0.7
+  - hoauth2-2.6.0
+
+# hoauth2 needs upper-bounds relaxed for
+#
+# - memory-0.18.0
+# - text-2.0.1
+#
+allow-newer: true
