@@ -1,5 +1,11 @@
 # Yesod.Auth.OAuth2
 
+
+[![Hackage](https://img.shields.io/hackage/v/yesod-auth-oauth2.svg?style=flat)](https://hackage.haskell.org/package/yesod-auth-oauth2)
+[![Stackage Nightly](http://stackage.org/package/yesod-auth-oauth2/badge/nightly)](http://stackage.org/nightly/package/yesod-auth-oauth2)
+[![Stackage LTS](http://stackage.org/package/yesod-auth-oauth2/badge/lts)](http://stackage.org/lts/package/yesod-auth-oauth2)
+[![CI](https://github.com/freckle/yesod-auth-oauth2/actions/workflows/ci.yml/badge.svg)](https://github.com/pbrisbin/freckle/yesod-auth-oauth2/workflows/ci.yml)
+
 OAuth2 `AuthPlugin`s for Yesod.
 
 ## Usage
