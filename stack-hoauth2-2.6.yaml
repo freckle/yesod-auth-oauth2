@@ -1,7 +1,7 @@
-resolver: nightly-2023-01-30
+resolver: nightly-2022-12-09
 
 extra-deps:
-  - hoauth2-2.7.0
+  - hoauth2-2.6.0
 
 # hoauth2 needs upper-bounds relaxed for
 #
