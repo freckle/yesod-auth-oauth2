@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...main)
+
+## [v0.7.0.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.7.0.3)
+
+WIP, fill this in
 
 ## [v0.7.0.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...v0.7.0.2)
 
