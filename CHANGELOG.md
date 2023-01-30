@@ -2,7 +2,7 @@
 
 ## [v0.7.0.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.7.0.3)
 
-WIP, fill this in
+- Support `hoauth-2.7`
 
 ## [v0.7.0.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...v0.7.0.2)
 
