@@ -18,7 +18,6 @@ import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2.Compat
-import Network.OAuth.OAuth2.TokenRequest (Errors)
 import URI.ByteString.Extension
 import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
@@ -32,7 +31,7 @@ import Yesod.Core hiding (ErrorResponse)
 -- This will be 'fetchAccessToken' or 'fetchAccessToken2'
 --
 type FetchToken
-  = Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result Errors OAuth2Token)
+  = Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result OAuth2Token)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
 type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
