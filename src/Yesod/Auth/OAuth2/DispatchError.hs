@@ -14,18 +14,16 @@ module Yesod.Auth.OAuth2.DispatchError
   , onDispatchError
   ) where
 
-import           Control.Monad.Except
-import           Data.Text                      ( Text
-                                                , pack
-                                                )
-import           Network.OAuth.OAuth2.Compat    ( Error )
-import           UnliftIO.Except                ( )
-import           UnliftIO.Exception
-import           Yesod.Auth              hiding ( ServerError )
-import           Yesod.Auth.OAuth2.ErrorResponse
-import           Yesod.Auth.OAuth2.Exception
-import           Yesod.Auth.OAuth2.Random
-import           Yesod.Core              hiding ( ErrorResponse )
+import Control.Monad.Except
+import Data.Text (Text, pack)
+import Network.OAuth.OAuth2.Compat (Error)
+import UnliftIO.Except ()
+import UnliftIO.Exception
+import Yesod.Auth hiding (ServerError)
+import Yesod.Auth.OAuth2.ErrorResponse
+import Yesod.Auth.OAuth2.Exception
+import Yesod.Auth.OAuth2.Random
+import Yesod.Core hiding (ErrorResponse)
 
 data DispatchError
     = MissingParameter Text
