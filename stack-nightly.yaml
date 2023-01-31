@@ -8,4 +8,5 @@ extra-deps:
 # - memory-0.18.0
 # - text-2.0.1
 #
-allow-newer: true
+allow-newer-deps:
+  - hoauth2
