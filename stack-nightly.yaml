@@ -3,10 +3,8 @@ resolver: nightly-2023-01-30
 extra-deps:
   - hoauth2-2.7.0
 
-# hoauth2 needs upper-bounds relaxed for
-#
-# - memory-0.18.0
-# - text-2.0.1
-#
 allow-newer-deps:
   - hoauth2
+# hoauth2 needs upper-bounds relaxed for
+  - memory
+  - text
