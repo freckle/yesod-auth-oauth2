@@ -59,7 +59,7 @@ type Error = TokenRequestError
 type Error = OAuth2Error Errors
 #endif
 
-type OAuth2Result a = Either Error a
+type OAuth2Result err a = Either err a
 
 authorizationUrl :: OAuth2 -> URI
 authorizationUrl = OAuth2.authorizationUrl . getOAuth2
@@ -68,14 +68,14 @@ fetchAccessToken
     :: Manager
     -> OAuth2
     -> ExchangeToken
-    -> IO (OAuth2Result OAuth2Token)
+    -> IO (OAuth2Result Error OAuth2Token)
 fetchAccessToken = fetchAccessTokenBasic
 
 fetchAccessToken2
     :: Manager
     -> OAuth2
     -> ExchangeToken
-    -> IO (OAuth2Result OAuth2Token)
+    -> IO (OAuth2Result Error OAuth2Token)
 fetchAccessToken2 = fetchAccessTokenPost
 
 authGetBS :: Manager -> AccessToken -> URI -> IO (Either ByteString ByteString)
@@ -151,7 +151,7 @@ fetchAccessTokenBasic
     :: Manager
     -> OAuth2
     -> ExchangeToken
-    -> IO (OAuth2Result OAuth2Token)
+    -> IO (OAuth2Result Error OAuth2Token)
 fetchAccessTokenBasic m o e = runOAuth2 $ f m (getOAuth2 o) e
   where
 #if MIN_VERSION_hoauth2(2,6,0)
@@ -166,7 +166,7 @@ fetchAccessTokenPost
     :: Manager
     -> OAuth2
     -> ExchangeToken
-    -> IO (OAuth2Result OAuth2Token)
+    -> IO (OAuth2Result Error OAuth2Token)
 fetchAccessTokenPost m o e = runOAuth2 $ f m (getOAuth2 o) e
   where
 #if MIN_VERSION_hoauth2(2, 6, 0)
