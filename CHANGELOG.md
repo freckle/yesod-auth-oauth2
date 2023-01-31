@@ -1,8 +1,9 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.8.0.0...main)
 
-## [v0.7.0.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.7.0.3)
+## [v0.8.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.8.0.0)
 
-- Support `hoauth-2.7`
+- Support `hoauth-2.7`, this change is backwards compatible if something other
+  than `fetchAccessToken` or `fetchAccessToken2` is used build the plugin
 
 ## [v0.7.0.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...v0.7.0.2)
 
