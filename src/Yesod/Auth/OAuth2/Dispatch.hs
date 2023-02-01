@@ -12,19 +12,19 @@ module Yesod.Auth.OAuth2.Dispatch
   , dispatchAuthRequest
   ) where
 
-import Control.Monad.Except
-import Data.Text (Text)
-import qualified Data.Text as T
-import Data.Text.Encoding (encodeUtf8)
-import Network.HTTP.Conduit (Manager)
-import Network.OAuth.OAuth2.Compat
-import URI.ByteString.Extension
-import UnliftIO.Exception
-import Yesod.Auth hiding (ServerError)
-import Yesod.Auth.OAuth2.DispatchError
-import Yesod.Auth.OAuth2.ErrorResponse
-import Yesod.Auth.OAuth2.Random
-import Yesod.Core hiding (ErrorResponse)
+import           Control.Monad.Except
+import           Data.Text                      ( Text )
+import qualified Data.Text                     as T
+import           Data.Text.Encoding             ( encodeUtf8 )
+import           Network.HTTP.Conduit           ( Manager )
+import           Network.OAuth.OAuth2.Compat
+import           URI.ByteString.Extension
+import           UnliftIO.Exception
+import           Yesod.Auth              hiding ( ServerError )
+import           Yesod.Auth.OAuth2.DispatchError
+import           Yesod.Auth.OAuth2.ErrorResponse
+import           Yesod.Auth.OAuth2.Random
+import           Yesod.Core              hiding ( ErrorResponse )
 
 -- | How to fetch an @'OAuth2Token'@
 --
