@@ -1,4 +1,9 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...main)
+
+## [v0.7.0.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.7.0.3)
+
+- Support `hoauth-2.7`. This change is only breaking in the unlikely case of users
+  using something other than `fetchAccessToken` or `fetchAccessToken2`
 
 ## [v0.7.0.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.1...v0.7.0.2)
 

@@ -20,6 +20,7 @@ jobs:
           - stack-hoauth2-2.0.yaml
           - stack-hoauth2-2.2.yaml
           - stack-hoauth2-2.3.yaml
+          - stack-hoauth2-2.6.yaml
       fail-fast: false
 
     steps:

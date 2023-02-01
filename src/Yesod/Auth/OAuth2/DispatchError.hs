@@ -9,15 +9,14 @@
 {-# LANGUAGE TypeFamilies #-}
 
 module Yesod.Auth.OAuth2.DispatchError
-    ( DispatchError(..)
-    , handleDispatchError
-    , onDispatchError
-    ) where
+  ( DispatchError(..)
+  , handleDispatchError
+  , onDispatchError
+  ) where
 
 import Control.Monad.Except
 import Data.Text (Text, pack)
-import Network.OAuth.OAuth2
-import Network.OAuth.OAuth2.TokenRequest (Errors)
+import Network.OAuth.OAuth2.Compat (Errors)
 import UnliftIO.Except ()
 import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
@@ -31,7 +30,7 @@ data DispatchError
     | InvalidStateToken (Maybe Text) Text
     | InvalidCallbackUri Text
     | OAuth2HandshakeError ErrorResponse
-    | OAuth2ResultError (OAuth2Error Errors)
+    | OAuth2ResultError Errors
     | FetchCredsIOException IOException
     | FetchCredsYesodOAuth2Exception YesodOAuth2Exception
     | OtherDispatchError Text
@@ -45,37 +44,37 @@ data DispatchError
 --
 dispatchErrorMessage :: DispatchError -> Text
 dispatchErrorMessage = \case
-    MissingParameter name ->
-        "Parameter '" <> name <> "' is required, but not present in the URL"
-    InvalidStateToken{} -> "State token is invalid, please try again"
-    InvalidCallbackUri{}
-        -> "Callback URI was not valid, this server may be misconfigured (no approot)"
-    OAuth2HandshakeError er -> "OAuth2 handshake failure: " <> erUserMessage er
-    OAuth2ResultError{} -> "Login failed, please try again"
-    FetchCredsIOException{} -> "Login failed, please try again"
-    FetchCredsYesodOAuth2Exception{} -> "Login failed, please try again"
-    OtherDispatchError{} -> "Login failed, please try again"
+  MissingParameter name ->
+    "Parameter '" <> name <> "' is required, but not present in the URL"
+  InvalidStateToken{} -> "State token is invalid, please try again"
+  InvalidCallbackUri{} ->
+    "Callback URI was not valid, this server may be misconfigured (no approot)"
+  OAuth2HandshakeError er -> "OAuth2 handshake failure: " <> erUserMessage er
+  OAuth2ResultError{}              -> "Login failed, please try again"
+  FetchCredsIOException{}          -> "Login failed, please try again"
+  FetchCredsYesodOAuth2Exception{} -> "Login failed, please try again"
+  OtherDispatchError{}             -> "Login failed, please try again"
 
 handleDispatchError
-    :: MonadAuthHandler site m
-    => ExceptT DispatchError m TypedContent
-    -> m TypedContent
+  :: MonadAuthHandler site m
+  => ExceptT DispatchError m TypedContent
+  -> m TypedContent
 handleDispatchError f = do
-    result <- runExceptT f
-    either onDispatchError pure result
+  result <- runExceptT f
+  either onDispatchError pure result
 
 onDispatchError :: MonadAuthHandler site m => DispatchError -> m TypedContent
 onDispatchError err = do
-    errorId <- liftIO $ randomText 16
-    let suffix = " [errorId=" <> errorId <> "]"
-    $(logError) $ pack (displayException err) <> suffix
+  errorId <- liftIO $ randomText 16
+  let suffix = " [errorId=" <> errorId <> "]"
+  $(logError) $ pack (displayException err) <> suffix
 
-    let message = dispatchErrorMessage err <> suffix
-        messageValue =
-            object ["error" .= object ["id" .= errorId, "message" .= message]]
+  let message = dispatchErrorMessage err <> suffix
+      messageValue =
+        object ["error" .= object ["id" .= errorId, "message" .= message]]
 
-    loginR <- ($ LoginR) <$> getRouteToParent
+  loginR <- ($ LoginR) <$> getRouteToParent
 
-    selectRep $ do
-        provideRep @_ @Html $ onErrorHtml loginR message
-        provideRep @_ @Value $ pure messageValue
+  selectRep $ do
+    provideRep @_ @Html $ onErrorHtml loginR message
+    provideRep @_ @Value $ pure messageValue

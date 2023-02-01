@@ -3,6 +3,7 @@
 module Network.OAuth.OAuth2.Compat
     ( OAuth2(..)
     , OAuth2Result
+    , Errors
     , authorizationUrl
     , fetchAccessToken
     , fetchAccessToken2
@@ -15,6 +16,16 @@ module Network.OAuth.OAuth2.Compat
 import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
 import Network.HTTP.Conduit (Manager)
+import qualified Network.OAuth.OAuth2 as OAuth2
+#if MIN_VERSION_hoauth2(2,7,0)
+import Network.OAuth.OAuth2
+    ( AccessToken(..)
+    , ExchangeToken(..)
+    , OAuth2Token(..)
+    , RefreshToken(..)
+    )
+import Network.OAuth.OAuth2.TokenRequest (TokenRequestError)
+#else
 import Network.OAuth.OAuth2
     ( AccessToken(..)
     , ExchangeToken(..)
@@ -22,8 +33,8 @@ import Network.OAuth.OAuth2
     , OAuth2Token(..)
     , RefreshToken(..)
     )
-import qualified Network.OAuth.OAuth2 as OAuth2
-import Network.OAuth.OAuth2.TokenRequest (Errors)
+import qualified Network.OAuth.OAuth2.TokenRequest as LegacyTokenRequest
+#endif
 import URI.ByteString
 
 #if MIN_VERSION_hoauth2(2,2,0)
@@ -39,7 +50,13 @@ data OAuth2 = OAuth2
     , oauth2RedirectUri :: Maybe (URIRef Absolute)
     }
 
-type OAuth2Result err a = Either (OAuth2Error err) a
+#if MIN_VERSION_hoauth2(2,7,0)
+type Errors = TokenRequestError
+#else
+type Errors = OAuth2Error LegacyTokenRequest.Errors
+#endif
+
+type OAuth2Result err a = Either err a
 
 authorizationUrl :: OAuth2 -> URI
 authorizationUrl = OAuth2.authorizationUrl . getOAuth2
