@@ -16,7 +16,7 @@ module Yesod.Auth.OAuth2.DispatchError
 
 import Control.Monad.Except
 import Data.Text (Text, pack)
-import Network.OAuth.OAuth2.Compat (Error)
+import Network.OAuth.OAuth2.Compat (Errors)
 import UnliftIO.Except ()
 import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
@@ -30,7 +30,7 @@ data DispatchError
     | InvalidStateToken (Maybe Text) Text
     | InvalidCallbackUri Text
     | OAuth2HandshakeError ErrorResponse
-    | OAuth2ResultError Error
+    | OAuth2ResultError Errors
     | FetchCredsIOException IOException
     | FetchCredsYesodOAuth2Exception YesodOAuth2Exception
     | OtherDispatchError Text
