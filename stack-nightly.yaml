@@ -5,6 +5,6 @@ extra-deps:
 
 allow-newer-deps:
   - hoauth2
-# hoauth2 needs upper-bounds relaxed for
+  # hoauth2 needs upper-bounds relaxed for
   - memory
   - text
