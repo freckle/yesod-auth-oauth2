@@ -62,7 +62,7 @@ dispatchForward
   -> OAuth2
   -> m TypedContent
 dispatchForward name oauth2 = do
-  csrf    <- setSessionCSRF $ tokenSessionKey name
+  csrf <- setSessionCSRF $ tokenSessionKey name
   oauth2' <- withCallbackAndState name oauth2 csrf
   redirect $ toText $ authorizationUrl oauth2'
 
@@ -81,11 +81,11 @@ dispatchCallback
   -> m TypedContent
 dispatchCallback name oauth2 getToken getCreds = do
   onErrorResponse $ throwError . OAuth2HandshakeError
-  csrf    <- verifySessionCSRF $ tokenSessionKey name
-  code    <- requireGetParam "code"
+  csrf <- verifySessionCSRF $ tokenSessionKey name
+  code <- requireGetParam "code"
   manager <- authHttpManager
   oauth2' <- withCallbackAndState name oauth2 csrf
-  token   <- either (throwError . OAuth2ResultError) pure
+  token <- either (throwError . OAuth2ResultError) pure
     =<< liftIO (getToken manager oauth2' $ ExchangeToken code)
   creds <-
     liftIO (getCreds manager token)
@@ -100,12 +100,12 @@ withCallbackAndState
   -> Text
   -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
-  uri      <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+  uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
   callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
   pure oauth2
-    { oauth2RedirectUri       = Just callback
-    , oauth2AuthorizeEndpoint = oauth2AuthorizeEndpoint oauth2
-                                  `withQuery` [("state", encodeUtf8 csrf)]
+    { oauth2RedirectUri = Just callback
+    , oauth2AuthorizeEndpoint =
+      oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
     }
 
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
@@ -130,11 +130,12 @@ setSessionCSRF sessionKey = do
 verifySessionCSRF
   :: (MonadError DispatchError m, MonadHandler m) => Text -> m Text
 verifySessionCSRF sessionKey = do
-  token        <- requireGetParam "state"
+  token <- requireGetParam "state"
   sessionToken <- lookupSession sessionKey
   deleteSession sessionKey
-  token <$ unless (sessionToken == Just token)
-                  (throwError $ InvalidStateToken sessionToken token)
+  token <$ unless
+    (sessionToken == Just token)
+    (throwError $ InvalidStateToken sessionToken token)
 
 requireGetParam
   :: (MonadError DispatchError m, MonadHandler m) => Text -> m Text

@@ -4,13 +4,12 @@
 -- <https://tools.ietf.org/html/rfc6749#section-4.1.2.1>
 --
 module Yesod.Auth.OAuth2.ErrorResponse
-    ( ErrorResponse(..)
-    , erUserMessage
-    , ErrorName(..)
-    , onErrorResponse
-    , unknownError
-    )
-where
+  ( ErrorResponse(..)
+  , erUserMessage
+  , ErrorName(..)
+  , onErrorResponse
+  , unknownError
+  ) where
 
 import Data.Foldable (traverse_)
 import Data.Text (Text)
@@ -29,30 +28,27 @@ data ErrorName
     deriving Show
 
 data ErrorResponse = ErrorResponse
-    { erName :: ErrorName
-    , erDescription :: Maybe Text
-    , erURI :: Maybe Text
-    }
-    deriving Show
+  { erName :: ErrorName
+  , erDescription :: Maybe Text
+  , erURI :: Maybe Text
+  }
+  deriving Show
 
 -- | Textual value suitable for display to a User
 erUserMessage :: ErrorResponse -> Text
 erUserMessage err = case erName err of
-    InvalidRequest -> "Invalid request"
-    UnauthorizedClient -> "Unauthorized client"
-    AccessDenied -> "Access denied"
-    UnsupportedResponseType -> "Unsupported response type"
-    InvalidScope -> "Invalid scope"
-    ServerError -> "Server error"
-    TemporarilyUnavailable -> "Temporarily unavailable"
-    Unknown _ -> "Unknown error"
+  InvalidRequest -> "Invalid request"
+  UnauthorizedClient -> "Unauthorized client"
+  AccessDenied -> "Access denied"
+  UnsupportedResponseType -> "Unsupported response type"
+  InvalidScope -> "Invalid scope"
+  ServerError -> "Server error"
+  TemporarilyUnavailable -> "Temporarily unavailable"
+  Unknown _ -> "Unknown error"
 
 unknownError :: Text -> ErrorResponse
-unknownError x = ErrorResponse
-    { erName = Unknown x
-    , erDescription = Nothing
-    , erURI = Nothing
-    }
+unknownError x =
+  ErrorResponse { erName = Unknown x, erDescription = Nothing, erURI = Nothing }
 
 -- | Check query parameters for an error, if found run the given action
 --
@@ -64,12 +60,12 @@ onErrorResponse f = traverse_ f =<< checkErrorResponse
 
 checkErrorResponse :: MonadHandler m => m (Maybe ErrorResponse)
 checkErrorResponse = do
-    merror <- lookupGetParam "error"
+  merror <- lookupGetParam "error"
 
-    for merror $ \err ->
-        ErrorResponse (readErrorName err)
-            <$> lookupGetParam "error_description"
-            <*> lookupGetParam "error_uri"
+  for merror $ \err ->
+    ErrorResponse (readErrorName err)
+      <$> lookupGetParam "error_description"
+      <*> lookupGetParam "error_uri"
 
 readErrorName :: Text -> ErrorName
 readErrorName "invalid_request" = InvalidRequest

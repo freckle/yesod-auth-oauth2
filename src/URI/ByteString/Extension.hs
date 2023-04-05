@@ -13,30 +13,26 @@ import qualified Data.ByteString.Char8 as C8
 import URI.ByteString
 
 instance IsString Scheme where
-    fromString = Scheme . fromString
+  fromString = Scheme . fromString
 
 instance IsString Host where
-    fromString = Host . fromString
+  fromString = Host . fromString
 
 instance IsString (URIRef Absolute) where
-    fromString = either (error . show) id
-        . parseURI strictURIParserOptions
-        . C8.pack
+  fromString =
+    either (error . show) id . parseURI strictURIParserOptions . C8.pack
 
 instance IsString (URIRef Relative) where
-    fromString = either (error . show) id
-        . parseRelativeRef strictURIParserOptions
-        . C8.pack
+  fromString =
+    either (error . show) id . parseRelativeRef strictURIParserOptions . C8.pack
 
 fromText :: Text -> Maybe URI
-fromText = either (const Nothing) Just
-    . parseURI strictURIParserOptions
-    . encodeUtf8
+fromText =
+  either (const Nothing) Just . parseURI strictURIParserOptions . encodeUtf8
 
 unsafeFromText :: Text -> URI
-unsafeFromText = either (error . show) id
-    . parseURI strictURIParserOptions
-    . encodeUtf8
+unsafeFromText =
+  either (error . show) id . parseURI strictURIParserOptions . encodeUtf8
 
 toText :: URI -> Text
 toText = decodeUtf8 . serializeURIRef'
@@ -46,8 +42,8 @@ fromRelative s h = flip withHost h . toAbsolute s
 
 withHost :: URIRef a -> Host -> URIRef a
 withHost u h = u & authorityL %~ maybe
-    (Just $ Authority Nothing h Nothing)
-    (\a -> Just $ a & authorityHostL .~ h)
+  (Just $ Authority Nothing h Nothing)
+  (\a -> Just $ a & authorityHostL .~ h)
 
 withPath :: URIRef a -> ByteString -> URIRef a
 withPath u p = u & pathL .~ p

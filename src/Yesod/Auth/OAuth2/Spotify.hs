@@ -26,16 +26,18 @@ oauth2Spotify scopes clientId clientSecret =
       token
       "https://api.spotify.com/v1/me"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://accounts.spotify.com/authorize"
-                                  `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = "https://accounts.spotify.com/api/token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://accounts.spotify.com/authorize"
+        `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint = "https://accounts.spotify.com/api/token"
+    , oauth2RedirectUri = Nothing
     }
