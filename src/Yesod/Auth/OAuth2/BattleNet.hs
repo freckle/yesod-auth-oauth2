@@ -39,27 +39,28 @@ oauth2BattleNet widget region clientId clientSecret =
       authGetProfile pluginName manager token
         $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = T.pack $ show userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = T.pack $ show userId
+      , credsExtra = setExtra token userResponse
+      }
  where
-  host   = wwwHost $ T.toLower region
+  host = wwwHost $ T.toLower region
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
     , oauth2AuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
-    , oauth2TokenEndpoint     = fromRelative "https" host "/oauth/token"
-    , oauth2RedirectUri       = Nothing
+    , oauth2TokenEndpoint = fromRelative "https" host "/oauth/token"
+    , oauth2RedirectUri = Nothing
     }
 
 
 apiHost :: Text -> Host
-apiHost "cn"   = "api.battlenet.com.cn"
+apiHost "cn" = "api.battlenet.com.cn"
 apiHost region = Host $ encodeUtf8 $ region <> ".api.battle.net"
 
 wwwHost :: Text -> Host
-wwwHost "cn"   = "www.battlenet.com.cn"
+wwwHost "cn" = "www.battlenet.com.cn"
 wwwHost region = Host $ encodeUtf8 $ region <> ".battle.net"
 
 oAuth2BattleNet

@@ -28,18 +28,19 @@ oauth2WordPressDotCom clientId clientSecret =
       token
       "https://public-api.wordpress.com/rest/v1/me/"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = T.pack $ show userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = T.pack $ show userId
+      , credsExtra = setExtra token userResponse
+      }
 
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
     , oauth2AuthorizeEndpoint =
       "https://public-api.wordpress.com/oauth2/authorize"
         `withQuery` [scopeParam "," ["auth"]]
-    , oauth2TokenEndpoint     = "https://public-api.wordpress.com/oauth2/token"
-    , oauth2RedirectUri       = Nothing
+    , oauth2TokenEndpoint = "https://public-api.wordpress.com/oauth2/token"
+    , oauth2RedirectUri = Nothing
     }
