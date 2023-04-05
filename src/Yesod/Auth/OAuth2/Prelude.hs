@@ -6,9 +6,7 @@
 -- implementations. May also be useful for writing local providers.
 --
 module Yesod.Auth.OAuth2.Prelude
-  (
-      -- * Provider helpers
-    authGetProfile
+  ( authGetProfile
   , scopeParam
   , setExtra
 
