@@ -69,16 +69,18 @@ oauth2GoogleScopedWidget widget scopes clientId clientSecret =
       token
       "https://www.googleapis.com/oauth2/v3/userinfo"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://accounts.google.com/o/oauth2/auth"
-                                  `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = "https://www.googleapis.com/oauth2/v3/token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://accounts.google.com/o/oauth2/auth"
+        `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
+    , oauth2RedirectUri = Nothing
     }

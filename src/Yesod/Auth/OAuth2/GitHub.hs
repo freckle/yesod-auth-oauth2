@@ -38,16 +38,18 @@ oauth2GitHubScoped scopes clientId clientSecret =
       token
       "https://api.github.com/user"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = T.pack $ show userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = T.pack $ show userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://github.com/login/oauth/authorize"
-                                  `withQuery` [scopeParam "," scopes]
-    , oauth2TokenEndpoint     = "https://github.com/login/oauth/access_token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://github.com/login/oauth/authorize"
+        `withQuery` [scopeParam "," scopes]
+    , oauth2TokenEndpoint = "https://github.com/login/oauth/access_token"
+    , oauth2RedirectUri = Nothing
     }

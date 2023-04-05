@@ -61,15 +61,16 @@ salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSec
   = authOAuth2 name oauth2 $ \manager token -> do
     (User userId, userResponse) <- authGetProfile name manager token profileUri
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
     , oauth2AuthorizeEndpoint = authorizeUri `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = tokenUri
-    , oauth2RedirectUri       = Nothing
+    , oauth2TokenEndpoint = tokenUri
+    , oauth2RedirectUri = Nothing
     }

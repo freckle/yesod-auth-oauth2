@@ -78,7 +78,7 @@ instance YesodAuth App where
   -- Copy the Creds response into the session for viewing after
   authenticate c = do
     mapM_ (uncurry setSession)
-      $  [("credsIdent", credsIdent c), ("credsPlugin", credsPlugin c)]
+      $ [("credsIdent", credsIdent c), ("credsPlugin", credsPlugin c)]
       ++ credsExtra c
 
     return $ Authenticated "1"
@@ -131,7 +131,7 @@ mkFoundation :: IO App
 mkFoundation = do
   loadEnv
 
-  auth0Host      <- getEnv "AUTH0_HOST"
+  auth0Host <- getEnv "AUTH0_HOST"
 
   appHttpManager <- newManager tlsManagerSettings
   appAuthPlugins <- sequence
@@ -140,28 +140,28 @@ mkFoundation = do
       --
       -- FIXME: oauth2BattleNet is quite annoying!
       --
-    [ loadPlugin oauth2AzureAD                            "AZURE_AD"
+    [ loadPlugin oauth2AzureAD "AZURE_AD"
     , loadPlugin (oauth2Auth0Host $ fromString auth0Host) "AUTH0"
-    , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en")   "BATTLE_NET"
-    , loadPlugin oauth2Bitbucket                          "BITBUCKET"
-    , loadPlugin oauth2ClassLink                          "CLASSLINK"
-    , loadPlugin (oauth2Eve Plain)                        "EVE_ONLINE"
-    , loadPlugin oauth2GitHub                             "GITHUB"
-    , loadPlugin oauth2GitLab                             "GITLAB"
-    , loadPlugin oauth2Google                             "GOOGLE"
-    , loadPlugin oauth2Nylas                              "NYLAS"
-    , loadPlugin oauth2Salesforce                         "SALES_FORCE"
-    , loadPlugin oauth2Slack                              "SLACK"
-    , loadPlugin (oauth2Spotify [])                       "SPOTIFY"
-    , loadPlugin oauth2Twitch                             "TWITCH"
-    , loadPlugin oauth2WordPressDotCom                    "WORDPRESS_DOT_COM"
-    , loadPlugin oauth2Upcase                             "UPCASE"
+    , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
+    , loadPlugin oauth2Bitbucket "BITBUCKET"
+    , loadPlugin oauth2ClassLink "CLASSLINK"
+    , loadPlugin (oauth2Eve Plain) "EVE_ONLINE"
+    , loadPlugin oauth2GitHub "GITHUB"
+    , loadPlugin oauth2GitLab "GITLAB"
+    , loadPlugin oauth2Google "GOOGLE"
+    , loadPlugin oauth2Nylas "NYLAS"
+    , loadPlugin oauth2Salesforce "SALES_FORCE"
+    , loadPlugin oauth2Slack "SLACK"
+    , loadPlugin (oauth2Spotify []) "SPOTIFY"
+    , loadPlugin oauth2Twitch "TWITCH"
+    , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
+    , loadPlugin oauth2Upcase "UPCASE"
     ]
 
   return App { .. }
  where
   loadPlugin f prefix = do
-    clientId     <- getEnv $ prefix <> "_CLIENT_ID"
+    clientId <- getEnv $ prefix <> "_CLIENT_ID"
     clientSecret <- getEnv $ prefix <> "_CLIENT_SECRET"
     pure $ f (T.pack clientId) (T.pack clientSecret)
 

@@ -85,7 +85,7 @@ authGetProfile
   -> URI
   -> IO (a, BL.ByteString)
 authGetProfile name manager token url = do
-  resp    <- fromAuthGet name =<< authGetBS manager (accessToken token) url
+  resp <- fromAuthGet name =<< authGetBS manager (accessToken token) url
   decoded <- fromAuthJSON name resp
   pure (decoded, resp)
 

@@ -14,7 +14,7 @@ module Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Prelude
 
 import Network.HTTP.Client
-    (httpLbs, parseUrlThrow, responseBody, setQueryString)
+  (httpLbs, parseUrlThrow, responseBody, setQueryString)
 import Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 data SlackScope
@@ -24,9 +24,9 @@ data SlackScope
     | SlackAvatarScope
 
 scopeText :: SlackScope -> Text
-scopeText SlackBasicScope  = "identity.basic"
-scopeText SlackEmailScope  = "identity.email"
-scopeText SlackTeamScope   = "identity.team"
+scopeText SlackBasicScope = "identity.basic"
+scopeText SlackEmailScope = "identity.email"
+scopeText SlackTeamScope = "identity.team"
 scopeText SlackAvatarScope = "identity.avatar"
 
 newtype User = User Text
@@ -56,20 +56,20 @@ oauth2SlackScoped scopes clientId clientSecret =
 
     either
         (throwIO . YesodOAuth2Exception.JSONDecodingError pluginName)
-        (\(User userId) -> pure Creds { credsPlugin = pluginName
-                                      , credsIdent = userId
-                                      , credsExtra = setExtra token userResponse
-                                      }
+        (\(User userId) -> pure Creds
+          { credsPlugin = pluginName
+          , credsIdent = userId
+          , credsExtra = setExtra token userResponse
+          }
         )
       $ eitherDecode userResponse
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://slack.com/oauth/authorize"
-                                  `withQuery` [ scopeParam ","
-                                                  $ map scopeText scopes
-                                              ]
-    , oauth2TokenEndpoint     = "https://slack.com/api/oauth.access"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://slack.com/oauth/authorize"
+        `withQuery` [scopeParam "," $ map scopeText scopes]
+    , oauth2TokenEndpoint = "https://slack.com/api/oauth.access"
+    , oauth2RedirectUri = Nothing
     }

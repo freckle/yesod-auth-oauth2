@@ -43,17 +43,17 @@ oauth2GitLabHostScopes host scopes clientId clientSecret =
     (User userId, userResponse) <-
       authGetProfile pluginName manager token $ host `withPath` "/api/v4/user"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = T.pack $ show userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = T.pack $ show userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = host
-                                `withPath`  "/oauth/authorize"
-                                `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = host `withPath` "/oauth/token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      host `withPath` "/oauth/authorize" `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint = host `withPath` "/oauth/token"
+    , oauth2RedirectUri = Nothing
     }

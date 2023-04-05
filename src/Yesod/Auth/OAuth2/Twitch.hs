@@ -38,19 +38,22 @@ oauth2TwitchScoped scopes clientId clientSecret =
       token
       "https://id.twitch.tv/oauth2/validate"
 
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = userId
-               , credsExtra  = setExtra token userResponse
-               }
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = userId
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://id.twitch.tv/oauth2/authorize"
-                                  `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = "https://id.twitch.tv/oauth2/token"
-                                  `withQuery` [ ("client_id", T.encodeUtf8 clientId)
-                                              , ("client_secret", T.encodeUtf8 clientSecret)
-                                              ]
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://id.twitch.tv/oauth2/authorize"
+        `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint =
+      "https://id.twitch.tv/oauth2/token"
+        `withQuery` [ ("client_id", T.encodeUtf8 clientId)
+                    , ("client_secret", T.encodeUtf8 clientSecret)
+                    ]
+    , oauth2RedirectUri = Nothing
     }

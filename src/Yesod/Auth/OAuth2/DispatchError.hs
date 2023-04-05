@@ -50,10 +50,10 @@ dispatchErrorMessage = \case
   InvalidCallbackUri{} ->
     "Callback URI was not valid, this server may be misconfigured (no approot)"
   OAuth2HandshakeError er -> "OAuth2 handshake failure: " <> erUserMessage er
-  OAuth2ResultError{}              -> "Login failed, please try again"
-  FetchCredsIOException{}          -> "Login failed, please try again"
+  OAuth2ResultError{} -> "Login failed, please try again"
+  FetchCredsIOException{} -> "Login failed, please try again"
   FetchCredsYesodOAuth2Exception{} -> "Login failed, please try again"
-  OtherDispatchError{}             -> "Login failed, please try again"
+  OtherDispatchError{} -> "Login failed, please try again"
 
 handleDispatchError
   :: MonadAuthHandler site m
@@ -69,9 +69,10 @@ onDispatchError err = do
   let suffix = " [errorId=" <> errorId <> "]"
   $(logError) $ pack (displayException err) <> suffix
 
-  let message = dispatchErrorMessage err <> suffix
-      messageValue =
-        object ["error" .= object ["id" .= errorId, "message" .= message]]
+  let
+    message = dispatchErrorMessage err <> suffix
+    messageValue =
+      object ["error" .= object ["id" .= errorId, "message" .= message]]
 
   loginR <- ($ LoginR) <$> getRouteToParent
 

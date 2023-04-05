@@ -63,19 +63,19 @@ oauth2EveScoped scopes widgetType clientId clientSecret =
         token
         "https://login.eveonline.com/oauth/verify"
 
-      pure Creds { credsPlugin = "eveonline"
+      pure Creds
+        { credsPlugin = "eveonline"
           -- FIXME: Preserved bug. See similar comment in Bitbucket provider.
-                 , credsIdent  = T.pack $ show userId
-                 , credsExtra  = setExtra token userResponse
-                 }
+        , credsIdent = T.pack $ show userId
+        , credsExtra = setExtra token userResponse
+        }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = "https://login.eveonline.com/oauth/authorize"
-                                  `withQuery` [ ("response_type", "code")
-                                              , scopeParam " " scopes
-                                              ]
-    , oauth2TokenEndpoint     = "https://login.eveonline.com/oauth/token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      "https://login.eveonline.com/oauth/authorize"
+        `withQuery` [("response_type", "code"), scopeParam " " scopes]
+    , oauth2TokenEndpoint = "https://login.eveonline.com/oauth/token"
+    , oauth2RedirectUri = Nothing
     }

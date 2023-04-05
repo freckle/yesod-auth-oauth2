@@ -1,8 +1,8 @@
 {-# LANGUAGE DeriveDataTypeable #-}
 
 module Yesod.Auth.OAuth2.Exception
-    ( YesodOAuth2Exception(..)
-    ) where
+  ( YesodOAuth2Exception(..)
+  ) where
 
 import Control.Exception.Safe
 import Data.ByteString.Lazy (ByteString)

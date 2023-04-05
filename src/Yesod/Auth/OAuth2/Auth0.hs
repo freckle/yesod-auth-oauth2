@@ -36,21 +36,22 @@ oauth2Auth0HostScopes
   :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
 oauth2Auth0HostScopes host scopes clientId clientSecret =
   authOAuth2 pluginName oauth2 $ \manager token -> do
-    (User uid, userResponse) <- authGetProfile pluginName
-                                               manager
-                                               token
-                                               (host `withPath` "/userinfo")
-    pure Creds { credsPlugin = pluginName
-               , credsIdent  = uid
-               , credsExtra  = setExtra token userResponse
-               }
+    (User uid, userResponse) <- authGetProfile
+      pluginName
+      manager
+      token
+      (host `withPath` "/userinfo")
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = uid
+      , credsExtra = setExtra token userResponse
+      }
  where
   oauth2 = OAuth2
-    { oauth2ClientId          = clientId
-    , oauth2ClientSecret      = Just clientSecret
-    , oauth2AuthorizeEndpoint = host
-                                `withPath`  "/authorize"
-                                `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint     = host `withPath` "/oauth/token"
-    , oauth2RedirectUri       = Nothing
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      host `withPath` "/authorize" `withQuery` [scopeParam " " scopes]
+    , oauth2TokenEndpoint = host `withPath` "/oauth/token"
+    , oauth2RedirectUri = Nothing
     }
