@@ -13,7 +13,7 @@ packages:
     hackage: hoauth2-2.7.0
 snapshots:
 - completed:
-    sha256: 09ac166bef7e4db4adb4830cf87b3ef4160477702c3da0765d9f7a8c2cffd446
-    size: 596592
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/1/30.yaml
-  original: nightly-2023-01-30
+    sha256: eaacd008a9ade10f0a8ff460afdd6564469e70b8e1663c0404d95651788dc7a5
+    size: 600986
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/4/4.yaml
+  original: nightly-2023-04-04
