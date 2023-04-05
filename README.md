@@ -117,6 +117,26 @@ stack build --pedantic --test
 
 Please also run HLint and Weeder before submitting PRs.
 
+## Example
+
+This project includes an executable that runs a server with (almost) all
+supported providers present.
+
+To use:
+
+1. `cp .env.example .env` and edit in secrets for providers you wish to test
+
+   Be sure to include `http://localhost:3000/auth/page/{plugin}/callback` as a
+   valid Redirect URI when configuring the OAuth application.
+
+2. Build with the example: `stack build ... --flag yesod-auth-oauth2:example`
+3. Run the example `stack exec yesod-auth-oauth2-example`
+4. Visit the example: `$BROWSER http://localhost:3000`
+5. Click the log-in link for the provider you configured
+
+If successful, you will be presented with a page that shows the credential and
+User response value.
+
 ---
 
 [CHANGELOG](./CHANGELOG.md) | [LICENSE](./LICENSE)

@@ -6,19 +6,6 @@
 {-# LANGUAGE TypeApplications #-}
 {-# LANGUAGE TypeFamilies #-}
 
--- |
---
--- This single-file Yesod app uses all plugins defined within this site, as a
--- means of manual verification that they work. When adding a new plugin, add
--- usage of it here and verify locally that it works.
---
--- To do so, see @.env.example@, then:
---
--- > stack build --flag yesod-auth-oauth2:example
--- > stack exec yesod-auth-oauth2-example
--- >
--- > $BROWSER http://localhost:3000
---
 module Main where
 
 import Data.Aeson
