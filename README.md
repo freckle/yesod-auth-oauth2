@@ -1,6 +1,5 @@
 # Yesod.Auth.OAuth2
 
-
 [![Hackage](https://img.shields.io/hackage/v/yesod-auth-oauth2.svg?style=flat)](https://hackage.haskell.org/package/yesod-auth-oauth2)
 [![Stackage Nightly](http://stackage.org/package/yesod-auth-oauth2/badge/nightly)](http://stackage.org/nightly/package/yesod-auth-oauth2)
 [![Stackage LTS](http://stackage.org/package/yesod-auth-oauth2/badge/lts)](http://stackage.org/lts/package/yesod-auth-oauth2)
