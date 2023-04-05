@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.0...main)
+
+## [v0.7.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...v0.7.1.0)
+
+- Add `AzureADv2` provider
 
 ## [v0.7.0.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.2...v0.7.0.3)
 
