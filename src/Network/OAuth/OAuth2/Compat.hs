@@ -19,11 +19,7 @@ import Network.HTTP.Conduit (Manager)
 import qualified Network.OAuth.OAuth2 as OAuth2
 #if MIN_VERSION_hoauth2(2,7,0)
 import Network.OAuth.OAuth2
-    ( AccessToken(..)
-    , ExchangeToken(..)
-    , OAuth2Token(..)
-    , RefreshToken(..)
-    )
+    (AccessToken(..), ExchangeToken(..), OAuth2Token(..), RefreshToken(..))
 import Network.OAuth.OAuth2.TokenRequest (TokenRequestError)
 #else
 import Network.OAuth.OAuth2
