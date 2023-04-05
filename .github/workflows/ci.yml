@@ -5,6 +5,10 @@ on:
   push:
     branches: main
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -25,10 +29,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: freckle/stack-cache-action@v2
-        with:
-          stack-yaml: ${{ matrix.stack-yaml }}
-      - uses: freckle/stack-action@v3
+      - uses: freckle/stack-action@v4
         with:
           stack-yaml: ${{ matrix.stack-yaml }}
           stack-arguments: --flag yesod-auth-oauth2:example
@@ -37,9 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run:
-          curl --output .hlint.yaml https://raw.githubusercontent.com/pbrisbin/dotfiles/master/hlint.yaml
-      - uses: rwe/actions-hlint-setup@v1
-      - uses: rwe/actions-hlint-run@v2
+      - uses: haskell/actions/hlint-setup@v2
+      - uses: haskell/actions/hlint-run@v2
         with:
           fail-on: warning
