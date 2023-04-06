@@ -3,6 +3,5 @@ extra-deps:
   - hoauth2-2.6.0
 allow-newer: true
 allow-newer-deps:
-  - hoauth2
   - memory
   - text
