@@ -1,3 +1,3 @@
 resolver: nightly-2022-02-25
 extra-deps:
-  - hoauth2-2.2.0@sha256:83a96156717d9e2c93394b35bef4151f82b90dc88b83d0e35c0bf1158bd41c6c,2801
+  - hoauth2-2.2.0

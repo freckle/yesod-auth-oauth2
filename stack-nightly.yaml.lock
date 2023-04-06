@@ -5,15 +5,15 @@
 
 packages:
 - completed:
-    hackage: hoauth2-2.7.0@sha256:34c5b82d49a814cfa214b65f5422fda876e38c1275504b574355cf5413e37138,2833
+    hackage: hoauth2-2.8.0@sha256:ead0fa524656b42baca8a3c6aef5ac245b28d2923d48ac574d74fc434a61a8ab,2647
     pantry-tree:
-      sha256: f575d77978c823bedba13c67f7e31195da6c5543fbd9b35b9def225a8ace6833
+      sha256: 98ac2693937dc8ccaa5508c7bcd8111e15175603ecba75fec27ab604dbf891d5
       size: 996
   original:
-    hackage: hoauth2-2.7.0
+    hackage: hoauth2-2.8.0
 snapshots:
 - completed:
-    sha256: eaacd008a9ade10f0a8ff460afdd6564469e70b8e1663c0404d95651788dc7a5
+    sha256: 91195434dbc6e4d745301c865e94b798e771db5539625571a19adf6ed4c5e39e
     size: 600986
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/4/4.yaml
-  original: nightly-2023-04-04
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/4/5.yaml
+  original: nightly-2023-04-05
