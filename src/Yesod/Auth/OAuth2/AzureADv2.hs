@@ -31,10 +31,10 @@ defaultScopes = ["openid", "profile"]
 oauth2AzureADv2
   :: YesodAuth m
   => Text
-    -- ^ Tenant Id
-    --
-    -- If using a multi-tenant App, @common@ can be given here.
-    --
+  -- ^ Tenant Id
+  --
+  -- If using a multi-tenant App, @common@ can be given here.
+  --
   -> Text -- ^ Client Id
   -> Text -- ^ Client secret
   -> AuthPlugin m
@@ -44,10 +44,10 @@ oauth2AzureADv2Scoped
   :: YesodAuth m
   => [Text] -- ^ Scopes
   -> Text
-    -- ^ Tenant Id
-    --
-    -- If using a multi-tenant App, @common@ can be given here.
-    --
+  -- ^ Tenant Id
+  --
+  -- If using a multi-tenant App, @common@ can be given here.
+  --
   -> Text -- ^ Client Id
   -> Text -- ^ Client Secret
   -> AuthPlugin m
