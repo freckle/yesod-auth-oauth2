@@ -7,13 +7,13 @@ packages:
 - completed:
     hackage: hoauth2-1.14.0@sha256:fcb4284fc78950c91d5b548317c51bd99a5ced84f4bb9e6153624b5783e4215f,5628
     pantry-tree:
-      size: 2046
       sha256: f25e2c2c101312196159dad5a3e2a4c8f549ed2d036d9566b66786d758db7dba
+      size: 2046
   original:
     hackage: hoauth2-1.14.0@sha256:fcb4284fc78950c91d5b548317c51bd99a5ced84f4bb9e6153624b5783e4215f,5628
 snapshots:
 - completed:
-    size: 492864
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/13/2.yaml
-    sha256: 586534518d3e7be8617d97ea296f05f497c0b4bb006f100367d66f5c45ae6268
-  original: lts-13.2
+    sha256: 7ea31a280c56bf36ff591a7397cc384d0dff622e7f9e4225b47d8980f019a0f0
+    size: 524996
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/lts/14/27.yaml
+  original: lts-14.27

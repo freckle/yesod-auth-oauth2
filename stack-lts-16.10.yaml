@@ -1,8 +1,0 @@
----
-resolver: lts-16.10
-
-# Fix for weeder with stack-2
-ghc-options:
-  "$locals":
-    -ddump-to-file
-    -ddump-hi
