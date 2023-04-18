@@ -54,6 +54,7 @@ library
       Yesod.Auth.OAuth2.GitLab
       Yesod.Auth.OAuth2.Google
       Yesod.Auth.OAuth2.Nylas
+      Yesod.Auth.OAuth2.Okta
       Yesod.Auth.OAuth2.Prelude
       Yesod.Auth.OAuth2.Random
       Yesod.Auth.OAuth2.Salesforce

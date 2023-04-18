@@ -40,14 +40,14 @@ oauth2Okta ::
   YesodAuth m =>
   -- | The host address of the Okta application (absolute)
   URI ->
+  -- | The authorization server
+  ByteString ->
+  -- | Application Root for redirect links
+  Maybe Text ->
   -- | Client ID of the Okta application
   Text ->
   -- | Client Secret of the Okta application
   Text ->
-  -- | The authorization server
-  ByteString ->
-  -- | Application Root for redirect links
-  Maybe (URIRef Absolute) ->
   AuthPlugin m
 oauth2Okta = oauth2OktaWithScopes defaultOktaScopes
 
@@ -58,16 +58,16 @@ oauth2OktaWithScopes ::
   [Text] ->
   -- | The host address of the Okta application (absolute)
   URI ->
+  -- | The authorization server
+  ByteString ->
+  -- | Application Root for building callbacks
+  Maybe Text ->
   -- | Client ID of the Okta application
   Text ->
   -- | Client Secret of the Okta application
   Text ->
-  -- | The authorization server
-  ByteString ->
-  -- | Application Root for building callbacks
-  Maybe (URIRef Absolute) ->
   AuthPlugin m
-oauth2OktaWithScopes scopes host clientId clientSecret authorizationServer appRoot =
+oauth2OktaWithScopes scopes host authorizationServer appRoot clientId clientSecret =
   authOAuth2 pluginName oauth2 $ \manager token -> do
     (User uid, userResponse) <-
       authGetProfile

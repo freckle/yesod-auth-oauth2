@@ -40,6 +40,7 @@ import Yesod.Auth.OAuth2.Spotify
 import Yesod.Auth.OAuth2.Twitch
 import Yesod.Auth.OAuth2.Upcase
 import Yesod.Auth.OAuth2.WordPressDotCom
+import Yesod.Auth.OAuth2.Okta
 
 data App = App
   { appHttpManager :: Manager
@@ -121,6 +122,7 @@ mkFoundation = do
 
   auth0Host <- getEnv "AUTH0_HOST"
   azureTenant <- getEnv "AZURE_ADV2_TENANT_ID"
+  oktaHost <- getEnv "OKTA_HOST"
 
   appHttpManager <- newManager tlsManagerSettings
   appAuthPlugins <- sequence
@@ -146,6 +148,7 @@ mkFoundation = do
     , loadPlugin oauth2Twitch "TWITCH"
     , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
     , loadPlugin oauth2Upcase "UPCASE"
+    , loadPlugin (oauth2Okta (fromString oktaHost) "default" Nothing) "OKTA"
     ]
 
   return App { .. }
