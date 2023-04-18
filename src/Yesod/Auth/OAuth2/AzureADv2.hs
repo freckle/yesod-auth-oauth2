@@ -72,6 +72,7 @@ oauth2AzureADv2Scoped scopes tenantId clientId clientSecret =
       tenantUrl "/authorize" `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint = tenantUrl "/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }
 
   tenantUrl path =

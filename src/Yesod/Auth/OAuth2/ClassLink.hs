@@ -46,4 +46,5 @@ oauth2ClassLinkScoped scopes clientId clientSecret =
         `withQuery` [scopeParam "," scopes]
     , oauth2TokenEndpoint = "https://launchpad.classlink.com/oauth2/v2/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

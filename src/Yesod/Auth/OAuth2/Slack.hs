@@ -72,4 +72,5 @@ oauth2SlackScoped scopes clientId clientSecret =
         `withQuery` [scopeParam "," $ map scopeText scopes]
     , oauth2TokenEndpoint = "https://slack.com/api/oauth.access"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

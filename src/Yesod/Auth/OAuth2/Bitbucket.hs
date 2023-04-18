@@ -58,4 +58,5 @@ oauth2BitbucketScoped scopes clientId clientSecret =
         `withQuery` [scopeParam "," scopes]
     , oauth2TokenEndpoint = "https://bitbucket.com/site/oauth2/access_token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

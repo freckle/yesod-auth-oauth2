@@ -52,4 +52,5 @@ oauth2GitHubScoped scopes clientId clientSecret =
         `withQuery` [scopeParam "," scopes]
     , oauth2TokenEndpoint = "https://github.com/login/oauth/access_token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

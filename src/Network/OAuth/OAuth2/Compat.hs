@@ -44,6 +44,7 @@ data OAuth2 = OAuth2
     , oauth2AuthorizeEndpoint :: URIRef Absolute
     , oauth2TokenEndpoint :: URIRef Absolute
     , oauth2RedirectUri :: Maybe (URIRef Absolute)
+    , oauth2AppRoot :: Maybe Text
     }
 
 #if MIN_VERSION_hoauth2(2,7,0)

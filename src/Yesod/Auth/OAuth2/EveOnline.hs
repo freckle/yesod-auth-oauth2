@@ -78,4 +78,5 @@ oauth2EveScoped scopes widgetType clientId clientSecret =
         `withQuery` [("response_type", "code"), scopeParam " " scopes]
     , oauth2TokenEndpoint = "https://login.eveonline.com/oauth/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

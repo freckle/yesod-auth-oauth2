@@ -43,4 +43,5 @@ oauth2WordPressDotCom clientId clientSecret =
         `withQuery` [scopeParam "," ["auth"]]
     , oauth2TokenEndpoint = "https://public-api.wordpress.com/oauth2/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

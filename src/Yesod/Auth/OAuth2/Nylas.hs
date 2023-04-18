@@ -63,4 +63,5 @@ oauth2Nylas clientId clientSecret =
                     ]
     , oauth2TokenEndpoint = "https://api.nylas.com/oauth/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

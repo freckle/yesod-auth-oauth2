@@ -53,4 +53,5 @@ oauth2AzureADScoped scopes clientId clientSecret =
                     ]
     , oauth2TokenEndpoint = "https://login.windows.net/common/oauth2/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

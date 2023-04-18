@@ -46,6 +46,8 @@ oauth2Okta ::
   Text ->
   -- | The authorization server
   ByteString ->
+  -- | Application Root for redirect links
+  Maybe (URIRef Absolute) ->
   AuthPlugin m
 oauth2Okta = oauth2OktaWithScopes defaultOktaScopes
 
@@ -62,8 +64,10 @@ oauth2OktaWithScopes ::
   Text ->
   -- | The authorization server
   ByteString ->
+  -- | Application Root for building callbacks
+  Maybe (URIRef Absolute) ->
   AuthPlugin m
-oauth2OktaWithScopes scopes host clientId clientSecret authorizationServer =
+oauth2OktaWithScopes scopes host clientId clientSecret authorizationServer appRoot =
   authOAuth2 pluginName oauth2 $ \manager token -> do
     (User uid, userResponse) <-
       authGetProfile
@@ -87,7 +91,8 @@ oauth2OktaWithScopes scopes host clientId clientSecret authorizationServer =
               `withPath` (mkEndpointSegment authorizationServer "authorize")
               `withQuery` [scopeParam " " scopes],
           oauth2TokenEndpoint = host `withPath` (mkEndpointSegment authorizationServer "token"),
-          oauth2RedirectUri = Nothing
+          oauth2RedirectUri = Nothing,
+          oauth2AppRoot = appRoot
         }
 
 -- | Helper function for creating an endpoint path segment for the given authorization server

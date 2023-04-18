@@ -100,7 +100,11 @@ withCallbackAndState
   -> Text
   -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
-  uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+  pluginURI <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+  let uri =
+        case oauth2AppRoot oauth2 of
+          Just root -> root <> pluginURI
+          Nothing -> pluginURI
   callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
   pure oauth2
     { oauth2RedirectUri = Just callback

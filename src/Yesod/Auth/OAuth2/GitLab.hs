@@ -56,4 +56,5 @@ oauth2GitLabHostScopes host scopes clientId clientSecret =
       host `withPath` "/oauth/authorize" `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint = host `withPath` "/oauth/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

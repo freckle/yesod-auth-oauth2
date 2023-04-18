@@ -83,4 +83,5 @@ oauth2GoogleScopedWidget widget scopes clientId clientSecret =
         `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

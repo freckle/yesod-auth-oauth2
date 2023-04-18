@@ -54,4 +54,5 @@ oauth2Auth0HostScopes host scopes clientId clientSecret =
       host `withPath` "/authorize" `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint = host `withPath` "/oauth/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }

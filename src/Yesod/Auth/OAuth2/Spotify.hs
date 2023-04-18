@@ -40,4 +40,5 @@ oauth2Spotify scopes clientId clientSecret =
         `withQuery` [scopeParam " " scopes]
     , oauth2TokenEndpoint = "https://accounts.spotify.com/api/token"
     , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = Nothing
     }
