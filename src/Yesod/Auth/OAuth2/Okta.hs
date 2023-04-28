@@ -89,7 +89,7 @@ oauth2OktaWithScopes scopes host authorizationServer appRoot clientId clientSecr
           oauth2AuthorizeEndpoint =
             host
               `withPath` (mkEndpointSegment authorizationServer "authorize")
-              `withQuery` [scopeParam " " scopes],
+              `withQuery` [scopeParam " " scopes, ("prompt", "login")],
           oauth2TokenEndpoint = host `withPath` (mkEndpointSegment authorizationServer "token"),
           oauth2RedirectUri = Nothing,
           oauth2AppRoot = appRoot
