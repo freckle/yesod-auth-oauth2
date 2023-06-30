@@ -18,8 +18,8 @@ import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2.Compat
-import UnliftIO.Exception
 import URI.ByteString.Extension
+import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.DispatchError
 import Yesod.Auth.OAuth2.ErrorResponse
@@ -101,10 +101,10 @@ withCallbackAndState
   -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
   pluginURI <- ($ PluginR name ["callback"]) <$> getParentUrlRender
-  let uri =
-        case oauth2AppRoot oauth2 of
-          Just root -> root <> pluginURI
-          Nothing -> pluginURI
+  let
+    uri = case oauth2AppRoot oauth2 of
+      Just root -> root <> pluginURI
+      Nothing -> pluginURI
   callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
   pure oauth2
     { oauth2RedirectUri = Just callback

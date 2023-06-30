@@ -8,18 +8,17 @@
 -- -- * Authenticates against a specific Okta application
 -- -- * Uses Okta sub as user id
 module Yesod.Auth.OAuth2.Okta
-  ( oauth2Okta,
-    oauth2OktaWithScopes,
-    defaultOktaScopes,
-    pluginName,
-    User (..),
-  )
-where
+  ( oauth2Okta
+  , oauth2OktaWithScopes
+  , defaultOktaScopes
+  , pluginName
+  , User(..)
+  ) where
 
 import Data.Aeson as Aeson
 import Data.ByteString (ByteString)
-import Yesod.Auth.OAuth2.Prelude
 import Prelude
+import Yesod.Auth.OAuth2.Prelude
 
 -- | Okta User's info: https://developer.okta.com/docs/reference/api/oidc/#userinfo
 newtype User = User Text
@@ -36,80 +35,92 @@ pluginName :: Text
 pluginName = "okta"
 
 -- | Creates an Okta 'AuthPlugin' for application using the default scopes.
-oauth2Okta ::
-  YesodAuth m =>
+oauth2Okta
+  :: YesodAuth m
+  => 
   -- | Prompt login on authorize redirect
-  Bool ->
+     Bool
+  ->
   -- | The host address of the Okta application (absolute)
-  URI ->
+     URI
+  ->
   -- | The authorization server
-  ByteString ->
+     ByteString
+  ->
   -- | Application Root for redirect links
-  Maybe Text ->
+     Maybe Text
+  ->
   -- | Client ID of the Okta application
-  Text ->
+     Text
+  ->
   -- | Client Secret of the Okta application
-  Text ->
-  AuthPlugin m
+     Text
+  -> AuthPlugin m
 oauth2Okta = oauth2OktaWithScopes defaultOktaScopes
 
 -- | Creates an Okta 'AuthPlugin' for application with access to the provided scopes.
-oauth2OktaWithScopes ::
-  YesodAuth m =>
+oauth2OktaWithScopes
+  :: YesodAuth m
+  => 
   -- | The scopes accessible to the 'AuthPlugin'
-  [Text] ->
+     [Text]
+  ->
   -- | Prompt login on authorize redirect
-  Bool ->
+     Bool
+  ->
   -- | The host address of the Okta application (absolute)
-  URI ->
+     URI
+  ->
   -- | The authorization server
-  ByteString ->
+     ByteString
+  ->
   -- | Application Root for building callbacks
-  Maybe Text ->
+     Maybe Text
+  ->
   -- | Client ID of the Okta application
-  Text ->
+     Text
+  ->
   -- | Client Secret of the Okta application
-  Text ->
-  AuthPlugin m
-oauth2OktaWithScopes scopes shouldPrompt host authorizationServer appRoot clientId clientSecret =
-  authOAuth2 pluginName oauth2 $ \manager token -> do
-    (User uid, userResponse) <-
-      authGetProfile
-        pluginName
-        manager
-        token
-        (host `withPath` (mkEndpointSegment authorizationServer "userinfo"))
-    pure
-      Creds
-        { credsPlugin = pluginName,
-          credsIdent = uid,
-          credsExtra = setExtra token userResponse
-        }
-  where
-    queryParams =
-      if shouldPrompt
-      then [scopeParam " " scopes, ("prompt", "login")]
-      else [scopeParam " " scopes]
-    oauth2 =
-      OAuth2
-        { oauth2ClientId = clientId,
-          oauth2ClientSecret = Just clientSecret,
-          oauth2AuthorizeEndpoint =
-            host
-              `withPath` (mkEndpointSegment authorizationServer "authorize")
-              `withQuery` queryParams,
-          oauth2TokenEndpoint = host `withPath` (mkEndpointSegment authorizationServer "token"),
-          oauth2RedirectUri = Nothing,
-          oauth2AppRoot = appRoot
-        }
+     Text
+  -> AuthPlugin m
+oauth2OktaWithScopes scopes shouldPrompt host authorizationServer appRoot clientId clientSecret
+  = authOAuth2 pluginName oauth2 $ \manager token -> do
+    (User uid, userResponse) <- authGetProfile
+      pluginName
+      manager
+      token
+      (host `withPath` (mkEndpointSegment authorizationServer "userinfo"))
+    pure Creds
+      { credsPlugin = pluginName
+      , credsIdent = uid
+      , credsExtra = setExtra token userResponse
+      }
+ where
+  queryParams = if shouldPrompt
+    then [scopeParam " " scopes, ("prompt", "login")]
+    else [scopeParam " " scopes]
+  oauth2 = OAuth2
+    { oauth2ClientId = clientId
+    , oauth2ClientSecret = Just clientSecret
+    , oauth2AuthorizeEndpoint =
+      host
+      `withPath` (mkEndpointSegment authorizationServer "authorize")
+      `withQuery` queryParams
+    , oauth2TokenEndpoint =
+      host `withPath` (mkEndpointSegment authorizationServer "token")
+    , oauth2RedirectUri = Nothing
+    , oauth2AppRoot = appRoot
+    }
 
 -- | Helper function for creating an endpoint path segment for the given authorization server
 -- and endpoint.
-mkEndpointSegment ::
+mkEndpointSegment
+  ::
   -- | Authorization server ID
-  ByteString ->
+     ByteString
+  ->
   -- | Endpoint
-  ByteString ->
-  ByteString
+     ByteString
+  -> ByteString
 mkEndpointSegment authorizationServer endpoint =
   "/oauth2/" <> authorizationServer <> "/v1/" <> endpoint
