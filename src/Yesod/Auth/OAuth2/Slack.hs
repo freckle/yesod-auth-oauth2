@@ -14,7 +14,7 @@ module Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Prelude
 
 import Network.HTTP.Client
-  (httpLbs, parseUrlThrow, responseBody, setQueryString)
+    (httpLbs, parseUrlThrow, responseBody, setQueryString)
 import Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 
 data SlackScope

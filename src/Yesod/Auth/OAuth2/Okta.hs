@@ -37,7 +37,7 @@ pluginName = "okta"
 -- | Creates an Okta 'AuthPlugin' for application using the default scopes.
 oauth2Okta
   :: YesodAuth m
-  => 
+  =>
   -- | Prompt login on authorize redirect
      Bool
   ->
@@ -61,7 +61,7 @@ oauth2Okta = oauth2OktaWithScopes defaultOktaScopes
 -- | Creates an Okta 'AuthPlugin' for application with access to the provided scopes.
 oauth2OktaWithScopes
   :: YesodAuth m
-  => 
+  =>
   -- | The scopes accessible to the 'AuthPlugin'
      [Text]
   ->
