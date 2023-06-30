@@ -38,6 +38,8 @@ pluginName = "okta"
 -- | Creates an Okta 'AuthPlugin' for application using the default scopes.
 oauth2Okta ::
   YesodAuth m =>
+  -- | Prompt login on authorize redirect
+  Bool ->
   -- | The host address of the Okta application (absolute)
   URI ->
   -- | The authorization server
@@ -56,6 +58,8 @@ oauth2OktaWithScopes ::
   YesodAuth m =>
   -- | The scopes accessible to the 'AuthPlugin'
   [Text] ->
+  -- | Prompt login on authorize redirect
+  Bool ->
   -- | The host address of the Okta application (absolute)
   URI ->
   -- | The authorization server
@@ -67,7 +71,7 @@ oauth2OktaWithScopes ::
   -- | Client Secret of the Okta application
   Text ->
   AuthPlugin m
-oauth2OktaWithScopes scopes host authorizationServer appRoot clientId clientSecret =
+oauth2OktaWithScopes scopes shouldPrompt host authorizationServer appRoot clientId clientSecret =
   authOAuth2 pluginName oauth2 $ \manager token -> do
     (User uid, userResponse) <-
       authGetProfile
@@ -82,6 +86,10 @@ oauth2OktaWithScopes scopes host authorizationServer appRoot clientId clientSecr
           credsExtra = setExtra token userResponse
         }
   where
+    queryParams =
+      if shouldPrompt
+      then [scopeParam " " scopes, ("prompt", "login")]
+      else [scopeParam " " scopes]
     oauth2 =
       OAuth2
         { oauth2ClientId = clientId,
@@ -89,7 +97,7 @@ oauth2OktaWithScopes scopes host authorizationServer appRoot clientId clientSecr
           oauth2AuthorizeEndpoint =
             host
               `withPath` (mkEndpointSegment authorizationServer "authorize")
-              `withQuery` [scopeParam " " scopes, ("prompt", "login")],
+              `withQuery` queryParams,
           oauth2TokenEndpoint = host `withPath` (mkEndpointSegment authorizationServer "token"),
           oauth2RedirectUri = Nothing,
           oauth2AppRoot = appRoot

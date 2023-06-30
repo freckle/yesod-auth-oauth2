@@ -148,7 +148,7 @@ mkFoundation = do
     , loadPlugin oauth2Twitch "TWITCH"
     , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
     , loadPlugin oauth2Upcase "UPCASE"
-    , loadPlugin (oauth2Okta (fromString oktaHost) "default" Nothing) "OKTA"
+    , loadPlugin (oauth2Okta False (fromString oktaHost) "default" Nothing) "OKTA"
     ]
 
   return App { .. }
