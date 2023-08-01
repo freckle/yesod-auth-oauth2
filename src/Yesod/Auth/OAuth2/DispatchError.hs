@@ -9,7 +9,7 @@
 {-# LANGUAGE TypeFamilies #-}
 
 module Yesod.Auth.OAuth2.DispatchError
-  ( DispatchError(..)
+  ( DispatchError (..)
   , handleDispatchError
   , onDispatchError
   ) where
@@ -26,34 +26,33 @@ import Yesod.Auth.OAuth2.Random
 import Yesod.Core hiding (ErrorResponse)
 
 data DispatchError
-    = MissingParameter Text
-    | InvalidStateToken (Maybe Text) Text
-    | InvalidCallbackUri Text
-    | OAuth2HandshakeError ErrorResponse
-    | OAuth2ResultError Errors
-    | FetchCredsIOException IOException
-    | FetchCredsYesodOAuth2Exception YesodOAuth2Exception
-    | OtherDispatchError Text
-    deriving stock Show
-    deriving anyclass Exception
+  = MissingParameter Text
+  | InvalidStateToken (Maybe Text) Text
+  | InvalidCallbackUri Text
+  | OAuth2HandshakeError ErrorResponse
+  | OAuth2ResultError Errors
+  | FetchCredsIOException IOException
+  | FetchCredsYesodOAuth2Exception YesodOAuth2Exception
+  | OtherDispatchError Text
+  deriving stock (Show)
+  deriving anyclass (Exception)
 
 -- | User-friendly message for any given 'DispatchError'
 --
 -- Most of these are opaque to the user. The exception details are present for
 -- the server logs.
---
 dispatchErrorMessage :: DispatchError -> Text
 dispatchErrorMessage = \case
   MissingParameter name ->
     "Parameter '" <> name <> "' is required, but not present in the URL"
-  InvalidStateToken{} -> "State token is invalid, please try again"
-  InvalidCallbackUri{} ->
+  InvalidStateToken {} -> "State token is invalid, please try again"
+  InvalidCallbackUri {} ->
     "Callback URI was not valid, this server may be misconfigured (no approot)"
   OAuth2HandshakeError er -> "OAuth2 handshake failure: " <> erUserMessage er
-  OAuth2ResultError{} -> "Login failed, please try again"
-  FetchCredsIOException{} -> "Login failed, please try again"
-  FetchCredsYesodOAuth2Exception{} -> "Login failed, please try again"
-  OtherDispatchError{} -> "Login failed, please try again"
+  OAuth2ResultError {} -> "Login failed, please try again"
+  FetchCredsIOException {} -> "Login failed, please try again"
+  FetchCredsYesodOAuth2Exception {} -> "Login failed, please try again"
+  OtherDispatchError {} -> "Login failed, please try again"
 
 handleDispatchError
   :: MonadAuthHandler site m

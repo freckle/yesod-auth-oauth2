@@ -1,12 +1,12 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 -- | OAuth callback error response
 --
 -- <https://tools.ietf.org/html/rfc6749#section-4.1.2.1>
---
 module Yesod.Auth.OAuth2.ErrorResponse
-  ( ErrorResponse(..)
+  ( ErrorResponse (..)
   , erUserMessage
-  , ErrorName(..)
+  , ErrorName (..)
   , onErrorResponse
   , unknownError
   ) where
@@ -17,22 +17,22 @@ import Data.Traversable (for)
 import Yesod.Core (MonadHandler, lookupGetParam)
 
 data ErrorName
-    = InvalidRequest
-    | UnauthorizedClient
-    | AccessDenied
-    | UnsupportedResponseType
-    | InvalidScope
-    | ServerError
-    | TemporarilyUnavailable
-    | Unknown Text
-    deriving Show
+  = InvalidRequest
+  | UnauthorizedClient
+  | AccessDenied
+  | UnsupportedResponseType
+  | InvalidScope
+  | ServerError
+  | TemporarilyUnavailable
+  | Unknown Text
+  deriving (Show)
 
 data ErrorResponse = ErrorResponse
   { erName :: ErrorName
   , erDescription :: Maybe Text
   , erURI :: Maybe Text
   }
-  deriving Show
+  deriving (Show)
 
 -- | Textual value suitable for display to a User
 erUserMessage :: ErrorResponse -> Text
@@ -48,13 +48,12 @@ erUserMessage err = case erName err of
 
 unknownError :: Text -> ErrorResponse
 unknownError x =
-  ErrorResponse { erName = Unknown x, erDescription = Nothing, erURI = Nothing }
+  ErrorResponse {erName = Unknown x, erDescription = Nothing, erURI = Nothing}
 
 -- | Check query parameters for an error, if found run the given action
 --
 -- The action is expected to use a short-circuit response function like
 -- @'permissionDenied'@, hence this returning @()@.
---
 onErrorResponse :: MonadHandler m => (ErrorResponse -> m a) -> m ()
 onErrorResponse f = traverse_ f =<< checkErrorResponse
 

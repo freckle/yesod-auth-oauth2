@@ -1,7 +1,6 @@
 {-# OPTIONS_GHC -Wno-orphans #-}
 
-module UnliftIO.Except
-  () where
+module UnliftIO.Except () where
 
 import Control.Monad.Except
 import UnliftIO

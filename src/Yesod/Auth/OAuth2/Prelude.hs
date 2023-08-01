@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TupleSections #-}
+
 -- |
 --
 -- Modules and support functions required by most or all provider
 -- implementations. May also be useful for writing local providers.
---
 module Yesod.Auth.OAuth2.Prelude
   ( authGetProfile
   , scopeParam
@@ -20,8 +20,8 @@ module Yesod.Auth.OAuth2.Prelude
   , (.:?)
   , (.=)
   , (<>)
-  , FromJSON(..)
-  , ToJSON(..)
+  , FromJSON (..)
+  , ToJSON (..)
   , eitherDecode
   , withObject
 
@@ -29,22 +29,22 @@ module Yesod.Auth.OAuth2.Prelude
   , throwIO
 
     -- * OAuth2
-  , OAuth2(..)
-  , OAuth2Token(..)
-  , AccessToken(..)
-  , RefreshToken(..)
+  , OAuth2 (..)
+  , OAuth2Token (..)
+  , AccessToken (..)
+  , RefreshToken (..)
 
     -- * HTTP
   , Manager
 
     -- * Yesod
-  , YesodAuth(..)
-  , AuthPlugin(..)
-  , Creds(..)
+  , YesodAuth (..)
+  , AuthPlugin (..)
+  , Creds (..)
 
     -- * Bytestring URI types
   , URI
-  , Host(..)
+  , Host (..)
 
     -- * Bytestring URI extensions
   , module URI.ByteString.Extension
@@ -74,7 +74,6 @@ import qualified Yesod.Auth.OAuth2.Exception as YesodOAuth2Exception
 -- The response should be parsed only far enough to read the required
 -- @'credsIdent'@. Additional information should either be re-parsed by or
 -- fetched via additional requests by consumers.
---
 authGetProfile
   :: FromJSON a
   => Text
@@ -101,7 +100,7 @@ fromAuthJSON name =
 
 -- | A tuple of @\"scope\"@ and the given scopes separated by a delimiter
 scopeParam :: Text -> [Text] -> (ByteString, ByteString)
-scopeParam d = ("scope", ) . encodeUtf8 . T.intercalate d
+scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
 
 -- brittany-disable-next-binding
 
@@ -115,10 +114,9 @@ scopeParam d = ("scope", ) . encodeUtf8 . T.intercalate d
 -- May set the following keys:
 --
 -- - @refreshToken@: if the provider supports refreshing the @accessToken@
---
 setExtra :: OAuth2Token -> BL.ByteString -> [(Text, Text)]
 setExtra token userResponse =
-    [ ("accessToken", atoken $ accessToken token)
-    , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)
-    ]
-    <> maybe [] (pure . ("refreshToken", ) . rtoken) (refreshToken token)
+  [ ("accessToken", atoken $ accessToken token)
+  , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)
+  ]
+    <> maybe [] (pure . ("refreshToken",) . rtoken) (refreshToken token)

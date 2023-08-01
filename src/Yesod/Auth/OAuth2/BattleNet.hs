@@ -7,7 +7,6 @@
 -- * Authenticates against battle.net.
 -- * Uses user's id as credentials identifier.
 -- * Returns user's battletag in extras.
---
 module Yesod.Auth.OAuth2.BattleNet
   ( oauth2BattleNet
   , oAuth2BattleNet
@@ -28,32 +27,37 @@ pluginName = "battle.net"
 
 oauth2BattleNet
   :: YesodAuth m
-  => WidgetFor m () -- ^ Login widget
-  -> Text -- ^ User region (e.g. "eu", "cn", "us")
-  -> Text -- ^ Client ID
-  -> Text -- ^ Client Secret
+  => WidgetFor m ()
+  -- ^ Login widget
+  -> Text
+  -- ^ User region (e.g. "eu", "cn", "us")
+  -> Text
+  -- ^ Client ID
+  -> Text
+  -- ^ Client Secret
   -> AuthPlugin m
 oauth2BattleNet widget region clientId clientSecret =
   authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
     (User userId, userResponse) <-
-      authGetProfile pluginName manager token
-        $ fromRelative "https" (apiHost $ T.toLower region) "/account/user"
+      authGetProfile pluginName manager token $
+        fromRelative "https" (apiHost $ T.toLower region) "/account/user"
 
-    pure Creds
-      { credsPlugin = pluginName
-      , credsIdent = T.pack $ show userId
-      , credsExtra = setExtra token userResponse
-      }
+    pure
+      Creds
+        { credsPlugin = pluginName
+        , credsIdent = T.pack $ show userId
+        , credsExtra = setExtra token userResponse
+        }
  where
   host = wwwHost $ T.toLower region
-  oauth2 = OAuth2
-    { oauth2ClientId = clientId
-    , oauth2ClientSecret = Just clientSecret
-    , oauth2AuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
-    , oauth2TokenEndpoint = fromRelative "https" host "/oauth/token"
-    , oauth2RedirectUri = Nothing
-    }
-
+  oauth2 =
+    OAuth2
+      { oauth2ClientId = clientId
+      , oauth2ClientSecret = Just clientSecret
+      , oauth2AuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
+      , oauth2TokenEndpoint = fromRelative "https" host "/oauth/token"
+      , oauth2RedirectUri = Nothing
+      }
 
 apiHost :: Text -> Host
 apiHost "cn" = "api.battlenet.com.cn"

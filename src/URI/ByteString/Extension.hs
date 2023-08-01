@@ -1,9 +1,10 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+
 module URI.ByteString.Extension where
 
 import Data.ByteString (ByteString)
-import Data.String (IsString(..))
+import Data.String (IsString (..))
 import Data.Text (Text)
 import Data.Text.Encoding (decodeUtf8, encodeUtf8)
 import Lens.Micro
@@ -41,9 +42,12 @@ fromRelative :: Scheme -> Host -> RelativeRef -> URI
 fromRelative s h = flip withHost h . toAbsolute s
 
 withHost :: URIRef a -> Host -> URIRef a
-withHost u h = u & authorityL %~ maybe
-  (Just $ Authority Nothing h Nothing)
-  (\a -> Just $ a & authorityHostL .~ h)
+withHost u h =
+  u
+    & authorityL
+      %~ maybe
+        (Just $ Authority Nothing h Nothing)
+        (\a -> Just $ a & authorityHostL .~ h)
 
 withPath :: URIRef a -> ByteString -> URIRef a
 withPath u p = u & pathL .~ p

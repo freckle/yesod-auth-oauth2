@@ -1,18 +1,18 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+
 -- |
 --
 -- Generic OAuth2 plugin for Yesod
 --
 -- See @"Yesod.Auth.OAuth2.GitHub"@ for example usage.
---
 module Yesod.Auth.OAuth2
-  ( OAuth2(..)
+  ( OAuth2 (..)
   , FetchCreds
   , Manager
-  , OAuth2Token(..)
-  , Creds(..)
+  , OAuth2Token (..)
+  , Creds (..)
   , oauth2Url
   , authOAuth2
   , authOAuth2Widget
@@ -46,14 +46,12 @@ oauth2Url name = PluginR name ["forward"]
 -- | Create an @'AuthPlugin'@ for the given OAuth2 provider
 --
 -- Presents a generic @"Login via #{name}"@ link
---
 authOAuth2 :: YesodAuth m => Text -> OAuth2 -> FetchCreds m -> AuthPlugin m
 authOAuth2 name = authOAuth2Widget [whamlet|Login via #{name}|] name
 
 -- | A version of 'authOAuth2' that uses 'fetchAccessToken2'
 --
 -- See <https://github.com/thoughtbot/yesod-auth-oauth2/pull/129>
---
 authOAuth2' :: YesodAuth m => Text -> OAuth2 -> FetchCreds m -> AuthPlugin m
 authOAuth2' name = authOAuth2Widget' [whamlet|Login via #{name}|] name
 
@@ -61,7 +59,6 @@ authOAuth2' name = authOAuth2Widget' [whamlet|Login via #{name}|] name
 --
 -- Allows passing a custom widget for the login link. See @'oauth2Eve'@ for an
 -- example.
---
 authOAuth2Widget
   :: YesodAuth m
   => WidgetFor m ()
@@ -74,7 +71,6 @@ authOAuth2Widget = buildPlugin fetchAccessToken
 -- | A version of 'authOAuth2Widget' that uses 'fetchAccessToken2'
 --
 -- See <https://github.com/thoughtbot/yesod-auth-oauth2/pull/129>
---
 authOAuth2Widget'
   :: YesodAuth m
   => WidgetFor m ()
@@ -92,11 +88,13 @@ buildPlugin
   -> OAuth2
   -> FetchCreds m
   -> AuthPlugin m
-buildPlugin getToken widget name oauth getCreds = AuthPlugin
-  name
-  (dispatchAuthRequest name oauth getToken getCreds)
-  login
-  where login tm = [whamlet|<a href=@{tm $ oauth2Url name}>^{widget}|]
+buildPlugin getToken widget name oauth getCreds =
+  AuthPlugin
+    name
+    (dispatchAuthRequest name oauth getToken getCreds)
+    login
+ where
+  login tm = [whamlet|<a href=@{tm $ oauth2Url name}>^{widget}|]
 
 -- | Read the @'AccessToken'@ from the values set via @'setExtra'@
 getAccessToken :: Creds m -> Maybe AccessToken
@@ -105,7 +103,6 @@ getAccessToken = (AccessToken <$>) . lookup "accessToken" . credsExtra
 -- | Read the @'RefreshToken'@ from the values set via @'setExtra'@
 --
 -- N.B. not all providers supply this value.
---
 getRefreshToken :: Creds m -> Maybe RefreshToken
 getRefreshToken = (RefreshToken <$>) . lookup "refreshToken" . credsExtra
 

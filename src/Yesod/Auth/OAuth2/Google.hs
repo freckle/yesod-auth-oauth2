@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+
 -- |
 --
 -- OAuth2 plugin for http://www.google.com
@@ -23,7 +24,6 @@
 -- >         updatedCreds = creds { credsIdent = email }
 -- >
 -- >     -- continue normally with updatedCreds
---
 module Yesod.Auth.OAuth2.Google
   ( oauth2Google
   , oauth2GoogleWidget
@@ -38,9 +38,10 @@ newtype User = User Text
 
 instance FromJSON User where
   parseJSON =
-    withObject "User" $ \o -> User
-      -- Required for data backwards-compatibility
-                                   <$> (("google-uid:" <>) <$> o .: "sub")
+    withObject "User" $ \o ->
+      User
+        -- Required for data backwards-compatibility
+        <$> (("google-uid:" <>) <$> o .: "sub")
 
 pluginName :: Text
 pluginName = "google"
@@ -63,24 +64,27 @@ oauth2GoogleScopedWidget
   :: YesodAuth m => WidgetFor m () -> [Text] -> Text -> Text -> AuthPlugin m
 oauth2GoogleScopedWidget widget scopes clientId clientSecret =
   authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
-    (User userId, userResponse) <- authGetProfile
-      pluginName
-      manager
-      token
-      "https://www.googleapis.com/oauth2/v3/userinfo"
+    (User userId, userResponse) <-
+      authGetProfile
+        pluginName
+        manager
+        token
+        "https://www.googleapis.com/oauth2/v3/userinfo"
 
-    pure Creds
-      { credsPlugin = pluginName
-      , credsIdent = userId
-      , credsExtra = setExtra token userResponse
-      }
+    pure
+      Creds
+        { credsPlugin = pluginName
+        , credsIdent = userId
+        , credsExtra = setExtra token userResponse
+        }
  where
-  oauth2 = OAuth2
-    { oauth2ClientId = clientId
-    , oauth2ClientSecret = Just clientSecret
-    , oauth2AuthorizeEndpoint =
-      "https://accounts.google.com/o/oauth2/auth"
-        `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
-    , oauth2RedirectUri = Nothing
-    }
+  oauth2 =
+    OAuth2
+      { oauth2ClientId = clientId
+      , oauth2ClientSecret = Just clientSecret
+      , oauth2AuthorizeEndpoint =
+          "https://accounts.google.com/o/oauth2/auth"
+            `withQuery` [scopeParam " " scopes]
+      , oauth2TokenEndpoint = "https://www.googleapis.com/oauth2/v3/token"
+      , oauth2RedirectUri = Nothing
+      }
