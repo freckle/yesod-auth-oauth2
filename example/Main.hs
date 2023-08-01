@@ -13,7 +13,7 @@ import Data.Aeson.Encode.Pretty
 import Data.ByteString.Lazy (fromStrict, toStrict)
 import qualified Data.Map as M
 import Data.Maybe (fromJust)
-import Data.String (IsString(fromString))
+import Data.String (IsString (fromString))
 import Data.Text (Text, pack)
 import qualified Data.Text as T
 import Data.Text.Encoding (decodeUtf8)
@@ -46,13 +46,15 @@ data App = App
   , appAuthPlugins :: [AuthPlugin App]
   }
 
-mkYesod "App" [parseRoutes|
+mkYesod
+  "App"
+  [parseRoutes|
     / RootR GET
     /auth AuthR Auth getAuth
 |]
 
 instance Yesod App where
-    -- see https://github.com/thoughtbot/yesod-auth-oauth2/issues/87
+  -- see https://github.com/thoughtbot/yesod-auth-oauth2/issues/87
   approot = ApprootStatic "http://localhost:3000"
 
 instance YesodAuth App where
@@ -65,9 +67,9 @@ instance YesodAuth App where
 
   -- Copy the Creds response into the session for viewing after
   authenticate c = do
-    mapM_ (uncurry setSession)
-      $ [("credsIdent", credsIdent c), ("credsPlugin", credsPlugin c)]
-      ++ credsExtra c
+    mapM_ (uncurry setSession) $
+      [("credsIdent", credsIdent c), ("credsPlugin", credsPlugin c)]
+        ++ credsExtra c
 
     return $ Authenticated "1"
 
@@ -80,23 +82,24 @@ instance RenderMessage App FormMessage where
 
 getRootR :: Handler Html
 getRootR = do
-    sess <- getSession
+  sess <- getSession
 
-    let
-        prettify
-            = decodeUtf8
-            . toStrict
-            . encodePretty
-            . fromJust
-            . decode @Value
-            . fromStrict
+  let
+    prettify =
+      decodeUtf8
+        . toStrict
+        . encodePretty
+        . fromJust
+        . decode @Value
+        . fromStrict
 
-        mCredsIdent = decodeUtf8 <$> M.lookup "credsIdent" sess
-        mCredsPlugin = decodeUtf8 <$> M.lookup "credsPlugin" sess
-        mAccessToken = decodeUtf8 <$> M.lookup "accessToken" sess
-        mUserResponse = prettify <$> M.lookup "userResponse" sess
+    mCredsIdent = decodeUtf8 <$> M.lookup "credsIdent" sess
+    mCredsPlugin = decodeUtf8 <$> M.lookup "credsPlugin" sess
+    mAccessToken = decodeUtf8 <$> M.lookup "accessToken" sess
+    mUserResponse = prettify <$> M.lookup "userResponse" sess
 
-    defaultLayout [whamlet|
+  defaultLayout
+    [whamlet|
         <h1>Yesod Auth OAuth2 Example
         <h2>
             <a href=@{AuthR LoginR}>Log in
@@ -123,32 +126,33 @@ mkFoundation = do
   azureTenant <- getEnv "AZURE_ADV2_TENANT_ID"
 
   appHttpManager <- newManager tlsManagerSettings
-  appAuthPlugins <- sequence
+  appAuthPlugins <-
+    sequence
       -- When Providers are added, add them here and update .env.example.
       -- Nothing else should need changing.
       --
       -- FIXME: oauth2BattleNet is quite annoying!
       --
-    [ loadPlugin oauth2AzureAD "AZURE_AD"
-    , loadPlugin (oauth2AzureADv2 $ pack azureTenant) "AZURE_ADV2"
-    , loadPlugin (oauth2Auth0Host $ fromString auth0Host) "AUTH0"
-    , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
-    , loadPlugin oauth2Bitbucket "BITBUCKET"
-    , loadPlugin oauth2ClassLink "CLASSLINK"
-    , loadPlugin (oauth2Eve Plain) "EVE_ONLINE"
-    , loadPlugin oauth2GitHub "GITHUB"
-    , loadPlugin oauth2GitLab "GITLAB"
-    , loadPlugin oauth2Google "GOOGLE"
-    , loadPlugin oauth2Nylas "NYLAS"
-    , loadPlugin oauth2Salesforce "SALES_FORCE"
-    , loadPlugin oauth2Slack "SLACK"
-    , loadPlugin (oauth2Spotify []) "SPOTIFY"
-    , loadPlugin oauth2Twitch "TWITCH"
-    , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
-    , loadPlugin oauth2Upcase "UPCASE"
-    ]
+      [ loadPlugin oauth2AzureAD "AZURE_AD"
+      , loadPlugin (oauth2AzureADv2 $ pack azureTenant) "AZURE_ADV2"
+      , loadPlugin (oauth2Auth0Host $ fromString auth0Host) "AUTH0"
+      , loadPlugin (oauth2BattleNet [whamlet|TODO|] "en") "BATTLE_NET"
+      , loadPlugin oauth2Bitbucket "BITBUCKET"
+      , loadPlugin oauth2ClassLink "CLASSLINK"
+      , loadPlugin (oauth2Eve Plain) "EVE_ONLINE"
+      , loadPlugin oauth2GitHub "GITHUB"
+      , loadPlugin oauth2GitLab "GITLAB"
+      , loadPlugin oauth2Google "GOOGLE"
+      , loadPlugin oauth2Nylas "NYLAS"
+      , loadPlugin oauth2Salesforce "SALES_FORCE"
+      , loadPlugin oauth2Slack "SLACK"
+      , loadPlugin (oauth2Spotify []) "SPOTIFY"
+      , loadPlugin oauth2Twitch "TWITCH"
+      , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
+      , loadPlugin oauth2Upcase "UPCASE"
+      ]
 
-  return App { .. }
+  return App {..}
  where
   loadPlugin f prefix = do
     clientId <- getEnv $ prefix <> "_CLIENT_ID"

@@ -1,17 +1,17 @@
 {-# LANGUAGE CPP #-}
 
 module Network.OAuth.OAuth2.Compat
-    ( OAuth2(..)
-    , OAuth2Result
-    , Errors
-    , authorizationUrl
-    , fetchAccessToken
-    , fetchAccessToken2
-    , authGetBS
+  ( OAuth2 (..)
+  , OAuth2Result
+  , Errors
+  , authorizationUrl
+  , fetchAccessToken
+  , fetchAccessToken2
+  , authGetBS
 
     -- * Re-exports
-    , module Network.OAuth.OAuth2
-    ) where
+  , module Network.OAuth.OAuth2
+  ) where
 
 import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
@@ -39,12 +39,12 @@ import Data.Maybe (fromMaybe)
 #endif
 
 data OAuth2 = OAuth2
-    { oauth2ClientId :: Text
-    , oauth2ClientSecret :: Maybe Text
-    , oauth2AuthorizeEndpoint :: URIRef Absolute
-    , oauth2TokenEndpoint :: URIRef Absolute
-    , oauth2RedirectUri :: Maybe (URIRef Absolute)
-    }
+  { oauth2ClientId :: Text
+  , oauth2ClientSecret :: Maybe Text
+  , oauth2AuthorizeEndpoint :: URIRef Absolute
+  , oauth2TokenEndpoint :: URIRef Absolute
+  , oauth2RedirectUri :: Maybe (URIRef Absolute)
+  }
 
 #if MIN_VERSION_hoauth2(2,7,0)
 type Errors = TokenRequestError
@@ -58,17 +58,17 @@ authorizationUrl :: OAuth2 -> URI
 authorizationUrl = OAuth2.authorizationUrl . getOAuth2
 
 fetchAccessToken
-    :: Manager
-    -> OAuth2
-    -> ExchangeToken
-    -> IO (OAuth2Result Errors OAuth2Token)
+  :: Manager
+  -> OAuth2
+  -> ExchangeToken
+  -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessToken = fetchAccessTokenBasic
 
 fetchAccessToken2
-    :: Manager
-    -> OAuth2
-    -> ExchangeToken
-    -> IO (OAuth2Result Errors OAuth2Token)
+  :: Manager
+  -> OAuth2
+  -> ExchangeToken
+  -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessToken2 = fetchAccessTokenPost
 
 authGetBS :: Manager -> AccessToken -> URI -> IO (Either ByteString ByteString)
@@ -141,12 +141,12 @@ runOAuth2 = id
 -- directly.
 
 fetchAccessTokenBasic
-    :: Manager
-    -> OAuth2
-    -> ExchangeToken
-    -> IO (OAuth2Result Errors OAuth2Token)
+  :: Manager
+  -> OAuth2
+  -> ExchangeToken
+  -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessTokenBasic m o e = runOAuth2 $ f m (getOAuth2 o) e
-  where
+ where
 #if MIN_VERSION_hoauth2(2,6,0)
     f = OAuth2.fetchAccessTokenWithAuthMethod OAuth2.ClientSecretBasic
 #elif MIN_VERSION_hoauth2(2,3,0)
@@ -156,12 +156,12 @@ fetchAccessTokenBasic m o e = runOAuth2 $ f m (getOAuth2 o) e
 #endif
 
 fetchAccessTokenPost
-    :: Manager
-    -> OAuth2
-    -> ExchangeToken
-    -> IO (OAuth2Result Errors OAuth2Token)
+  :: Manager
+  -> OAuth2
+  -> ExchangeToken
+  -> IO (OAuth2Result Errors OAuth2Token)
 fetchAccessTokenPost m o e = runOAuth2 $ f m (getOAuth2 o) e
-  where
+ where
 #if MIN_VERSION_hoauth2(2, 6, 0)
     f = OAuth2.fetchAccessTokenWithAuthMethod OAuth2.ClientSecretPost
 #elif MIN_VERSION_hoauth2(2,3,0)

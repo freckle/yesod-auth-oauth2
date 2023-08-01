@@ -1,10 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
+
 -- |
 -- OAuth2 plugin for <https://auth0.com>
 --
 -- * Authenticates against specific auth0 tenant
 -- * Uses Auth0 user id (a.k.a [sub](https://auth0.com/docs/api/authentication#get-user-info)) as credentials identifier
---
 module Yesod.Auth.OAuth2.Auth0
   ( oauth2Auth0HostScopes
   , oauth2Auth0Host
@@ -13,8 +13,8 @@ module Yesod.Auth.OAuth2.Auth0
 
 import Data.Aeson as Aeson
 import qualified Data.Text as T
-import Prelude
 import Yesod.Auth.OAuth2.Prelude
+import Prelude
 
 -- | https://auth0.com/docs/api/authentication#get-user-info
 newtype User = User T.Text
@@ -36,22 +36,25 @@ oauth2Auth0HostScopes
   :: YesodAuth m => URI -> [Text] -> Text -> Text -> AuthPlugin m
 oauth2Auth0HostScopes host scopes clientId clientSecret =
   authOAuth2 pluginName oauth2 $ \manager token -> do
-    (User uid, userResponse) <- authGetProfile
-      pluginName
-      manager
-      token
-      (host `withPath` "/userinfo")
-    pure Creds
-      { credsPlugin = pluginName
-      , credsIdent = uid
-      , credsExtra = setExtra token userResponse
-      }
+    (User uid, userResponse) <-
+      authGetProfile
+        pluginName
+        manager
+        token
+        (host `withPath` "/userinfo")
+    pure
+      Creds
+        { credsPlugin = pluginName
+        , credsIdent = uid
+        , credsExtra = setExtra token userResponse
+        }
  where
-  oauth2 = OAuth2
-    { oauth2ClientId = clientId
-    , oauth2ClientSecret = Just clientSecret
-    , oauth2AuthorizeEndpoint =
-      host `withPath` "/authorize" `withQuery` [scopeParam " " scopes]
-    , oauth2TokenEndpoint = host `withPath` "/oauth/token"
-    , oauth2RedirectUri = Nothing
-    }
+  oauth2 =
+    OAuth2
+      { oauth2ClientId = clientId
+      , oauth2ClientSecret = Just clientSecret
+      , oauth2AuthorizeEndpoint =
+          host `withPath` "/authorize" `withQuery` [scopeParam " " scopes]
+      , oauth2TokenEndpoint = host `withPath` "/oauth/token"
+      , oauth2RedirectUri = Nothing
+      }

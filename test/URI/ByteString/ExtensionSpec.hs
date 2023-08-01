@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE QuasiQuotes #-}
+
 module URI.ByteString.ExtensionSpec
   ( spec
   ) where
@@ -61,9 +62,8 @@ spec = do
       uriWithQuery `shouldBe` [uri|http://example.com?foo=bar|]
 
     it "handles a URI with an existing query" $ do
-      let
-        uriWithQuery =
-          [uri|http://example.com?foo=bar|] `withQuery` [("baz", "bat")]
+      let uriWithQuery =
+            [uri|http://example.com?foo=bar|] `withQuery` [("baz", "bat")]
 
       uriWithQuery `shouldBe` [uri|http://example.com?foo=bar&baz=bat|]
 
@@ -71,9 +71,8 @@ spec = do
     -- it's worthwhile to show that you don't (and can't) pre-sanitize when
     -- using this function.
     it "handles santization of the query" $ do
-      let
-        uriWithQuery =
-          [uri|http://example.com|] `withQuery` [("foo", "bar baz")]
+      let uriWithQuery =
+            [uri|http://example.com|] `withQuery` [("foo", "bar baz")]
 
       toText uriWithQuery `shouldBe` "http://example.com?foo=bar%20baz"
 

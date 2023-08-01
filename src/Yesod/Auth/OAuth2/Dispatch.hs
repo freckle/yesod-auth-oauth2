@@ -18,8 +18,8 @@ import qualified Data.Text as T
 import Data.Text.Encoding (encodeUtf8)
 import Network.HTTP.Conduit (Manager)
 import Network.OAuth.OAuth2.Compat
-import UnliftIO.Exception
 import URI.ByteString.Extension
+import UnliftIO.Exception
 import Yesod.Auth hiding (ServerError)
 import Yesod.Auth.OAuth2.DispatchError
 import Yesod.Auth.OAuth2.ErrorResponse
@@ -29,21 +29,26 @@ import Yesod.Core hiding (ErrorResponse)
 -- | How to fetch an @'OAuth2Token'@
 --
 -- This will be 'fetchAccessToken' or 'fetchAccessToken2'
---
-type FetchToken
-  = Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result Errors OAuth2Token)
+type FetchToken =
+  Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result Errors OAuth2Token)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
 type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
 
 -- | Dispatch the various OAuth2 handshake routes
 dispatchAuthRequest
-  :: Text             -- ^ Name
-  -> OAuth2           -- ^ Service details
-  -> FetchToken       -- ^ How to get a token
-  -> FetchCreds m     -- ^ How to get credentials
-  -> Text             -- ^ Method
-  -> [Text]           -- ^ Path pieces
+  :: Text
+  -- ^ Name
+  -> OAuth2
+  -- ^ Service details
+  -> FetchToken
+  -- ^ How to get a token
+  -> FetchCreds m
+  -- ^ How to get credentials
+  -> Text
+  -- ^ Method
+  -> [Text]
+  -- ^ Path pieces
   -> AuthHandler m TypedContent
 dispatchAuthRequest name oauth2 _ _ "GET" ["forward"] =
   handleDispatchError $ dispatchForward name oauth2
@@ -55,7 +60,6 @@ dispatchAuthRequest _ _ _ _ _ _ = notFound
 --
 -- 1. Set a random CSRF token in our session
 -- 2. Redirect to the Provider's authorization URL
---
 dispatchForward
   :: (MonadError DispatchError m, MonadAuthHandler site m)
   => Text
@@ -71,7 +75,6 @@ dispatchForward name oauth2 = do
 -- 1. Verify the URL's CSRF token matches our session
 -- 2. Use the code parameter to fetch an AccessToken for the Provider
 -- 3. Use the AccessToken to construct a @'Creds'@ value for the Provider
---
 dispatchCallback
   :: (MonadError DispatchError m, MonadAuthHandler site m)
   => Text
@@ -85,12 +88,13 @@ dispatchCallback name oauth2 getToken getCreds = do
   code <- requireGetParam "code"
   manager <- authHttpManager
   oauth2' <- withCallbackAndState name oauth2 csrf
-  token <- either (throwError . OAuth2ResultError) pure
-    =<< liftIO (getToken manager oauth2' $ ExchangeToken code)
+  token <-
+    either (throwError . OAuth2ResultError) pure
+      =<< liftIO (getToken manager oauth2' $ ExchangeToken code)
   creds <-
     liftIO (getCreds manager token)
-    `catch` (throwError . FetchCredsIOException)
-    `catch` (throwError . FetchCredsYesodOAuth2Exception)
+      `catch` (throwError . FetchCredsIOException)
+      `catch` (throwError . FetchCredsYesodOAuth2Exception)
   setCredsRedirect creds
 
 withCallbackAndState
@@ -102,11 +106,12 @@ withCallbackAndState
 withCallbackAndState name oauth2 csrf = do
   uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
   callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
-  pure oauth2
-    { oauth2RedirectUri = Just callback
-    , oauth2AuthorizeEndpoint =
-      oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
-    }
+  pure
+    oauth2
+      { oauth2RedirectUri = Just callback
+      , oauth2AuthorizeEndpoint =
+          oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
+      }
 
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
 getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
@@ -119,12 +124,12 @@ getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
 --
 -- Therefore, we just exclude @+@ in our tokens, which means this function may
 -- return slightly less than 30 characters.
---
 setSessionCSRF :: MonadHandler m => Text -> m Text
 setSessionCSRF sessionKey = do
   csrfToken <- liftIO randomToken
   csrfToken <$ setSession sessionKey csrfToken
-  where randomToken = T.filter (/= '+') <$> randomText 64
+ where
+  randomToken = T.filter (/= '+') <$> randomText 64
 
 -- | Verify the callback provided the same CSRF token as in our session
 verifySessionCSRF
@@ -133,9 +138,10 @@ verifySessionCSRF sessionKey = do
   token <- requireGetParam "state"
   sessionToken <- lookupSession sessionKey
   deleteSession sessionKey
-  token <$ unless
-    (sessionToken == Just token)
-    (throwError $ InvalidStateToken sessionToken token)
+  token
+    <$ unless
+      (sessionToken == Just token)
+      (throwError $ InvalidStateToken sessionToken token)
 
 requireGetParam
   :: (MonadError DispatchError m, MonadHandler m) => Text -> m Text
