@@ -13,7 +13,7 @@ import Data.Text.Encoding (decodeUtf8)
 randomText
   :: MonadRandom m
   => Int
-  -- ^ Size in Bytes (note necessarily characters)
+  -- ^ Size in Bytes (not necessarily characters)
   -> m Text
 randomText size =
   decodeUtf8 . convertToBase @ByteString Base64 <$> getRandomBytes size

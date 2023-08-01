@@ -117,14 +117,14 @@ withCallbackAndState name oauth2 csrf = do
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
 getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
 
--- | Set a random, ~30-character value in the session
+-- | Set a random, ~64-byte value in the session
 --
 -- Some (but not all) providers decode a @+@ in the state token as a space when
 -- sending it back to us. We don't expect this and fail. And if we did code for
 -- it, we'd then fail on the providers that /don't/ do that.
 --
 -- Therefore, we just exclude @+@ in our tokens, which means this function may
--- return slightly less than 30 characters.
+-- return slightly fewer than 64 bytes.
 setSessionCSRF :: MonadHandler m => Text -> m Text
 setSessionCSRF sessionKey = do
   csrfToken <- liftIO randomToken
