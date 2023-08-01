@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.0...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.1...main)
+
+## [v0.7.1.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.0...v0.7.1.1)
+
+- Support `mtl-2.3`, which no longer re-exports `Control.Monad`
 
 ## [v0.7.1.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.0.3...v0.7.1.0)
 
