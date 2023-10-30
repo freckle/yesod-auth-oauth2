@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         stack-yaml:
-          - stack-nightly.yaml     # ghc-9.6 + hoauth2-2.8.1
+          - stack-nightly.yaml     # ghc-9.6 + hoauth2-2.9.0
           - stack.yaml             # ghc-9.4
           - stack-lts-20.26.yaml   # ghc-9.2
           - stack-lts-19.33.yaml   # ghc-9.0
