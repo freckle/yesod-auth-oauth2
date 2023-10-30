@@ -16,27 +16,33 @@ module Network.OAuth.OAuth2.Compat
 import Data.ByteString.Lazy (ByteString)
 import Data.Text (Text)
 import Network.HTTP.Conduit (Manager)
+import Network.OAuth.OAuth2
+  ( AccessToken (..)
+  , ExchangeToken (..)
+  , OAuth2Token (..)
+  , RefreshToken (..)
+  )
 import qualified Network.OAuth.OAuth2 as OAuth2
-#if MIN_VERSION_hoauth2(2,7,0)
-import Network.OAuth.OAuth2
-    (AccessToken(..), ExchangeToken(..), OAuth2Token(..), RefreshToken(..))
-import Network.OAuth.OAuth2.TokenRequest (TokenRequestError)
-#else
-import Network.OAuth.OAuth2
-    ( AccessToken(..)
-    , ExchangeToken(..)
-    , OAuth2Error
-    , OAuth2Token(..)
-    , RefreshToken(..)
-    )
-import qualified Network.OAuth.OAuth2.TokenRequest as LegacyTokenRequest
-#endif
 import URI.ByteString
 
 #if MIN_VERSION_hoauth2(2,2,0)
 import Control.Monad.Trans.Except (ExceptT, runExceptT)
 import Data.Maybe (fromMaybe)
 #endif
+
+#if MIN_VERSION_hoauth2(2,9,0)
+import Network.OAuth.OAuth2.TokenRequest (TokenResponseError)
+type Errors = TokenResponseError
+#elif MIN_VERSION_hoauth2(2,7,0)
+import Network.OAuth.OAuth2.TokenRequest (TokenRequestError)
+type Errors = TokenRequestError
+#else
+import qualified Network.OAuth.OAuth2.TokenRequest as LegacyTokenRequest
+import Network.OAuth.OAuth2 (OAuth2Error)
+type Errors = OAuth2Error LegacyTokenRequest.Errors
+#endif
+
+{-# ANN module ("HLint: ignore Use fewer imports" :: String) #-}
 
 data OAuth2 = OAuth2
   { oauth2ClientId :: Text
@@ -45,12 +51,6 @@ data OAuth2 = OAuth2
   , oauth2TokenEndpoint :: URIRef Absolute
   , oauth2RedirectUri :: Maybe (URIRef Absolute)
   }
-
-#if MIN_VERSION_hoauth2(2,7,0)
-type Errors = TokenRequestError
-#else
-type Errors = OAuth2Error LegacyTokenRequest.Errors
-#endif
 
 type OAuth2Result err a = Either err a
 
