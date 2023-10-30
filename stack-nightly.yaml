@@ -1,1 +1,3 @@
-resolver: nightly-2023-08-01
+resolver: nightly-2023-10-30
+extra-deps:
+  - hoauth2-2.9.0
