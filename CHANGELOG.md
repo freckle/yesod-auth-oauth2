@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.1...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.2...main)
+
+## [v0.7.1.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.1...v0.7.1.2)
+
+- Support `hoauth2-2.9`.
 
 ## [v0.7.1.1](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.0...v0.7.1.1)
 
