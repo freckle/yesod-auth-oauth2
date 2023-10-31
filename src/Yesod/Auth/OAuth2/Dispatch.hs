@@ -13,6 +13,7 @@ module Yesod.Auth.OAuth2.Dispatch
   ) where
 
 import Control.Monad (unless)
+import Control.Applicative ((<|>))
 import Control.Monad.Except (MonadError (..))
 import Data.Text (Text)
 import qualified Data.Text as T
@@ -109,7 +110,7 @@ withCallbackAndState name oauth2 csrf = do
   callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
   pure
     oauth2
-      { oauth2RedirectUri = Just callback
+      { oauth2RedirectUri = (oauth2RedirectUri oauth2) <|> Just callback
       , oauth2AuthorizeEndpoint =
           oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
       }
