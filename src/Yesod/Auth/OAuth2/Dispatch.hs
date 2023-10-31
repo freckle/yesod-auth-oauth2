@@ -105,7 +105,7 @@ withCallbackAndState
   -> Text
   -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
-  callback <- maybe uriFromPlugin pure $ oauth2RedirectUri oauth2
+  callback <- maybe defaultCallback pure $ oauth2RedirectUri oauth2
   pure
     oauth2
       { oauth2RedirectUri = Just callback
@@ -113,7 +113,7 @@ withCallbackAndState name oauth2 csrf = do
           oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
       }
   where
-    uriFromPlugin = do
+    defaultCallback = do
       uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
       maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
 
