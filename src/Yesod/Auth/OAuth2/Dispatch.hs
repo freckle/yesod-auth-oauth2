@@ -112,10 +112,10 @@ withCallbackAndState name oauth2 csrf = do
       , oauth2AuthorizeEndpoint =
           oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
       }
-  where
-    defaultCallback = do
-      uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
-      maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
+ where
+  defaultCallback = do
+    uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+    maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
 
 getParentUrlRender :: MonadHandler m => m (Route (SubHandlerSite m) -> Text)
 getParentUrlRender = (.) <$> getUrlRender <*> getRouteToParent
