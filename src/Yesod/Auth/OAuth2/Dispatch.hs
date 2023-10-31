@@ -12,7 +12,6 @@ module Yesod.Auth.OAuth2.Dispatch
   , dispatchAuthRequest
   ) where
 
-import Control.Applicative ((<|>))
 import Control.Monad (unless)
 import Control.Monad.Except (MonadError (..))
 import Data.Text (Text)
@@ -106,11 +105,15 @@ withCallbackAndState
   -> Text
   -> m OAuth2
 withCallbackAndState name oauth2 csrf = do
-  uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
-  callback <- maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
+  callback <-
+    case oauth2RedirectUri oauth2 of
+      Just uri -> pure uri
+      Nothing -> do
+        uri <- ($ PluginR name ["callback"]) <$> getParentUrlRender
+        maybe (throwError $ InvalidCallbackUri uri) pure $ fromText uri
   pure
     oauth2
-      { oauth2RedirectUri = (oauth2RedirectUri oauth2) <|> Just callback
+      { oauth2RedirectUri = Just callback
       , oauth2AuthorizeEndpoint =
           oauth2AuthorizeEndpoint oauth2 `withQuery` [("state", encodeUtf8 csrf)]
       }
