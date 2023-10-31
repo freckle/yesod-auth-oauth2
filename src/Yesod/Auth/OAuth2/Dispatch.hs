@@ -12,8 +12,8 @@ module Yesod.Auth.OAuth2.Dispatch
   , dispatchAuthRequest
   ) where
 
-import Control.Monad (unless)
 import Control.Applicative ((<|>))
+import Control.Monad (unless)
 import Control.Monad.Except (MonadError (..))
 import Data.Text (Text)
 import qualified Data.Text as T
