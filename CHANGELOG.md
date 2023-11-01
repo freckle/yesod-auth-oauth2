@@ -1,4 +1,9 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.2...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.3...main)
+
+## [v0.7.1.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.2...v0.7.1.3)
+
+- Add support (with caveats) for relative approots
+  [@cptrodolfox](https://github.com/freckle/yesod-auth-oauth2/pull/178)
 
 ## [v0.7.1.2](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.1...v0.7.1.2)
 
