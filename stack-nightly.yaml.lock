@@ -25,9 +25,16 @@ packages:
       size: 1797
   original:
     hackage: yesod-form-1.7.6
+- completed:
+    hackage: yesod-1.6.2.1@sha256:504bc888257dae9bb40f4cd1e1110c4e80dfe7b867e8e207b22c4ca4dbd87f9a,2030
+    pantry-tree:
+      sha256: 5a78fa0c6e7dcb46c9acd687ab9409c8fcda0d59b930e2a93e5dc44128c740ec
+      size: 618
+  original:
+    hackage: yesod-1.6.2.1
 snapshots:
 - completed:
-    sha256: d544407168c7fd816474f52599144e791e6b0ab3a43c4168b4bbb29287f45001
-    size: 604200
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/2/20.yaml
-  original: nightly-2024-02-20
+    sha256: e596f5467d31095fd7b9f750e82aeffe012e38e795c13e1cdc945c9cab928085
+    size: 604415
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/2/27.yaml
+  original: nightly-2024-02-27
