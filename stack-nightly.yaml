@@ -1,3 +1,11 @@
-resolver: nightly-2023-10-30
+resolver: nightly-2024-02-20
 extra-deps:
-  - hoauth2-2.9.0
+  - yesod-auth-1.6.11.2
+
+  # For yesod-auth
+  - email-validate-2.3.2.19
+  - yesod-form-1.7.6
+
+allow-newer: true
+allow-newer-deps:
+  - email-validate
