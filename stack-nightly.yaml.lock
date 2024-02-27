@@ -5,15 +5,29 @@
 
 packages:
 - completed:
-    hackage: hoauth2-2.9.0@sha256:b12385374771dd2d134cb88234aa80c4ab381ff0c491870a3be5f2676c3fade6,3529
+    hackage: yesod-auth-1.6.11.2@sha256:c580afaccc311ad90fc8a90210b5cf998d95350ddffb622e45282d9b640cf519,3108
     pantry-tree:
-      sha256: 33a8b924018c8c2d7b08dfbd16ec00e6f645ab9d5c653a0e335132936641bc82
-      size: 2129
+      sha256: 58e36ca675fc01109915342d4df9cb2680fd37ff20919d84694cdd1d52eb7dc3
+      size: 1013
   original:
-    hackage: hoauth2-2.9.0
+    hackage: yesod-auth-1.6.11.2
+- completed:
+    hackage: email-validate-2.3.2.19@sha256:206a835fe99a79f2360c576e3594d8add82d2f1e001d58b49a60f60233da2bf5,1380
+    pantry-tree:
+      sha256: 391475ca7c84d59b1d8de362856acd2f56321d29d54ffcd05ed2a170d4e62692
+      size: 419
+  original:
+    hackage: email-validate-2.3.2.19
+- completed:
+    hackage: yesod-form-1.7.6@sha256:42219f2c4feaa2de32280c0b8f98db818f993152693a79960808fd3001a4c0e2,3434
+    pantry-tree:
+      sha256: 8a48fc861796a61cf6abd2087fedd86844ba5c3e11c89c74d2d04c4656d69997
+      size: 1797
+  original:
+    hackage: yesod-form-1.7.6
 snapshots:
 - completed:
-    sha256: e1e4b585723b266822e37cf602d87b57c7c8774b7e5f6b84fdcc580ea5eb2bf1
-    size: 697668
-    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2023/10/30.yaml
-  original: nightly-2023-10-30
+    sha256: d544407168c7fd816474f52599144e791e6b0ab3a43c4168b4bbb29287f45001
+    size: 604200
+    url: https://raw.githubusercontent.com/commercialhaskell/stackage-snapshots/master/nightly/2024/2/20.yaml
+  original: nightly-2024-02-20
