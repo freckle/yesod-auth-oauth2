@@ -14,8 +14,9 @@ jobs:
         uses: freckle/haskell-tag-action@v1
 
       - if: steps.tag.outputs.tag
-        uses: freckle/stack-upload-action@main
-        with:
-          pvp-bounds: lower
+        run: stack upload --pvp-bounds lower
         env:
-          HACKAGE_API_KEY: ${{ secrets.HACKAGE_UPLOAD_API_KEY }}
+          HACKAGE_KEY: ${{ secrets.HACKAGE_UPLOAD_API_KEY }}
+
+          # Use minimum LTS to set lowest lower bounds
+          STACK_YAML: stack-lts-14.27.yaml
