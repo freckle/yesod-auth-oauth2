@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 -- |
 --
@@ -8,12 +9,14 @@
 -- * Uses github user id as credentials identifier
 module Yesod.Auth.OAuth2.GitHub
   ( oauth2GitHub
+  , oauth2GitHubWidget
   , oauth2GitHubScoped
+  , oauth2GitHubScopedWidget
   ) where
 
-import Yesod.Auth.OAuth2.Prelude
-
 import qualified Data.Text as T
+import Yesod.Auth.OAuth2.Prelude
+import Yesod.Core (WidgetFor, whamlet)
 
 newtype User = User Int
 
@@ -29,9 +32,18 @@ defaultScopes = ["user:email"]
 oauth2GitHub :: YesodAuth m => Text -> Text -> AuthPlugin m
 oauth2GitHub = oauth2GitHubScoped defaultScopes
 
+oauth2GitHubWidget
+  :: YesodAuth m => WidgetFor m () -> Text -> Text -> AuthPlugin m
+oauth2GitHubWidget widget = oauth2GitHubScopedWidget widget defaultScopes
+
 oauth2GitHubScoped :: YesodAuth m => [Text] -> Text -> Text -> AuthPlugin m
-oauth2GitHubScoped scopes clientId clientSecret =
-  authOAuth2 pluginName oauth2 $ \manager token -> do
+oauth2GitHubScoped =
+  oauth2GitHubScopedWidget [whamlet|Login via #{pluginName}|]
+
+oauth2GitHubScopedWidget
+  :: YesodAuth m => WidgetFor m () -> [Text] -> Text -> Text -> AuthPlugin m
+oauth2GitHubScopedWidget widget scopes clientId clientSecret =
+  authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
     (User userId, userResponse) <-
       authGetProfile
         pluginName
