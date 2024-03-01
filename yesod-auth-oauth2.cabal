@@ -4,10 +4,10 @@ cabal-version: 1.18
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 207152c226dff43499a366c34fa97543df920deaad084999e3942ae0dc32a30f
+-- hash: 0bef4a9a180a48d0f0187fb359f4a27027166f3a0dd3827b76a6accb71753a27
 
 name:           yesod-auth-oauth2
-version:        0.7.1.3
+version:        0.7.2.0
 synopsis:       OAuth 2.0 authentication plugins
 description:    Library to authenticate with OAuth 2.0 for Yesod web applications.
 category:       Web

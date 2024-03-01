@@ -1,4 +1,9 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.3...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.2.0...main)
+
+## [v0.7.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.3...v0.7.2.0)
+
+- Add `oauth2GitHubWidget` and `oauth2GitHubScopedWidget`
+  [@jaanisfehling](https://github.com/freckle/yesod-auth-oauth2/pull/181)
 
 ## [v0.7.1.3](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.2...v0.7.1.3)
 
