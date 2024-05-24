@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module Yesod.Auth.OAuth2.Orcid
+module Yesod.Auth.OAuth2.ORCID
   ( oauth2Orcid
   ) where
 
