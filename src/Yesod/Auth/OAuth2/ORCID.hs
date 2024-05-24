@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module Yesod.Auth.OAuth2.ORCID
-  ( oauth2Orcid
+  ( oauth2ORCID
   ) where
 
 import qualified Data.Text as T
@@ -15,14 +15,14 @@ newtype User = User Text
 instance FromJSON User where
   parseJSON = withObject "User" $ \o -> User <$> o .: "sub"
 
-oauth2Orcid
+oauth2ORCID
   :: YesodAuth m
   => Text
   -- ^ Client Id
   -> Text
   -- ^ Client Secret
   -> AuthPlugin m
-oauth2Orcid clientId clientSecret =
+oauth2ORCID clientId clientSecret =
   authOAuth2 pluginName oauth2 $ \manager token -> do
     (User userId, userResponse) <-
       authGetProfile

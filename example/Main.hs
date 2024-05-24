@@ -150,7 +150,7 @@ mkFoundation = do
       , loadPlugin (oauth2Spotify []) "SPOTIFY"
       , loadPlugin oauth2Twitch "TWITCH"
       , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
-      , loadPlugin oauth2Orcid "ORCID"
+      , loadPlugin oauth2ORCID "ORCID"
       , loadPlugin oauth2Upcase "UPCASE"
       ]
 
