@@ -40,6 +40,7 @@ import Yesod.Auth.OAuth2.Spotify
 import Yesod.Auth.OAuth2.Twitch
 import Yesod.Auth.OAuth2.Upcase
 import Yesod.Auth.OAuth2.WordPressDotCom
+import Yesod.Auth.OAuth2.ORCID
 
 data App = App
   { appHttpManager :: Manager
@@ -149,6 +150,7 @@ mkFoundation = do
       , loadPlugin (oauth2Spotify []) "SPOTIFY"
       , loadPlugin oauth2Twitch "TWITCH"
       , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
+      , loadPlugin oauth2Orcid "ORCID"
       , loadPlugin oauth2Upcase "UPCASE"
       ]
 
