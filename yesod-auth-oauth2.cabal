@@ -4,7 +4,7 @@ cabal-version: 1.18
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: a9bf86bc3dabd56dd108a6550bbd114607294b7add72c38d081f7f58085af3e9
+-- hash: e92a1426ba46aee8b456d3b2454bcee06ae044afd5e1bb7b0d50641568b576ac
 
 name:           yesod-auth-oauth2
 version:        0.7.2.0
@@ -54,6 +54,7 @@ library
       Yesod.Auth.OAuth2.GitLab
       Yesod.Auth.OAuth2.Google
       Yesod.Auth.OAuth2.Nylas
+      Yesod.Auth.OAuth2.ORCID
       Yesod.Auth.OAuth2.Prelude
       Yesod.Auth.OAuth2.Random
       Yesod.Auth.OAuth2.Salesforce
