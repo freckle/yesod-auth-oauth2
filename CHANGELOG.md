@@ -1,4 +1,10 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.2.0...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.3.0...main)
+
+## [v0.7.3.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.2.0...v0.7.3.0)
+
+- Add ORCID provider
+- Drop support for LTS-12 / GHC-8.6
+- Replace `cryptonite` with `crypton`
 
 ## [v0.7.2.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.1.3...v0.7.2.0)
 
