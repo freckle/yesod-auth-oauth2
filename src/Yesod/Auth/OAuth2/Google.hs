@@ -39,9 +39,8 @@ newtype User = User Text
 instance FromJSON User where
   parseJSON =
     withObject "User" $ \o ->
-      User
-        -- Required for data backwards-compatibility
-        <$> (("google-uid:" <>) <$> o .: "sub")
+      -- Required for data backwards-compatibility
+      User . ("google-uid:" <>) <$> o .: "sub"
 
 pluginName :: Text
 pluginName = "google"
