@@ -1,3 +1,4 @@
 resolver: nightly-2022-02-25
 extra-deps:
+  - crypton-1.0.0
   - hoauth2-2.2.0

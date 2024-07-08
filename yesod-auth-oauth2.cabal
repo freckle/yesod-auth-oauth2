@@ -4,7 +4,7 @@ cabal-version: 1.18
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 0bef4a9a180a48d0f0187fb359f4a27027166f3a0dd3827b76a6accb71753a27
+-- hash: a9bf86bc3dabd56dd108a6550bbd114607294b7add72c38d081f7f58085af3e9
 
 name:           yesod-auth-oauth2
 version:        0.7.2.0
@@ -71,7 +71,7 @@ library
       aeson >=0.6
     , base >=4.9.0.0 && <5
     , bytestring >=0.9.1.4
-    , cryptonite >=0.25
+    , crypton
     , errors
     , hoauth2 >=1.11.0
     , http-client >=0.4.0

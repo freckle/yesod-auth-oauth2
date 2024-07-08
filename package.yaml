@@ -27,7 +27,7 @@ library:
   dependencies:
     - aeson >=0.6
     - bytestring >=0.9.1.4
-    - cryptonite >=0.25
+    - crypton
     - errors
     - hoauth2 >=1.11.0
     - http-client >=0.4.0
