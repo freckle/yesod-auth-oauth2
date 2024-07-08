@@ -5,8 +5,8 @@ extra-deps:
 allow-newer: true
 allow-newer-deps:
   - hoauth2 # specifying the package itself is not necessary in the newest
-            # stack, and in fact doens't make conceptual sense. But it is
-            # required on the version of stack on GHA or you get a warning about
-            # ignoreing the bounds (as desired) but it still fails on them...
+    # stack, and in fact doens't make conceptual sense. But it is
+    # required on the version of stack on GHA or you get a warning about
+    # ignoreing the bounds (as desired) but it still fails on them...
   - memory
   - text
