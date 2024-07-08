@@ -34,13 +34,13 @@ import Yesod.Auth.OAuth2.GitHub
 import Yesod.Auth.OAuth2.GitLab
 import Yesod.Auth.OAuth2.Google
 import Yesod.Auth.OAuth2.Nylas
+import Yesod.Auth.OAuth2.ORCID
 import Yesod.Auth.OAuth2.Salesforce
 import Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Spotify
 import Yesod.Auth.OAuth2.Twitch
 import Yesod.Auth.OAuth2.Upcase
 import Yesod.Auth.OAuth2.WordPressDotCom
-import Yesod.Auth.OAuth2.ORCID
 
 data App = App
   { appHttpManager :: Manager
