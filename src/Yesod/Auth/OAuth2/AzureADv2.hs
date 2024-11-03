@@ -50,7 +50,8 @@ oauth2AzureADv2Widget
 oauth2AzureADv2Widget widget =
   oauth2AzureADv2ScopedWidget widget defaultScopes
 
-oauth2AzureADv2Scoped :: YesodAuth m => [Text] -> Text -> Text -> Text -> AuthPlugin m
+oauth2AzureADv2Scoped
+  :: YesodAuth m => [Text] -> Text -> Text -> Text -> AuthPlugin m
 oauth2AzureADv2Scoped =
   oauth2AzureADv2ScopedWidget [whamlet|Login via #{pluginName}|]
 
