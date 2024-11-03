@@ -3,7 +3,14 @@
 # For more information, please see the documentation at:
 #   https://docs.haskellstack.org/en/stable/lock_files
 
-packages: []
+packages:
+- completed:
+    hackage: crypton-1.0.0@sha256:637e58581978c84ef1288d14fa9cac1d2905ef60e319924293bc11250aca882d,14527
+    pantry-tree:
+      sha256: 4b5e5511567c0fe735a224cb8b2b278e1caa79344f2940d030d169e69b1b81e1
+      size: 23275
+  original:
+    hackage: crypton-1.0.0
 snapshots:
 - completed:
     sha256: 637fb77049b25560622a224845b7acfe81a09fdb6a96a3c75997a10b651667f6

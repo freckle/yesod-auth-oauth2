@@ -1,3 +1,0 @@
-resolver: lts-14.27
-extra-deps:
-  - hoauth2-1.14.0

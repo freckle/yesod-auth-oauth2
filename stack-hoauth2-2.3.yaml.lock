@@ -5,6 +5,13 @@
 
 packages:
 - completed:
+    hackage: crypton-1.0.0@sha256:637e58581978c84ef1288d14fa9cac1d2905ef60e319924293bc11250aca882d,14527
+    pantry-tree:
+      sha256: 4b5e5511567c0fe735a224cb8b2b278e1caa79344f2940d030d169e69b1b81e1
+      size: 23275
+  original:
+    hackage: crypton-1.0.0
+- completed:
     hackage: hoauth2-2.3.0@sha256:213744356007a4686ff3bb72105843d478bc0ba6229659429cbe241a99f55095,2816
     pantry-tree:
       sha256: e559c811165a2e75cfe649b68396466b3bd0b6a5353a9d6476605e6a40e0eb37

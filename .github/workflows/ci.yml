@@ -10,32 +10,31 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  generate:
     runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - id: generate
+        uses: freckle/stack-action/generate-matrix@v5
+    outputs:
+      stack-yamls: ${{ steps.generate.outputs.stack-yamls }}
 
+  test:
+    needs: generate
     strategy:
       matrix:
-        stack-yaml:
-          - stack-nightly.yaml     # ghc-9.8
-          - stack.yaml             # ghc-9.6
-          - stack-lts-21.25.yaml   # ghc-9.4
-          - stack-lts-20.26.yaml   # ghc-9.2
-          - stack-lts-19.33.yaml   # ghc-9.0
-          - stack-lts-18.28.yaml   # ghc-8.10
-          - stack-lts-16.31.yaml   # ghc-8.8
-          - stack-lts-14.27.yaml   # ghc-8.6 + hoauth2-1.14.0
-          - stack-hoauth2-2.6.yaml # ghc-9.4 (nightly-2022-12-09)
-          - stack-hoauth2-2.3.yaml # ghc-9.0 (nightly-2022-02-25)
-          - stack-hoauth2-2.2.yaml # ghc-9.0 (nightly-2022-02-25)
-          - stack-hoauth2-2.0.yaml # ghc-8.10
+        stack-yaml: ${{ fromJSON(needs.generate.outputs.stack-yamls) }}
       fail-fast: false
+
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
       - uses: freckle/stack-action@v5
         with:
-          stack-yaml: ${{ matrix.stack-yaml }}
           stack-build-arguments: --flag yesod-auth-oauth2:example
+        env:
+          STACK_YAML: ${{ matrix.stack-yaml }}
 
   lint:
     runs-on: ubuntu-latest

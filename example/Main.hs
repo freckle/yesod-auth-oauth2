@@ -34,6 +34,7 @@ import Yesod.Auth.OAuth2.GitHub
 import Yesod.Auth.OAuth2.GitLab
 import Yesod.Auth.OAuth2.Google
 import Yesod.Auth.OAuth2.Nylas
+import Yesod.Auth.OAuth2.ORCID
 import Yesod.Auth.OAuth2.Salesforce
 import Yesod.Auth.OAuth2.Slack
 import Yesod.Auth.OAuth2.Spotify
@@ -149,6 +150,7 @@ mkFoundation = do
       , loadPlugin (oauth2Spotify []) "SPOTIFY"
       , loadPlugin oauth2Twitch "TWITCH"
       , loadPlugin oauth2WordPressDotCom "WORDPRESS_DOT_COM"
+      , loadPlugin oauth2ORCID "ORCID"
       , loadPlugin oauth2Upcase "UPCASE"
       ]
 
