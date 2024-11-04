@@ -1,4 +1,8 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.3.0...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.4.0...main)
+
+## [v0.7.4.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.3.0...v0.7.4.0)
+
+- Add `oauth2AzureADv2Widget` and `oauth2AzureADv2ScopedWidget`
 
 ## [v0.7.3.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.2.0...v0.7.3.0)
 
