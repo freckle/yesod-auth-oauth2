@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE QuasiQuotes #-}
 
 -- |
 --
@@ -9,9 +10,12 @@
 module Yesod.Auth.OAuth2.AzureADv2
   ( oauth2AzureADv2
   , oauth2AzureADv2Scoped
+  , oauth2AzureADv2Widget
+  , oauth2AzureADv2ScopedWidget
   ) where
 
 import Yesod.Auth.OAuth2.Prelude
+import Yesod.Core (WidgetFor, whamlet)
 import Prelude
 
 import Data.String
@@ -41,9 +45,21 @@ oauth2AzureADv2
   -> AuthPlugin m
 oauth2AzureADv2 = oauth2AzureADv2Scoped defaultScopes
 
+oauth2AzureADv2Widget
+  :: YesodAuth m => WidgetFor m () -> Text -> Text -> Text -> AuthPlugin m
+oauth2AzureADv2Widget widget =
+  oauth2AzureADv2ScopedWidget widget defaultScopes
+
 oauth2AzureADv2Scoped
+  :: YesodAuth m => [Text] -> Text -> Text -> Text -> AuthPlugin m
+oauth2AzureADv2Scoped =
+  oauth2AzureADv2ScopedWidget [whamlet|Login via #{pluginName}|]
+
+oauth2AzureADv2ScopedWidget
   :: YesodAuth m
-  => [Text]
+  => WidgetFor m ()
+  -- ^ Widget
+  -> [Text]
   -- ^ Scopes
   -> Text
   -- ^ Tenant Id
@@ -54,8 +70,8 @@ oauth2AzureADv2Scoped
   -> Text
   -- ^ Client Secret
   -> AuthPlugin m
-oauth2AzureADv2Scoped scopes tenantId clientId clientSecret =
-  authOAuth2 pluginName oauth2 $ \manager token -> do
+oauth2AzureADv2ScopedWidget widget scopes tenantId clientId clientSecret =
+  authOAuth2Widget widget pluginName oauth2 $ \manager token -> do
     (User userId, userResponse) <-
       authGetProfile
         pluginName
