@@ -1,0 +1,19 @@
+name: Mergeabot
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+  pull_request:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  mergeabot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: freckle/mergeabot-action@v2
+        with:
+          quarantine-days: 5
