@@ -6,6 +6,7 @@ extra-deps:
   - email-validate-2.3.2.19
   - yesod-form-1.7.6
   - yesod-1.6.2.1
+  - cryptonite-0.30
 
 allow-newer: true
 allow-newer-deps:
