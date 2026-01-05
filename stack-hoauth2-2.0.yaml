@@ -1,4 +1,0 @@
-resolver: lts-18.28
-extra-deps:
-  - crypton-1.0.0
-  - hoauth2-2.0.0

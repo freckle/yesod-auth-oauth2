@@ -1,13 +1,4 @@
-resolver: nightly-2024-02-27
+resolver: nightly-2026-01-05
 extra-deps:
-  - yesod-auth-1.6.11.2
-
-  # For yesod-auth
-  - email-validate-2.3.2.19
-  - yesod-form-1.7.6
-  - yesod-1.6.2.1
   - cryptonite-0.30
-
-allow-newer: true
-allow-newer-deps:
-  - email-validate
+  - yesod-auth-1.6.11.3

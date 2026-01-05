@@ -89,7 +89,7 @@ oauth2AzureADv2ScopedWidget widget scopes tenantId clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           tenantUrl "/authorize" `withQuery` [scopeParam " " scopes]
       , oauth2TokenEndpoint = tenantUrl "/token"

@@ -52,7 +52,7 @@ oauth2Auth0HostScopes host scopes clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           host `withPath` "/authorize" `withQuery` [scopeParam " " scopes]
       , oauth2TokenEndpoint = host `withPath` "/oauth/token"

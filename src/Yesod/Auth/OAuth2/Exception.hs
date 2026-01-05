@@ -1,5 +1,3 @@
-{-# LANGUAGE DeriveDataTypeable #-}
-
 module Yesod.Auth.OAuth2.Exception
   ( YesodOAuth2Exception (..)
   ) where
@@ -21,6 +19,6 @@ data YesodOAuth2Exception
     --
     -- Plugin name and error message.
     GenericError Text String
-  deriving (Show, Typeable)
+  deriving (Show)
 
 instance Exception YesodOAuth2Exception

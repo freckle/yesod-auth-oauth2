@@ -11,13 +11,13 @@ module Yesod.Auth.OAuth2
   ( OAuth2 (..)
   , FetchCreds
   , Manager
-  , OAuth2Token (..)
+  , TokenResponse
   , Creds (..)
   , oauth2Url
   , authOAuth2
   , authOAuth2Widget
 
-    -- * Alternatives that use 'fetchAccessToken2'
+    -- * Alternatives that use 'fetchAccessTokenPost'
   , authOAuth2'
   , authOAuth2Widget'
 
@@ -49,7 +49,7 @@ oauth2Url name = PluginR name ["forward"]
 authOAuth2 :: YesodAuth m => Text -> OAuth2 -> FetchCreds m -> AuthPlugin m
 authOAuth2 name = authOAuth2Widget [whamlet|Login via #{name}|] name
 
--- | A version of 'authOAuth2' that uses 'fetchAccessToken2'
+-- | A version of 'authOAuth2' that uses 'fetchAccessTokenPost'
 --
 -- See <https://github.com/thoughtbot/yesod-auth-oauth2/pull/129>
 authOAuth2' :: YesodAuth m => Text -> OAuth2 -> FetchCreds m -> AuthPlugin m
@@ -66,9 +66,9 @@ authOAuth2Widget
   -> OAuth2
   -> FetchCreds m
   -> AuthPlugin m
-authOAuth2Widget = buildPlugin fetchAccessToken
+authOAuth2Widget = buildPlugin fetchAccessTokenBasic
 
--- | A version of 'authOAuth2Widget' that uses 'fetchAccessToken2'
+-- | A version of 'authOAuth2Widget' that uses 'fetchAccessTokenPost'
 --
 -- See <https://github.com/thoughtbot/yesod-auth-oauth2/pull/129>
 authOAuth2Widget'
@@ -78,7 +78,7 @@ authOAuth2Widget'
   -> OAuth2
   -> FetchCreds m
   -> AuthPlugin m
-authOAuth2Widget' = buildPlugin fetchAccessToken2
+authOAuth2Widget' = buildPlugin fetchAccessTokenPost
 
 buildPlugin
   :: YesodAuth m

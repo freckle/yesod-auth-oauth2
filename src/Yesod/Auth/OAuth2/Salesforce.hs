@@ -76,7 +76,7 @@ salesforceHelper name profileUri authorizeUri tokenUri scopes clientId clientSec
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint = authorizeUri `withQuery` [scopeParam " " scopes]
       , oauth2TokenEndpoint = tokenUri
       , oauth2RedirectUri = Nothing

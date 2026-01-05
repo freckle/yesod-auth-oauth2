@@ -6,8 +6,8 @@
 
 module Yesod.Auth.OAuth2.Dispatch
   ( FetchToken
-  , fetchAccessToken
-  , fetchAccessToken2
+  , fetchAccessTokenBasic
+  , fetchAccessTokenPost
   , FetchCreds
   , dispatchAuthRequest
   ) where
@@ -31,10 +31,13 @@ import Yesod.Core hiding (ErrorResponse)
 --
 -- This will be 'fetchAccessToken' or 'fetchAccessToken2'
 type FetchToken =
-  Manager -> OAuth2 -> ExchangeToken -> IO (OAuth2Result Errors OAuth2Token)
+  Manager
+  -> OAuth2
+  -> ExchangeToken
+  -> IO (Either TokenResponseError TokenResponse)
 
 -- | How to take an @'OAuth2Token'@ and retrieve user credentials
-type FetchCreds m = Manager -> OAuth2Token -> IO (Creds m)
+type FetchCreds m = Manager -> TokenResponse -> IO (Creds m)
 
 -- | Dispatch the various OAuth2 handshake routes
 dispatchAuthRequest

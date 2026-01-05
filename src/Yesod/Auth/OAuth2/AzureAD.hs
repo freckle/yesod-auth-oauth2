@@ -48,7 +48,7 @@ oauth2AzureADScoped scopes clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           "https://login.windows.net/common/oauth2/authorize"
             `withQuery` [ scopeParam "," scopes

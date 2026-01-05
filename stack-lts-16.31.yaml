@@ -1,3 +1,0 @@
-resolver: lts-16.31
-extra-deps:
-  - crypton-1.0.0
