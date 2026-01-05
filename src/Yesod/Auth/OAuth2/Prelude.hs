@@ -30,7 +30,12 @@ module Yesod.Auth.OAuth2.Prelude
 
     -- * OAuth2
   , OAuth2 (..)
-  , OAuth2Token (..)
+  , TokenResponse
+  , accessToken
+  , refreshToken
+  , expiresIn
+  , tokenType
+  , idToken
   , AccessToken (..)
   , RefreshToken (..)
 
@@ -78,7 +83,7 @@ authGetProfile
   :: FromJSON a
   => Text
   -> Manager
-  -> OAuth2Token
+  -> TokenResponse
   -> URI
   -> IO (a, BL.ByteString)
 authGetProfile name manager token url = do
@@ -114,7 +119,7 @@ scopeParam d = ("scope",) . encodeUtf8 . T.intercalate d
 -- May set the following keys:
 --
 -- - @refreshToken@: if the provider supports refreshing the @accessToken@
-setExtra :: OAuth2Token -> BL.ByteString -> [(Text, Text)]
+setExtra :: TokenResponse -> BL.ByteString -> [(Text, Text)]
 setExtra token userResponse =
   [ ("accessToken", atoken $ accessToken token)
   , ("userResponse", decodeUtf8 $ BL.toStrict userResponse)

@@ -1,10 +1,10 @@
 cabal-version: 1.18
 
--- This file has been generated from package.yaml by hpack version 0.37.0.
+-- This file has been generated from package.yaml by hpack version 0.38.1.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 6df1b551d88fc83903790620d83c1f4f549b14ab976cd46cb6bfb1e26722cf4f
+-- hash: dc142db361fed3689429889b831a2a76c4bb29da073c24340afacf62d3c14faa
 
 name:           yesod-auth-oauth2
 version:        0.7.4.0
@@ -74,7 +74,7 @@ library
     , bytestring >=0.9.1.4
     , crypton
     , errors
-    , hoauth2 >=1.11.0
+    , hoauth2 >=2.8.0
     , http-client >=0.4.0
     , http-conduit >=2.0
     , http-types >=0.8

@@ -37,7 +37,7 @@ oauth2Spotify scopes clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           "https://accounts.spotify.com/authorize"
             `withQuery` [scopeParam " " scopes]

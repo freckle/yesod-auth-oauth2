@@ -44,7 +44,7 @@ oauth2Upcase clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint = "http://upcase.com/oauth/authorize"
       , oauth2TokenEndpoint = "http://upcase.com/oauth/token"
       , oauth2RedirectUri = Nothing

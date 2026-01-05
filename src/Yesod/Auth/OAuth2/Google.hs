@@ -80,7 +80,7 @@ oauth2GoogleScopedWidget widget scopes clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           "https://accounts.google.com/o/oauth2/auth"
             `withQuery` [scopeParam " " scopes]

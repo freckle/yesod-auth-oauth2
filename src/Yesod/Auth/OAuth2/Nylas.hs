@@ -55,7 +55,7 @@ oauth2Nylas clientId clientSecret =
   oauth =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint =
           "https://api.nylas.com/oauth/authorize"
             `withQuery` [ ("response_type", "code")

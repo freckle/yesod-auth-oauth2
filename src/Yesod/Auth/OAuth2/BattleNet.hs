@@ -53,7 +53,7 @@ oauth2BattleNet widget region clientId clientSecret =
   oauth2 =
     OAuth2
       { oauth2ClientId = clientId
-      , oauth2ClientSecret = Just clientSecret
+      , oauth2ClientSecret = clientSecret
       , oauth2AuthorizeEndpoint = fromRelative "https" host "/oauth/authorize"
       , oauth2TokenEndpoint = fromRelative "https" host "/oauth/token"
       , oauth2RedirectUri = Nothing
