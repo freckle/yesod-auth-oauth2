@@ -1,4 +1,17 @@
-## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.4.0...main)
+## [_Unreleased_](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.8.0.0...main)
+
+## [v0.8.0.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.4.0...v0.8.0.0)
+
+- Drop support for GHC < 9.4 and hoauth2 < 2.8
+- Add support for GHC 9.12 and hoauth2-2.15
+- To align our interfaces with hoauth2-2.15:
+  - Make `OAuth2 {clientSecret}` non-`Maybe`
+  - Replace `OAuthToken` with `TokenResponse`
+  - Replace `Errors` with `TokenResponseError`
+  - Replace `fetchAccessToken{,2}` with `fetchAccessToken{Basic,Post}`
+
+While technically a major version bump, this change should only affect those
+users that maintain their own plugins.
 
 ## [v0.7.4.0](https://github.com/thoughtbot/yesod-auth-oauth2/compare/v0.7.3.0...v0.7.4.0)
 
