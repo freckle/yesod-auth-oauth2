@@ -3,5 +3,5 @@
   "extends": [
     "local>freckle/renovate-config"
   ],
-  "minimumReleaseAge": "0 days"
+  "minimumReleaseAge": "1 days"
 }
