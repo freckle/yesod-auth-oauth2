@@ -39,6 +39,16 @@ jobs:
         env:
           STACK_YAML: ${{ matrix.stack-yaml }}
 
+  check:
+    if: always()
+    needs:
+      - test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}
+
   lint:
     runs-on: ubuntu-latest
     steps:
